@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import gov.va.ascent.framework.aspect.PerformanceLoggingAspect;
 
 @Aspect
-@Component
 @Order(-9999)
 public class ServiceTimerAspect extends BaseServiceAspect {
 	
