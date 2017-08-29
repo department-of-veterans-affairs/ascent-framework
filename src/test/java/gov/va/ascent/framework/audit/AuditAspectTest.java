@@ -25,11 +25,11 @@ public class AuditAspectTest {
 
     @Autowired
     AuditableService auditableService;
+
     @Test
     public void test(){
-//        AuditableService auditableService = new TestAuditableService();
-        ServiceRequest request = new AuditServiceRequest();
-
+        AuditServiceRequest request = new AuditServiceRequest();
+        request.setText("AuditServiceRequest");
         auditableService.annotatedMethod(request);
     }
 }
@@ -51,11 +51,19 @@ interface AuditableService{
 
 class AuditServiceRequest extends ServiceRequest{
     private String text;
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
 }
 
 @Configuration
 @ComponentScan("gov.va.ascent.framework.audit")
-@EnableAspectJAutoProxy
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 class Config{
 
 }

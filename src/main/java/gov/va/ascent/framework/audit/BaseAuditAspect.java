@@ -10,6 +10,6 @@ public class BaseAuditAspect {
     @Pointcut("@annotation(gov.va.ascent.framework.audit.Auditable)")
     protected final static void auditableAnnotation(){}
 
-    @Pointcut("auditableAnnotation()") //&& execution(* *(..))
+    @Pointcut("auditableAnnotation() && execution(* *(..))")
     protected final static void auditableExecution(){}
 }
