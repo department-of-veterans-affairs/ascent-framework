@@ -28,10 +28,10 @@ public class RequestResponseAspect extends BaseAuditAspect{
         Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
         Auditable auditableAnnotation = method.getAnnotation(Auditable.class);
         if(auditableAnnotation.event().equals(AuditEvents.REQUEST_RESPONSE)){
-            ServiceResponse returnObject = null;
-            ServiceRequest request = (ServiceRequest)joinPoint.getArgs()[0];
+            Object returnObject = null;
+            Object request = joinPoint.getArgs()[0];
             try {
-                returnObject = (ServiceResponse)joinPoint.proceed();
+                returnObject = joinPoint.proceed();
                 AuditLogger.info("", AuditEvents.REQUEST_RESPONSE.name(), mapper.writeValueAsString(new RequestResponse(request, returnObject)));
             } catch (Throwable throwable) {
                 throw new RuntimeException(throwable);
@@ -44,28 +44,28 @@ public class RequestResponseAspect extends BaseAuditAspect{
 }
 
 class RequestResponse implements Serializable{
-    private ServiceRequest request;
+    private Object request;
 
-    private ServiceResponse response;
+    private Object response;
 
-    public RequestResponse(ServiceRequest request, ServiceResponse response) {
+    public RequestResponse(Object request, Object response) {
         this.request = request;
         this.response = response;
     }
 
-    public ServiceRequest getRequest() {
+    public Object getRequest() {
         return request;
     }
 
-    public void setRequest(ServiceRequest request) {
+    public void setRequest(Object request) {
         this.request = request;
     }
 
-    public ServiceResponse getResponse() {
+    public Object getResponse() {
         return response;
     }
 
-    public void setResponse(ServiceResponse response) {
+    public void setResponse(Object response) {
         this.response = response;
     }
 }
