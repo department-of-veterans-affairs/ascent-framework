@@ -12,31 +12,30 @@ public class AuditLogger {
 
     final static Logger LOGGER = LoggerFactory.getLogger(AuditLogger.class);
 
-    public static void debug(String activity,String activityDetail) {
-        addMdcSecurityEntries();
-        MDC.put("activity", activity);
+    public static void debug(Auditable auditable,String activityDetail) {
+        addMdcSecurityEntries(auditable);
         LOGGER.debug(activityDetail);
         MDC.clear();
 
     }
 
-    public static void info(String activity, String activityDetail) {
-        addMdcSecurityEntries();
-        MDC.put("activity", activity);
+    public static void info(Auditable auditable, String activityDetail) {
+        addMdcSecurityEntries(auditable);
         LOGGER.info(activityDetail);
         MDC.clear();
 
     }
 
-    public static void warn(String activity,String activityDetail) {
-        addMdcSecurityEntries();
-        MDC.put("activity", activity);
+    public static void warn(Auditable auditable,String activityDetail) {
+        addMdcSecurityEntries(auditable);
         LOGGER.warn(activityDetail);
         MDC.clear();
 
     }
 
-    private static void addMdcSecurityEntries(){
+    private static void addMdcSecurityEntries(Auditable auditable){
+        MDC.put("activity", auditable.activity());
+        MDC.put("event", auditable.event().name());
         if(SecurityUtils.getPersonTraits() != null) {
             MDC.put("user", SecurityUtils.getPersonTraits().getUser());
             MDC.put("tokenId", SecurityUtils.getPersonTraits().getTokenId());

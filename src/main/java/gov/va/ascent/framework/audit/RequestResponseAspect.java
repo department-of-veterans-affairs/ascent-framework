@@ -1,5 +1,6 @@
 package gov.va.ascent.framework.audit;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.ascent.framework.service.ServiceRequest;
 import gov.va.ascent.framework.service.ServiceResponse;
@@ -8,6 +9,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -24,20 +26,24 @@ public class RequestResponseAspect extends BaseAuditAspect{
     ObjectMapper mapper;
 
     @Around("auditableExecution()")
-    public void logRequestResponse(final ProceedingJoinPoint joinPoint){
+    public Object logRequestResponse(final ProceedingJoinPoint joinPoint){
+        Object returnObject = null;
+        Object request = joinPoint.getArgs()[0];
+        try {
+            returnObject = joinPoint.proceed();
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
         Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
         Auditable auditableAnnotation = method.getAnnotation(Auditable.class);
-        if(auditableAnnotation.event().equals(AuditEvents.REQUEST_RESPONSE)){
-            Object returnObject = null;
-            Object request = joinPoint.getArgs()[0];
+        if(AuditEvents.REQUEST_RESPONSE.equals(auditableAnnotation.event())){
             try {
-                returnObject = joinPoint.proceed();
-                AuditLogger.info(AuditEvents.REQUEST_RESPONSE.name(), mapper.writeValueAsString(new RequestResponse(request, returnObject)));
-            } catch (Throwable throwable) {
-                throw new RuntimeException(throwable);
+                AuditLogger.info(auditableAnnotation, mapper.writeValueAsString(new RequestResponse(request, returnObject)));
+            }catch (JsonProcessingException ex){
+                AuditLogger.warn(auditableAnnotation, ex.getMessage());
             }
-
         }
+        return returnObject;
     }
 
 
