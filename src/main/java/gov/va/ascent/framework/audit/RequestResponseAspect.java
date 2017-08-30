@@ -32,7 +32,7 @@ public class RequestResponseAspect extends BaseAuditAspect{
             Object request = joinPoint.getArgs()[0];
             try {
                 returnObject = joinPoint.proceed();
-                AuditLogger.info("", AuditEvents.REQUEST_RESPONSE.name(), mapper.writeValueAsString(new RequestResponse(request, returnObject)));
+                AuditLogger.info(AuditEvents.REQUEST_RESPONSE.name(), mapper.writeValueAsString(new RequestResponse(request, returnObject)));
             } catch (Throwable throwable) {
                 throw new RuntimeException(throwable);
             }

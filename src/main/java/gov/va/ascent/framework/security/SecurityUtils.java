@@ -42,12 +42,12 @@ public class SecurityUtils {
 	 * 
 	 * @return user principal
 	 */
-	public static final VaafiTraits getVAAFITraits() {
+	public static final PersonTraits getPersonTraits() {
 		if (SecurityContextHolder.getContext() != null
 				&& SecurityContextHolder.getContext().getAuthentication() != null
 				&& SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
-				&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof VaafiTraits) {
-			return (VaafiTraits) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+				&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof PersonTraits) {
+			return (PersonTraits) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		} else {
 			return null;
 		}
