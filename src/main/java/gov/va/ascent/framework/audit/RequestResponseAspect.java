@@ -1,32 +1,30 @@
 package gov.va.ascent.framework.audit;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.va.ascent.framework.service.ServiceRequest;
-import gov.va.ascent.framework.service.ServiceResponse;
+import java.io.Serializable;
+import java.lang.reflect.Method;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Created by vgadda on 8/17/17.
  */
 @Aspect
 @Component
-public class RequestResponseAspect extends BaseAuditAspect{
+public class RequestResponseAspect extends BaseAuditAspect {
 
     @Autowired
     ObjectMapper mapper;
 
     @Around("auditableExecution()")
-    public Object logRequestResponse(final ProceedingJoinPoint joinPoint){
+    public Object logRequestResponse(final ProceedingJoinPoint joinPoint) {
         Object returnObject = null;
         Object request = joinPoint.getArgs()[0];
         try {
@@ -36,10 +34,10 @@ public class RequestResponseAspect extends BaseAuditAspect{
         }
         Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
         Auditable auditableAnnotation = method.getAnnotation(Auditable.class);
-        if(AuditEvents.REQUEST_RESPONSE.equals(auditableAnnotation.event())){
+        if(AuditEvents.REQUEST_RESPONSE.equals(auditableAnnotation.event())) {
             try {
                 AuditLogger.info(auditableAnnotation, mapper.writeValueAsString(new RequestResponse(request, returnObject)));
-            }catch (JsonProcessingException ex){
+            }catch (JsonProcessingException ex) {
                 AuditLogger.warn(auditableAnnotation, ex.getMessage());
             }
         }
@@ -50,7 +48,12 @@ public class RequestResponseAspect extends BaseAuditAspect{
 }
 
 class RequestResponse implements Serializable{
-    private Object request;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private Object request;
 
     private Object response;
 

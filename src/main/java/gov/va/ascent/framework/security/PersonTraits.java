@@ -14,7 +14,7 @@ import java.util.List;
  * Created by vgadda on 6/6/17.
  */
 
-public class PersonTraits extends User{
+public class PersonTraits extends User {
 
     /**
 	 * 
@@ -25,7 +25,7 @@ public class PersonTraits extends User{
         super(username, password, authorities);
     }
 
-    public PersonTraits(){
+    public PersonTraits() {
         super("NA","NA", AuthorityUtils.NO_AUTHORITIES);
     }
 
@@ -49,7 +49,7 @@ public class PersonTraits extends User{
     @Override
     @JsonIgnore
     public List<GrantedAuthority> getAuthorities() {
-        return new ArrayList<>(super.getAuthorities());
+        return new ArrayList<GrantedAuthority>(super.getAuthorities());
     }
 
     @Override
