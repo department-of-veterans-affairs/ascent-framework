@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * Created by vgadda on 8/17/17.
  */
 @Aspect
-@Component
 public class RequestResponseAspect extends BaseAuditAspect {
 
     @Autowired
