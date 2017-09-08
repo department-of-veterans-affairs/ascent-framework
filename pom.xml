@@ -21,14 +21,6 @@
     <dependencies>
     
     	<!-- spring framework project dependencies -->
-    	<dependency>
-		    <groupId>org.springframework</groupId>
-		    <artifactId>spring-web</artifactId>
-		</dependency>
-		<dependency>
-		    <groupId>org.springframework.ws</groupId>
-		    <artifactId>spring-ws-core</artifactId>
-		</dependency>
 		<dependency>
 		    <groupId>org.springframework.ws</groupId>
 		    <artifactId>spring-ws-security</artifactId>
@@ -61,13 +53,7 @@
 		    <artifactId>com.db4o</artifactId>
 		    <version>7.7.67</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.ws.commons.axiom</groupId>
-			<artifactId>axiom-impl</artifactId>
-			 <version>1.2.14</version>
-		</dependency>
-	        
+			        
         <!-- Provided Dependencies -->
 		<!-- Required during compile but not at runtime due to findbugs annotations 
 			throughout code -->
