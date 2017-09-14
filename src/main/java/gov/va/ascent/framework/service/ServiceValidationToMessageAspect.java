@@ -36,7 +36,6 @@ import gov.va.ascent.framework.validation.ViolationMessageParts;
  * @author jshrader
  */
 @Aspect
-@Component
 @Order(-9998)
 public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 	

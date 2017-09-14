@@ -13,8 +13,6 @@ import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
-
 import gov.va.ascent.framework.util.Defense;
 
 /**
@@ -24,7 +22,7 @@ import gov.va.ascent.framework.util.Defense;
  * @author jimmyray
  * @version 2.0
  */
-@Component
+
 public final class ModelValidator implements Serializable {
 	
 	/** The Constant serialVersionUID. */

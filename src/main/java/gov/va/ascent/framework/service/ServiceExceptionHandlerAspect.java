@@ -9,7 +9,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import gov.va.ascent.framework.exception.ExceptionToExceptionTranslationHandler;
 import gov.va.ascent.framework.exception.AscentRuntimeException;
@@ -25,7 +24,6 @@ import gov.va.ascent.framework.util.Defense;
  * @author jshrader
  */
 @Aspect
-@Component
 public class ServiceExceptionHandlerAspect extends BaseServiceAspect {
 	
 	private final static Logger LOGGER = LoggerFactory.getLogger(ServiceExceptionHandlerAspect.class);

@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 
 import gov.va.ascent.framework.exception.AscentRuntimeException;
 import gov.va.ascent.framework.messages.MessageSeverity;
@@ -25,7 +24,6 @@ import gov.va.ascent.framework.service.ServiceResponse;
  * @see gov.va.ascent.framework.rest.provider.BaseRestProviderAspect
  */
 @Aspect
-@Component
 @Order(-9998)
 public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	
