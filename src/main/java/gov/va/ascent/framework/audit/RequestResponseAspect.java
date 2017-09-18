@@ -8,8 +8,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -47,13 +45,9 @@ public class RequestResponseAspect extends BaseAuditAspect {
 }
 
 class RequestResponse implements Serializable{
-    /**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
-
 	private Object request;
-
     private Object response;
 
     public RequestResponse(Object request, Object response) {

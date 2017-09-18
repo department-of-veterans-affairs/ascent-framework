@@ -33,7 +33,8 @@ public class AuditLogger {
 
     }
 
-    private static void addMdcSecurityEntries(Auditable auditable){
+    private static void addMdcSecurityEntries(Auditable auditable) {
+    	MDC.put("logType", "auditlogs");
         MDC.put("activity", auditable.activity());
         MDC.put("event", auditable.event().name());
         if(SecurityUtils.getPersonTraits() != null) {
