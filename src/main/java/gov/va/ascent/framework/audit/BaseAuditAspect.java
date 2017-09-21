@@ -6,10 +6,14 @@ import org.aspectj.lang.annotation.Pointcut;
  * Created by vgadda on 8/17/17.
  */
 public class BaseAuditAspect {
-
+	
     @Pointcut("@annotation(gov.va.ascent.framework.audit.Auditable)")
-    protected final static void auditableAnnotation(){}
+	protected static final void auditableAnnotation() {
+  	  // Do nothing.
+	}
 
     @Pointcut("auditableAnnotation() && execution(* *(..))")
-    protected final static void auditableExecution(){}
+	protected static final void auditableExecution() {
+    	  // Do nothing.
+	}
 }

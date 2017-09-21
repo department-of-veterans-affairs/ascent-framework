@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 public class PerformanceLoggingAspect {
 	
-	private final static Logger LOGGER = LoggerFactory.getLogger(PerformanceLoggingAspect.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PerformanceLoggingAspect.class);
 	
 	/** number of milliseconds in a second */
 	private static final int NUMBER_OF_MILLIS_N_A_SECOND = 1000;
@@ -35,6 +35,9 @@ public class PerformanceLoggingAspect {
 	/** The Constant DOT. */
 	private static final String DOT = ".";
 	
+	private PerformanceLoggingAspect() {
+	}
+
 	public static final Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {	
 		
 		if(LOGGER.isDebugEnabled()){
@@ -55,7 +58,12 @@ public class PerformanceLoggingAspect {
         try {
             returnObject = joinPoint.proceed();
         } catch (Throwable throwable) {
-        	throw throwable;
+			LOGGER.error("PerformanceLoggingAspect encountered uncaught exception. Throwable Cause.",
+					throwable.getCause());
+			LOGGER.error(
+					"PerformanceLoggingAspect encountered uncaught exception. Throwable Message.",
+					throwable.getMessage());
+			throw throwable;
         }
         finally {
         	LOGGER.debug("PerformanceLoggingAspect after method was called.");

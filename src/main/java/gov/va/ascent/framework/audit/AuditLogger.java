@@ -10,8 +10,11 @@ import org.slf4j.MDC;
  */
 public class AuditLogger {
 
-    final static Logger LOGGER = LoggerFactory.getLogger(AuditLogger.class);
+	static final Logger LOGGER = LoggerFactory.getLogger(AuditLogger.class);
 
+	private AuditLogger() {
+	}
+	
     public static void debug(Auditable auditable,String activityDetail) {
         addMdcSecurityEntries(auditable);
         LOGGER.debug(activityDetail);
