@@ -32,7 +32,7 @@ public class AscentPropertySourcesPropertyResolver extends PropertySourcesProper
 	private String valueSeparator = ":";
 
 	/** The property file holders. */
-	private final List<PropertyFileHolder> propertyFileHolders = new ArrayList<PropertyFileHolder>();
+	private final List<PropertyFileHolder> propertyFileHolders = new ArrayList<>();
 
 	/**
 	 * Instantiates a new WSS property sources property resolver.

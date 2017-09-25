@@ -18,7 +18,7 @@ public class ServiceResponse extends AbstractTransferObject {
 	private static final long serialVersionUID = -3937937807439785385L;
 	
 	/** The messages. */
-	protected List<Message> messages;
+	private List<Message> messages;
 
 	/**
 	 * Instantiates a new rest response.
@@ -36,7 +36,7 @@ public class ServiceResponse extends AbstractTransferObject {
 	 */
 	public final void addMessage(final MessageSeverity severity, final String key, final String text){		
 		if(messages == null){
-			messages = new LinkedList<Message>();
+			messages = new LinkedList<>();
 		}
 		final Message message = new Message();
 		message.setSeverity(severity);
@@ -52,7 +52,7 @@ public class ServiceResponse extends AbstractTransferObject {
 	 */
 	public final void addMessages(final List<Message> newMessages){
 		if(messages == null){
-			messages = new LinkedList<Message>();
+			messages = new LinkedList<>();
 		}
 		messages.addAll(newMessages);
 	}
@@ -64,7 +64,7 @@ public class ServiceResponse extends AbstractTransferObject {
 	 */
 	public final List<Message> getMessages() {
 		if(messages == null){
-			messages = new LinkedList<Message>();
+			messages = new LinkedList<>();
 		}
 		return this.messages;
 	}
@@ -85,11 +85,9 @@ public class ServiceResponse extends AbstractTransferObject {
 	 * @return true, if successful
 	 */
 	private boolean hasMessagesOfType(final MessageSeverity severity){
-		if(getMessages() != null){
-			for(Message message: getMessages()){
-				if(severity.equals(message.getSeverity())){
-					return true;
-				}
+		for(Message message: getMessages()){
+			if(severity.equals(message.getSeverity())){
+				return true;
 			}
 		}
 		return false;

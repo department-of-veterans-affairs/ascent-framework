@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.lang3.CharEncoding;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The base class for Web Service client simulations, containing utility operations, etc. that are likely reusable across such
@@ -14,6 +16,10 @@ import org.apache.commons.lang3.CharEncoding;
  * @author jshrader
  */
 public class BaseWsClientSimulator {
+	
+	/** The Constant LOGGER. */
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(BaseWsClientSimulator.class);
 
 	/**
 	 * This is not an abstract class, however it is a base class that is not to be instantiated. In this case, it's probably better to
@@ -58,6 +64,7 @@ public class BaseWsClientSimulator {
 			content = getSimulatorResponseByFileName(fileName1);
 		} catch (final IOException ex) {
 			content = getSimulatorResponseByFileName(fileName2);
+			LOGGER.info(ex.getMessage(), ex);
 		}
 
 		return content;

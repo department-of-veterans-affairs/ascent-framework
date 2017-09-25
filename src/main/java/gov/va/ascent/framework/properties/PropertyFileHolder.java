@@ -20,7 +20,7 @@ public class PropertyFileHolder implements Serializable {
 	private String name;
 
 	/** The property info. */
-	private final Map<String, Object> propertyInfo = new HashMap<String, Object>();
+	private final transient Map<String, Object> propertyInfo = new HashMap<>();
 
 	/**
 	 * Gets the name.

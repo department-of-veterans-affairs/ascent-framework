@@ -218,7 +218,7 @@ public class BaseWsClientConfig {
 		// add http request and response interceptors
 		if (messageSender.getHttpClient() instanceof DefaultHttpClient) {
 			final DefaultHttpClient httpClient = (DefaultHttpClient) messageSender.getHttpClient();
-			LOGGER.info("HttpClient Object : " + httpClient);
+			LOGGER.info("HttpClient Object : %s%" , httpClient);
 			if (httpRequestInterceptors != null) {
 				for (final HttpRequestInterceptor httpRequestInterceptor : httpRequestInterceptors) {
 					httpClient.addRequestInterceptor(httpRequestInterceptor);
@@ -233,7 +233,7 @@ public class BaseWsClientConfig {
 			LOGGER.warn("Not adding http interceptors, messageSender client isn't of the type DefaultHttpClient!");
 		}
 		
-		LOGGER.info("Default Uri : " + endpoint);
+		LOGGER.info("Default Uri : %s%" , endpoint);
 
 		// set the message factory & configure and return the template
 		final WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
@@ -284,7 +284,7 @@ public class BaseWsClientConfig {
 
 		// define packages that contain "our exceptions" that we want to propagate through
 		// without again logging and/or wrapping
-		final Set<String> exclusionSet = new HashSet<String>();
+		final Set<String> exclusionSet = new HashSet<>();
 		exclusionSet.add(PACKAGE_WSS_FOUNDATION_EXCEPTION);
 		interceptingExceptionTranslator.setExclusionSet(exclusionSet);
 

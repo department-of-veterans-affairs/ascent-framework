@@ -21,14 +21,14 @@ import gov.va.ascent.framework.service.ServiceResponse;
  * Ensure you follow that pattern to make use of this standard aspect.
  *
  * @author jshrader
- * @see gov.va.ascent.framework.rest.provider.BaseRestProviderAspect
+ * @see gov.va.ascent.framework.rest.provider.BaseRestProviderAspect 
  */
 @Aspect
 @Order(-9998)
 public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	
 	/** The Constant LOGGER. */
-	private final static Logger LOGGER = LoggerFactory.getLogger(RestProviderHttpResponseCodeAspect.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RestProviderHttpResponseCodeAspect.class);
 	
 	/** The rules engine. */
 	private MessagesToHttpStatusRulesEngine rulesEngine;
@@ -41,13 +41,13 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
      * @param rulesEngine the rules engine
      */
 	public RestProviderHttpResponseCodeAspect() {
-		MessagesToHttpStatusRulesEngine rulesEngine = new MessagesToHttpStatusRulesEngine();
-		rulesEngine.addRule(
+		MessagesToHttpStatusRulesEngine ruleEngine = new MessagesToHttpStatusRulesEngine();
+		ruleEngine.addRule(
 				new MessageSeverityMatchRule(MessageSeverity.FATAL, HttpStatus.INTERNAL_SERVER_ERROR)); 
-		rulesEngine.addRule(
+		ruleEngine.addRule(
 				new MessageSeverityMatchRule(MessageSeverity.ERROR, 
 						HttpStatus.BAD_REQUEST));
-		this.rulesEngine = rulesEngine;
+		this.rulesEngine = ruleEngine;
     }
     
     /**
@@ -81,7 +81,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
             }
 			final HttpStatus ruleStatus = rulesEngine.messagesToHttpStatus(serviceResponse.getMessages());
 			if (ruleStatus != null) {
-				returnObject = new ResponseEntity<ServiceResponse>(serviceResponse, ruleStatus);
+				returnObject = new ResponseEntity<>(serviceResponse, ruleStatus);
 			}
         } catch (Throwable throwable) {
         	LOGGER.error("RestHttpResponseCodeAspect encountered uncaught exception in REST endpoint Throwable Cause.", throwable.getCause());
@@ -95,7 +95,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
         	LOGGER.error("RestHttpResponseCodeAspect encountered uncaught exception in REST endpoint.", ascentRuntimeException);
             ServiceResponse serviceResponse = new ServiceResponse();
             serviceResponse.addMessage(MessageSeverity.FATAL, "UNEXPECTED_ERROR", ascentRuntimeException.getMessage());
-            returnObject = new ResponseEntity<ServiceResponse>(serviceResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+            returnObject = new ResponseEntity<>(serviceResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         finally {
         	LOGGER.debug("RestHttpResponseCodeAspect after method was called.");

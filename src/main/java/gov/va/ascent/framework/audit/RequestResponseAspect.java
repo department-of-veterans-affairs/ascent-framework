@@ -7,15 +7,23 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import gov.va.ascent.framework.exception.AscentRuntimeException;
+import gov.va.ascent.framework.persist.Db4oDatabase;
 
 /**
  * Created by vgadda on 8/17/17.
  */
 @Aspect
 public class RequestResponseAspect extends BaseAuditAspect {
+
+	/** The Constant LOGGER. */
+	private static final Logger LOGGER = LoggerFactory.getLogger(RequestResponseAspect.class);
 
     @Autowired
     ObjectMapper mapper;
@@ -27,7 +35,7 @@ public class RequestResponseAspect extends BaseAuditAspect {
         try {
             returnObject = joinPoint.proceed();
         } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
+            throw new AscentRuntimeException(throwable);
         }
         Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
         Auditable auditableAnnotation = method.getAnnotation(Auditable.class);
@@ -35,6 +43,7 @@ public class RequestResponseAspect extends BaseAuditAspect {
             try {
                 AuditLogger.info(auditableAnnotation, mapper.writeValueAsString(new RequestResponse(request, returnObject)));
             }catch (JsonProcessingException ex) {
+            		LOGGER.error("JsonProcessingException while logging.", ex);
                 AuditLogger.warn(auditableAnnotation, ex.getMessage());
             }
         }
@@ -47,8 +56,8 @@ public class RequestResponseAspect extends BaseAuditAspect {
 class RequestResponse implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	private Object request;
-    private Object response;
+	private transient Object request;
+    private transient Object response;
 
     public RequestResponse(Object request, Object response) {
         this.request = request;

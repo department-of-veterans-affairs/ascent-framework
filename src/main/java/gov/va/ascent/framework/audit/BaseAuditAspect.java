@@ -7,6 +7,9 @@ import org.aspectj.lang.annotation.Pointcut;
  */
 public class BaseAuditAspect {
 	
+	protected BaseAuditAspect() {
+		
+	}
     @Pointcut("@annotation(gov.va.ascent.framework.audit.Auditable)")
 	protected static final void auditableAnnotation() {
   	  // Do nothing.

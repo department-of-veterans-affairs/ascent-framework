@@ -49,7 +49,7 @@ public class PersonTraits extends User {
     @Override
     @JsonIgnore
     public List<GrantedAuthority> getAuthorities() {
-        return new ArrayList<GrantedAuthority>(super.getAuthorities());
+        return new ArrayList<>(super.getAuthorities());
     }
 
     @Override
