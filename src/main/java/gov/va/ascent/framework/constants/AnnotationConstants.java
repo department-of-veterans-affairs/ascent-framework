@@ -24,4 +24,7 @@ public final class AnnotationConstants {
 	 */
 	public static final String UNCHECKED = "unchecked";
 	
+	private AnnotationConstants() {
+		throw new IllegalStateException("Utility class");
+	}
 }
