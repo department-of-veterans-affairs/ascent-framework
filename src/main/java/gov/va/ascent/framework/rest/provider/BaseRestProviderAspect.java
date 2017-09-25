@@ -9,10 +9,6 @@ import org.aspectj.lang.annotation.Pointcut;
  */
 public class BaseRestProviderAspect {
 	
-	private BaseRestProviderAspect() {
-
-	}
-	
 	/**
 	 * This aspect defines the pointcut of standard REST controller.  Those are controllers that...
 	 * 

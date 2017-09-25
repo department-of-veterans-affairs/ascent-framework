@@ -83,19 +83,19 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 			if (ruleStatus != null) {
 				returnObject = new ResponseEntity<>(serviceResponse, ruleStatus);
 			}
-        } catch (Throwable throwable) {
-        	LOGGER.error("RestHttpResponseCodeAspect encountered uncaught exception in REST endpoint Throwable Cause.", throwable.getCause());
-        	LOGGER.error("RestHttpResponseCodeAspect encountered uncaught exception in REST endpoint Throwable Message.", throwable.getMessage());
-        	AscentRuntimeException ascentRuntimeException;
-        	if(throwable instanceof AscentRuntimeException){
-        		ascentRuntimeException = (AscentRuntimeException) throwable;
-        	} else {
-        		ascentRuntimeException = new AscentRuntimeException(throwable);
-        	}
-        	LOGGER.error("RestHttpResponseCodeAspect encountered uncaught exception in REST endpoint.", ascentRuntimeException);
-            ServiceResponse serviceResponse = new ServiceResponse();
-            serviceResponse.addMessage(MessageSeverity.FATAL, "UNEXPECTED_ERROR", ascentRuntimeException.getMessage());
-            returnObject = new ResponseEntity<>(serviceResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (AscentRuntimeException ascentRuntimeException) {
+			LOGGER.error("RestHttpResponseCodeAspect encountered uncaught exception in REST endpoint.",
+					ascentRuntimeException);
+			ServiceResponse serviceResponse = new ServiceResponse();
+			serviceResponse.addMessage(MessageSeverity.FATAL, "UNEXPECTED_ERROR", ascentRuntimeException.getMessage());
+			returnObject = new ResponseEntity<>(serviceResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Throwable throwable) {
+			AscentRuntimeException ascentRuntimeException = new AscentRuntimeException(throwable);
+			LOGGER.error("RestHttpResponseCodeAspect encountered uncaught exception in REST endpoint.",
+					ascentRuntimeException);
+			ServiceResponse serviceResponse = new ServiceResponse();
+			serviceResponse.addMessage(MessageSeverity.FATAL, "UNEXPECTED_ERROR", ascentRuntimeException.getMessage());
+			returnObject = new ResponseEntity<>(serviceResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         finally {
         	LOGGER.debug("RestHttpResponseCodeAspect after method was called.");
