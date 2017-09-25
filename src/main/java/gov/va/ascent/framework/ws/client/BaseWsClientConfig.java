@@ -78,9 +78,7 @@ public class BaseWsClientConfig {
 	 * @throws IOException               Signals that an I/O exception has occurred.
 	 */
 	protected final WebServiceTemplate createDefaultWebServiceTemplate(final String endpoint, final int readTimeout,
-			final int connectionTimeout, final Marshaller marshaller, final Unmarshaller unmarshaller)
-			throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException,
-			CertificateException, IOException {
+			final int connectionTimeout, final Marshaller marshaller, final Unmarshaller unmarshaller) {
 		return this.createDefaultWebServiceTemplate(endpoint, readTimeout, connectionTimeout, marshaller, unmarshaller,
 				new HttpRequestInterceptor[] { null },
 				new HttpResponseInterceptor[] { null }, null);
@@ -106,9 +104,7 @@ public class BaseWsClientConfig {
 	 */
 	protected final WebServiceTemplate createDefaultWebServiceTemplate(final String endpoint, final int readTimeout,
 			final int connectionTimeout, final Marshaller marshaller, final Unmarshaller unmarshaller,
-			final ClientInterceptor[] wsInterceptors)
-			throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException,
-			CertificateException, IOException {
+			final ClientInterceptor[] wsInterceptors) {
 		return this.createDefaultWebServiceTemplate(endpoint, readTimeout, connectionTimeout, marshaller, unmarshaller,
 				new HttpRequestInterceptor[] { null },
 				new HttpResponseInterceptor[] { null }, wsInterceptors);
@@ -136,15 +132,12 @@ public class BaseWsClientConfig {
 	 */
 	protected final WebServiceTemplate createDefaultWebServiceTemplate(final String endpoint, final int readTimeout,
 			final int connectionTimeout, final Marshaller marshaller, final Unmarshaller unmarshaller,
-			final HttpRequestInterceptor[] httpRequestInterceptors, final HttpResponseInterceptor[] httpResponseInterceptors,
-			final ClientInterceptor[] wsInterceptors)
-			throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException,
-			CertificateException, IOException {
+			final HttpRequestInterceptor[] httpRequestInterceptors,
+			final HttpResponseInterceptor[] httpResponseInterceptors, final ClientInterceptor[] wsInterceptors) {
 
 		// create axiom message factory 
 		final AxiomSoapMessageFactory axiomSoapMessageFactory = new AxiomSoapMessageFactory();
 		axiomSoapMessageFactory.setAttachmentCacheDir(new File(System.getProperty(BaseWsClientConfig.JAVA_IO_TMPDIR)));
-		//axiomSoapMessageFactory.setPayloadCaching(false);
 		
 		LOGGER.info("System.getProperty(BaseWsClientConfig.JAVA_IO_TMPDIR): " + System.getProperty(BaseWsClientConfig.JAVA_IO_TMPDIR));
 
@@ -174,9 +167,7 @@ public class BaseWsClientConfig {
 	 */
 	protected final WebServiceTemplate createSAAJWebServiceTemplate(final String endpoint, final int readTimeout,
 			final int connectionTimeout, final Marshaller marshaller, final Unmarshaller unmarshaller,
-			final ClientInterceptor[] wsInterceptors)
-			throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException,
-			CertificateException, IOException, SOAPException {
+			final ClientInterceptor[] wsInterceptors) throws SOAPException {
 		return this.createWebServiceTemplate(endpoint, readTimeout, connectionTimeout, marshaller, unmarshaller,
 				new HttpRequestInterceptor[] { null },
 				new HttpResponseInterceptor[] { null }, wsInterceptors,
@@ -206,10 +197,9 @@ public class BaseWsClientConfig {
 	 */
 	protected final WebServiceTemplate createWebServiceTemplate(final String endpoint, final int readTimeout,
 			final int connectionTimeout, final Marshaller marshaller, final Unmarshaller unmarshaller,
-			final HttpRequestInterceptor[] httpRequestInterceptors, final HttpResponseInterceptor[] httpResponseInterceptors,
-			final ClientInterceptor[] wsInterceptors, final WebServiceMessageFactory messageFactory)
-			throws KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException, KeyStoreException,
-			CertificateException, IOException {
+			final HttpRequestInterceptor[] httpRequestInterceptors,
+			final HttpResponseInterceptor[] httpResponseInterceptors, final ClientInterceptor[] wsInterceptors,
+			final WebServiceMessageFactory messageFactory) {
 		// configure the message sender
 		final HttpComponentsMessageSender messageSender = new HttpComponentsMessageSender();
 		messageSender.setReadTimeout(readTimeout);
@@ -344,7 +334,7 @@ public class BaseWsClientConfig {
 	 * @return the security interceptor
 	 */
 	protected final VAServiceWss4jSecurityInterceptor getVAServiceWss4jSecurityInterceptor(final String username,
-			final String password, final String vaApplicationName, final String stationId) {
+			final String password, final String vaApplicationName) {
 		final VAServiceWss4jSecurityInterceptor interceptor = new VAServiceWss4jSecurityInterceptor();
 		interceptor.setSecurementActions("UsernameToken");
 		interceptor.setSecurementUsername(username);
