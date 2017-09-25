@@ -14,7 +14,7 @@ import gov.va.ascent.framework.properties.AscentPropertySourcesPlaceholderConfig
  * 
  * @author Jon Shrader
  */
-public class BasePropertiesConfig implements AscentCommonSpringProfiles {
+public class BasePropertiesConfig {
 
 	/**
 	 * AbstractPropertiesEnvironment, parent of all our properties environments.

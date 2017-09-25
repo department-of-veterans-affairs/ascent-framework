@@ -13,7 +13,7 @@ package gov.va.ascent.framework.constants;
 //			as doing this in a constants class.  Both will fail Sonar, the pattern isn't
 //			something we want all over the codebase but in unique situations it is ok.
 //CHECKSTYLE:OFF
-public interface AnnotationConstants {
+public final class AnnotationConstants {
 	//CHECKSTYLE:ON
 	
 	//Constants for @SuppressWarnings
@@ -22,5 +22,6 @@ public interface AnnotationConstants {
 	 * ignore unchecked class casting
 	 * @see java.lang.SuppressWarnings
 	 */
-	String UNCHECKED = "unchecked";
+	public static final String UNCHECKED = "unchecked";
+	
 }
