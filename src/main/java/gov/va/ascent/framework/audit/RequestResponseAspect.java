@@ -14,7 +14,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gov.va.ascent.framework.exception.AscentRuntimeException;
-import gov.va.ascent.framework.persist.Db4oDatabase;
 
 /**
  * Created by vgadda on 8/17/17.

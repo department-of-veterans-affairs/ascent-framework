@@ -15,6 +15,12 @@ import org.springframework.util.Assert;
 public final class Defense {
 
 	/**
+	 * Instantiates a new defense.
+	 */
+	private Defense() {
+	}
+
+	/**
 	 * Checks if is instance of.
 	 *
 	 * @param clazz the clazz
@@ -150,9 +156,4 @@ public final class Defense {
 		Assert.isTrue(expression, message);
 	}
 
-	/**
-	 * Instantiates a new defense.
-	 */
-	private Defense() {
-	}
 }
