@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false" debug="false">
+    <include resource="org/springframework/boot/logging/logback/base.xml" />
+
+    <appender name="TestAppender" class="gov.va.ascent.framework.exception.TestAppender">
+
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+
+    </appender>
+
+    <logger name="gov.va.ascent.framework.exception" level="DEBUG">
+        <appender-ref ref="TestAppender"/>
+    </logger>
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+
+</configuration>
