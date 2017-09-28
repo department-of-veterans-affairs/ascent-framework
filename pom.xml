@@ -126,7 +126,7 @@
 				</execution>
 			</executions>
 		</plugin>
-        <!-- repackages jar and war plugins so they can be executed with command line -->
+        <!-- The skip property allows to skip the execution of the Spring Boot maven plugin altogether -->
         <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
