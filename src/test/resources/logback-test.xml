@@ -9,10 +9,18 @@
     <appender name="LogTestAppender" class="gov.va.ascent.framework.log.LogTestAppender">
 
     </appender>
+
+    <appender name="AspectLoggingTestAppender" class="gov.va.ascent.framework.aspect.AspectLoggingTestAppender">
+
+    </appender>
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 
     </appender>
 
+    <logger name="gov.va.ascent.framework.aspect" level="DEBUG">
+        <appender-ref ref="AspectLoggingTestAppender"/>
+    </logger>
     <logger name="gov.va.ascent.framework.exception" level="DEBUG">
         <appender-ref ref="ExceptionTestAppender"/>
     </logger>
