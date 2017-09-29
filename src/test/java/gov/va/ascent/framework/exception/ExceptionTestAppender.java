@@ -6,7 +6,7 @@ import ch.qos.logback.core.AppenderBase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestAppender extends AppenderBase<LoggingEvent> {
+public class ExceptionTestAppender extends AppenderBase<LoggingEvent> {
     static List<LoggingEvent> events = new ArrayList<>();
 
     @Override

@@ -2,16 +2,22 @@
 <configuration scan="false" debug="false">
     <include resource="org/springframework/boot/logging/logback/base.xml" />
 
-    <appender name="TestAppender" class="gov.va.ascent.framework.exception.TestAppender">
+    <appender name="ExceptionTestAppender" class="gov.va.ascent.framework.exception.ExceptionTestAppender">
 
     </appender>
 
+    <appender name="LogTestAppender" class="gov.va.ascent.framework.log.LogTestAppender">
+
+    </appender>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 
     </appender>
 
     <logger name="gov.va.ascent.framework.exception" level="DEBUG">
-        <appender-ref ref="TestAppender"/>
+        <appender-ref ref="ExceptionTestAppender"/>
+    </logger>
+    <logger name="gov.va.ascent.framework.log" level="DEBUG">
+        <appender-ref ref="LogTestAppender"/>
     </logger>
 
     <root level="DEBUG">

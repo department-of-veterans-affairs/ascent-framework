@@ -32,7 +32,7 @@ public class InterceptingExceptionTranslatorTest {
 
     @After
     public void tearDown(){
-        TestAppender.events.clear();
+        ExceptionTestAppender.events.clear();
         LOG.setLevel(Level.DEBUG);
     }
 
@@ -65,7 +65,7 @@ public class InterceptingExceptionTranslatorTest {
         Assert.assertEquals("InterceptingExceptionTranslator caught exception, handling it as configured."
                 +"  Here are details [java.lang.Throwable thrown by gov.va.ascent.framework.exception."
                 +"InterceptingExceptionTranslatorTest.testAscentRunTimeExceptionMapNullAndDefaultExceptionTypeNull]" +
-                " args [null].", TestAppender.events.get(0).getMessage());
+                " args [null].", ExceptionTestAppender.events.get(0).getMessage());
     }
 
     @Test
@@ -90,7 +90,7 @@ public class InterceptingExceptionTranslatorTest {
 
         Assert.assertEquals("Exception translator caught exception [class java.lang.Throwable]"
                         + " however per configuration not translating this exception.",
-                TestAppender.events.get(0).getMessage());
+                ExceptionTestAppender.events.get(0).getMessage());
 
     }
 
@@ -114,7 +114,7 @@ public class InterceptingExceptionTranslatorTest {
                 null, targetObject,throwable);
 
         // Nothing should have been logged because exception was excluded
-        Assert.assertTrue(TestAppender.events.isEmpty());
+        Assert.assertTrue(ExceptionTestAppender.events.isEmpty());
 
     }
 
