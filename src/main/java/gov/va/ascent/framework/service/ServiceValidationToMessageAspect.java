@@ -14,8 +14,9 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
+import gov.va.ascent.framework.audit.AuditLogger;
+import gov.va.ascent.framework.audit.BaseAuditAspect;
 import gov.va.ascent.framework.messages.Message;
 import gov.va.ascent.framework.messages.MessageSeverity;
 import gov.va.ascent.framework.validation.Validatable;
@@ -68,6 +69,9 @@ public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 				if (!messages.isEmpty()) {
 					serviceResponse = (ServiceResponse) methodSignature.getMethod().getReturnType().newInstance();
 					convertMapToMessages(serviceResponse, messages);
+					AuditLogger.error(
+							BaseAuditAspect.getDefaultAuditableInstance(methodSignature.getMethod()), 
+							serviceResponse.getMessages().stream().map(e -> e.toString()).reduce("", String::concat));
 				}
 			}
 		}
