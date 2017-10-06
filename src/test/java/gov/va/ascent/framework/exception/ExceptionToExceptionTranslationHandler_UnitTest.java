@@ -21,8 +21,6 @@ public class ExceptionToExceptionTranslationHandler_UnitTest {
 	public void handleViaTranslation_Defenses() throws Throwable{
 		ExceptionToExceptionTranslationHandler handler = new ExceptionToExceptionTranslationHandler();
 		
-		//REMOVE ME AFTER TEST
-		Assert.fail("expected exception");
 		//this should do nothing, should die gracefully and not result in any exceptions
 		handler.handleViaTranslation(null, null, null);
 		handler.handleViaTranslation(getMethodToUseInTests(), null, null);
