@@ -12,7 +12,7 @@ public class PerformanceLoggingAspect {
 	private final static Logger LOGGER = LoggerFactory.getLogger(PerformanceLoggingAspect.class);
 	
 	/** number of milliseconds in a second */
-	private static final int NUMBER_OF_MILLIS_N_A_SECOND = 1000;
+	private static finaal int NUMBER_OF_MILLIS_N_A_SECOND = 1000;
 
 	/** The Constant IN_ELAPSED_TIME. */
 	private static final String IN_ELAPSED_TIME = "] in elapsed time [";
