@@ -16,6 +16,24 @@ import java.util.List;
 
 public class PersonTraits extends User {
 
+    private Date birthDate;
+    private String firstName;
+    private String lastName;
+    private String middleName;
+    private String prefix;
+    private String suffix;
+    private String gender;
+    private String assuranceLevel;
+    private String email;
+    private String dodedipnid;
+    private String pnidType;
+    private String pnid;
+    private String pid;
+    private String icn;
+    private String fileNumber;
+    private String tokenId;
+    private String correlationIds;
+
     /**
 	 * 
 	 */
@@ -29,27 +47,10 @@ public class PersonTraits extends User {
         super("NA","NA", AuthorityUtils.NO_AUTHORITIES);
     }
 
-    private String firstName;
-    private String lastName;
-    private String middleName;
-    private String prefix;
-    private String suffix;
-    private Date birthDate;
-    private String gender;
-    private String assuranceLevel;
-    private String email;
-    private String dodedipnid;
-    private String pnidType;
-    private String pnid;
-    private String pid;
-    private String icn;
-    private String fileNumber;
-    private String tokenId;
-
     @Override
     @JsonIgnore
     public List<GrantedAuthority> getAuthorities() {
-        return new ArrayList<GrantedAuthority>(super.getAuthorities());
+        return new ArrayList<>(super.getAuthorities());
     }
 
     @Override
@@ -208,6 +209,15 @@ public class PersonTraits extends User {
         this.fileNumber = fileNumber;
     }
 
+    public String getCorrelationIds() {
+        return correlationIds;
+    }
+
+    public void setCorrelationIds(String correlationIds) {
+        this.correlationIds = tokenId;
+    }
+
+    
     public String getTokenId() {
         return tokenId;
     }
@@ -215,35 +225,52 @@ public class PersonTraits extends User {
     public void setTokenId(String tokenId) {
         this.tokenId = tokenId;
     }
-
     public String getUser(){
         return  getFirstName() + " " + getLastName();
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		if (!super.equals(o))
+			return false;
 
-        PersonTraits that = (PersonTraits) o;
+		PersonTraits that = (PersonTraits) o;
 
-        if (!dodedipnid.equals(that.dodedipnid)) return false;
-        if (firstName != null ? !firstName.equals(that.firstName) : that.firstName != null) return false;
-        if (lastName != null ? !lastName.equals(that.lastName) : that.lastName != null) return false;
-        if (middleName != null ? !middleName.equals(that.middleName) : that.middleName != null) return false;
-        if (prefix != null ? !prefix.equals(that.prefix) : that.prefix != null) return false;
-        if (suffix != null ? !suffix.equals(that.suffix) : that.suffix != null) return false;
-        if (birthDate != null ? !birthDate.equals(that.birthDate) : that.birthDate != null) return false;
-        if (gender != null ? !gender.equals(that.gender) : that.gender != null) return false;
-        if (assuranceLevel != null ? !assuranceLevel.equals(that.assuranceLevel) : that.assuranceLevel != null)
-            return false;
-        if (email != null ? !email.equals(that.email) : that.email != null) return false;
-        if (pnidType != null ? !pnidType.equals(that.pnidType) : that.pnidType != null) return false;
-        if (pnid != null ? !pnid.equals(that.pnid) : that.pnid != null) return false;
-        if (pid != null ? !pid.equals(that.pid) : that.pid != null) return false;
-        if (icn != null ? !icn.equals(that.icn) : that.icn != null) return false;
-        return fileNumber != null ? fileNumber.equals(that.fileNumber) : that.fileNumber == null;
+		if (!dodedipnid.equals(that.dodedipnid))
+			return false;
+		if (firstName != null ? !firstName.equals(that.firstName) : that.firstName != null)
+			return false;
+		if (lastName != null ? !lastName.equals(that.lastName) : that.lastName != null)
+			return false;
+		if (middleName != null ? !middleName.equals(that.middleName) : that.middleName != null)
+			return false;
+		if (prefix != null ? !prefix.equals(that.prefix) : that.prefix != null)
+			return false;
+		if (suffix != null ? !suffix.equals(that.suffix) : that.suffix != null)
+			return false;
+		if (birthDate != null ? !birthDate.equals(that.birthDate) : that.birthDate != null)
+			return false;
+		if (gender != null ? !gender.equals(that.gender) : that.gender != null)
+			return false;
+		if (assuranceLevel != null ? !assuranceLevel.equals(that.assuranceLevel) : that.assuranceLevel != null)
+			return false;
+		if (email != null ? !email.equals(that.email) : that.email != null)
+			return false;
+		if (pnidType != null ? !pnidType.equals(that.pnidType) : that.pnidType != null)
+			return false;
+		if (pnid != null ? !pnid.equals(that.pnid) : that.pnid != null)
+			return false;
+		if (pid != null ? !pid.equals(that.pid) : that.pid != null)
+			return false;
+		if (correlationIds != null ? !correlationIds.equals(that.correlationIds) : that.correlationIds != null)
+			return false;		
+		if (icn != null ? !icn.equals(that.icn) : that.icn != null)
+			return false;
+		return fileNumber != null ? fileNumber.equals(that.fileNumber) : that.fileNumber == null;
     }
 
     @Override
@@ -262,6 +289,7 @@ public class PersonTraits extends User {
         result = 31 * result + (pnidType != null ? pnidType.hashCode() : 0);
         result = 31 * result + (pnid != null ? pnid.hashCode() : 0);
         result = 31 * result + (pid != null ? pid.hashCode() : 0);
+        result = 31 * result + (correlationIds != null ? correlationIds.hashCode() : 0);        
         result = 31 * result + (icn != null ? icn.hashCode() : 0);
         result = 31 * result + (fileNumber != null ? fileNumber.hashCode() : 0);
         return result;
@@ -284,6 +312,7 @@ public class PersonTraits extends User {
                 ", pnid='" + pnid + '\'' +
                 ", pid='" + pid + '\'' +
                 ", icn='" + icn + '\'' +
+                ", correlationIds='" + correlationIds + '\'' +                
                 ", fileNumber='" + fileNumber + '\'' +
                 '}';
     }
