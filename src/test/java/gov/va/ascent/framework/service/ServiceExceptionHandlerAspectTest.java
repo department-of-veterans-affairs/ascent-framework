@@ -1,7 +1,5 @@
 package gov.va.ascent.framework.service;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
@@ -10,7 +8,6 @@ import java.util.Set;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.aspectj.org.eclipse.jdt.internal.compiler.flow.UnconditionalFlowInfo.AssertionFailedException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,9 +15,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import gov.va.ascent.framework.exception.AscentRuntimeException;
-import gov.va.ascent.framework.exception.ExceptionToExceptionTranslationHandler;
 @RunWith(MockitoJUnitRunner.class)
 public class ServiceExceptionHandlerAspectTest {
 

@@ -93,6 +93,12 @@
 			<version>1.3.7</version>
 			<scope>provided</scope>
 		</dependency>
+		
+		<dependency>
+		    <groupId>org.apache.tomcat.embed</groupId>
+		    <artifactId>tomcat-embed-core</artifactId>
+		    <version>8.5.14</version>
+		</dependency>		
 
     </dependencies>
 <build>
