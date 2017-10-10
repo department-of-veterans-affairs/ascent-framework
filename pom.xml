@@ -38,10 +38,6 @@
 			<artifactId>hibernate-validator</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.glassfish.web</groupId>
 			<artifactId>el-impl</artifactId>
 			<version>2.2</version>
@@ -126,7 +122,7 @@
 				</execution>
 			</executions>
 		</plugin>
-        <!-- repackages jar and war plugins so they can be executed with command line -->
+        <!-- The skip property allows to skip the execution of the Spring Boot maven plugin altogether -->
         <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>

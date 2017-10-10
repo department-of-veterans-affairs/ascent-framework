@@ -14,4 +14,5 @@ import java.lang.annotation.Target;
 public @interface Auditable {
     AuditEvents event();
     String activity();
+    String auditClass() default "";
 }
