@@ -32,7 +32,7 @@ public class PersonTraits extends User {
     private String icn;
     private String fileNumber;
     private String tokenId;
-    private String correlationIds;
+    private List<String> correlationIds;
 
     /**
 	 * 
@@ -209,14 +209,13 @@ public class PersonTraits extends User {
         this.fileNumber = fileNumber;
     }
 
-    public String getCorrelationIds() {
+    public List<String> getCorrelationIds() {
         return correlationIds;
     }
 
-    public void setCorrelationIds(String correlationIds) {
-        this.correlationIds = tokenId;
+    public void setCorrelationIds(List<String> correlationIds) {
+        this.correlationIds = correlationIds;
     }
-
     
     public String getTokenId() {
         return tokenId;
@@ -268,6 +267,7 @@ public class PersonTraits extends User {
 			return false;
 		if (correlationIds != null ? !correlationIds.equals(that.correlationIds) : that.correlationIds != null)
 			return false;		
+
 		if (icn != null ? !icn.equals(that.icn) : that.icn != null)
 			return false;
 		return fileNumber != null ? fileNumber.equals(that.fileNumber) : that.fileNumber == null;
