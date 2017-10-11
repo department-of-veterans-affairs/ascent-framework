@@ -50,8 +50,8 @@ public class RequestResponseAspectTest {
 	}
 
 	@Test
-	public void testLogRequestResponse() {
-		Object obj = requestResponseAspect.logRequestResponse(proceedingJoinPoint);
+	public void testAnnotatedMethodRequestResponse() {
+		Object obj = requestResponseAspect.logAnnotatedMethodRequestResponse(proceedingJoinPoint);
 		assertNotNull(obj);
 	}
 

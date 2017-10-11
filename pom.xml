@@ -38,10 +38,6 @@
 			<artifactId>hibernate-validator</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.glassfish.web</groupId>
 			<artifactId>el-impl</artifactId>
 			<version>2.2</version>
@@ -83,6 +79,12 @@
 			<artifactId>axiom-impl</artifactId>
 			 <version>1.2.14</version>
 		</dependency>
+		
+		 <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
 	        
         <!-- Provided Dependencies -->
 		<!-- Required during compile but not at runtime due to findbugs annotations 
@@ -97,7 +99,7 @@
 		<dependency>
 		    <groupId>org.apache.tomcat.embed</groupId>
 		    <artifactId>tomcat-embed-core</artifactId>
-		    <version>8.5.14</version>
+			<scope>test</scope>
 		</dependency>		
 
     </dependencies>
@@ -132,7 +134,7 @@
 				</execution>
 			</executions>
 		</plugin>
-        <!-- repackages jar and war plugins so they can be executed with command line -->
+        <!-- The skip property allows to skip the execution of the Spring Boot maven plugin altogether -->
         <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
