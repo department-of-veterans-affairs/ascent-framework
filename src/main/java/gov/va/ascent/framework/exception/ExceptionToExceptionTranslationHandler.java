@@ -64,7 +64,7 @@ public class ExceptionToExceptionTranslationHandler {
 		
 		//create reasonable default exclusion map if none specified
 		if(exclusionSet == null){
-			this.exclusionSet = new HashSet<Class<? extends Throwable>>();
+			this.exclusionSet = new HashSet<>();
 		} else {
 			this.exclusionSet = exclusionSet;
 		}

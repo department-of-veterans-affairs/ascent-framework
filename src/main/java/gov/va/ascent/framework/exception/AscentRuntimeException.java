@@ -14,7 +14,6 @@ public class AscentRuntimeException extends RuntimeException {
 	private static final long serialVersionUID = 2598842813684506358L;
 
 	/** Server name exception occurred on */
-	//TODO got to get this working in a cloud friendly way
 	public static final String SERVER_NAME = System.getProperty("server.name");
 
 	/** End Bracket String */

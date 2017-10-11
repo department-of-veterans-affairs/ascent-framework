@@ -123,8 +123,8 @@ public class RequestResponseAspect extends BaseAuditAspect {
 class RequestResponse implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	private Object request;
-    private Object response;
+	private transient Object request;
+    private transient Object response;
 
     public RequestResponse(Object request, Object response) {
         this.request = request;
@@ -147,5 +147,3 @@ class RequestResponse implements Serializable {
         this.response = response;
     }
 }
-
-

@@ -26,7 +26,7 @@ import gov.va.ascent.framework.util.Defense;
 @Aspect
 public class ServiceExceptionHandlerAspect extends BaseServiceAspect {
 	
-	private final static Logger LOGGER = LoggerFactory.getLogger(ServiceExceptionHandlerAspect.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ServiceExceptionHandlerAspect.class);
 
 	private ExceptionToExceptionTranslationHandler exceptionToExceptionTranslator; 
 	
@@ -36,14 +36,11 @@ public class ServiceExceptionHandlerAspect extends BaseServiceAspect {
      */
     public ServiceExceptionHandlerAspect() {
     	//this to prevent double wrapping of AscentRuntimeException
-    	final Set<Class<? extends Throwable>> exclusionSet = new HashSet<Class<? extends Throwable>>();
+    	final Set<Class<? extends Throwable>> exclusionSet = new HashSet<>();
     	exclusionSet.add(AscentRuntimeException.class);
     	exclusionSet.add(IllegalArgumentException.class);
     	this.exceptionToExceptionTranslator = new ExceptionToExceptionTranslationHandler(
     			null, exclusionSet, ServiceException.class);
-    	
-    	//this will allow double wrapping of AscentRuntimeExceptions
-//    	this(new ExceptionToExceptionTranslationHandler(null, null, ServiceException.class));
     }
 
 	/**

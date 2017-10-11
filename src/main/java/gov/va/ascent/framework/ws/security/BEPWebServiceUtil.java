@@ -55,7 +55,9 @@ public final class BEPWebServiceUtil {
 		}
 		
 		Defense.notNull(computedVal);
-		Assert.isTrue(computedVal.length()<=EXTERNALUID_LENGTH);
+		if (computedVal != null) {
+			Assert.isTrue(computedVal.length()<=EXTERNALUID_LENGTH);
+		}
 		return computedVal;
 	}
 

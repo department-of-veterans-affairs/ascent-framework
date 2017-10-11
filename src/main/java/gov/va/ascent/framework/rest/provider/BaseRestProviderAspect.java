@@ -17,7 +17,9 @@ public class BaseRestProviderAspect {
 	 * Ensure you follow that pattern to make use of this standard pointcut.
 	 */
 	@Pointcut("within(@org.springframework.web.bind.annotation.RestController *)")
-	protected final static void restController() {}
+	protected static final void restController() {
+		 // Do nothing.
+	}
 	
 	/**
 	 * This aspect defines the pointcut of standard REST endpoints.  Those are endpoints that...
@@ -29,6 +31,9 @@ public class BaseRestProviderAspect {
 	 * Ensure you follow that pattern to make use of this standard pointcut.
 	 */
 	@Pointcut("execution(public org.springframework.http.ResponseEntity<gov.va.ascent.framework.service.ServiceResponse+> *(..))")
-	protected final static void publicServiceResponseRestMethod() {}
+	protected static final void publicServiceResponseRestMethod() {
+		 // Do nothing.
+	}
+	
 
 }

@@ -15,7 +15,6 @@ public class RestClientTemplate {
     private RestTemplate restTemplate;	
 
 	public <T> ResponseEntity<T> executeURL (String url, ParameterizedTypeReference<T> responseType) {
-		ResponseEntity<T> exchange =  this.restTemplate.exchange(url, HttpMethod.GET, null, responseType);
-		return exchange;
+		return this.restTemplate.exchange(url, HttpMethod.GET, null, responseType);
 	}
 }

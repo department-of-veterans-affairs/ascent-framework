@@ -22,7 +22,9 @@ public class BaseAuditAspect {
 	 * Ensure you follow that pattern to make use of this standard pointcut.
 	 */
     @Pointcut("@annotation(gov.va.ascent.framework.audit.Auditable) && execution(* *(..))")
-    protected final static void auditableExecution(){}
+    protected static final void auditableAnnotation() {
+  	  // Do nothing.
+	}
     
     /**
 	 * This aspect defines the pointcut of standard REST controller.  Those are controllers that...
@@ -32,7 +34,7 @@ public class BaseAuditAspect {
 	 * Ensure you follow that pattern to make use of this standard pointcut.
 	 */
 	@Pointcut("within(@org.springframework.web.bind.annotation.RestController *)")
-	protected final static void auditRestController() {}
+	protected static final void auditRestController() {}
 	
 	/**
 	 * This aspect defines the pointcut of standard REST endpoints.  Those are endpoints that...
@@ -44,7 +46,7 @@ public class BaseAuditAspect {
 	 * Ensure you follow that pattern to make use of this standard pointcut.
 	 */
 	@Pointcut("execution(public org.springframework.http.ResponseEntity<gov.va.ascent.framework.service.ServiceResponse+> *(..))")
-	protected final static void auditPublicServiceResponseRestMethod() {}
+	protected static final void auditPublicServiceResponseRestMethod() {}
 	
     /**
      * Gets the method and arguments as string.

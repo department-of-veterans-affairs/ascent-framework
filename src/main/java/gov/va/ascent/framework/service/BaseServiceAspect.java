@@ -19,6 +19,8 @@ public class BaseServiceAspect {
 	 * @See gov.va.ascent.framework.service.ServiceResponse
 	 */
 	@Pointcut("execution(public gov.va.ascent.framework.service.ServiceResponse+ *(..))")
-	protected final static void publicStandardServiceMethod() {}
+	protected static final void publicStandardServiceMethod() {
+		//Do Nothing
+	}
 
 }
