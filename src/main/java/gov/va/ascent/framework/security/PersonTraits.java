@@ -32,7 +32,8 @@ public class PersonTraits extends User {
     private String icn;
     private String fileNumber;
     private String tokenId;
-    
+    private List<String> correlationIds;
+
     /**
 	 * 
 	 */
@@ -208,6 +209,14 @@ public class PersonTraits extends User {
         this.fileNumber = fileNumber;
     }
 
+    public List<String> getCorrelationIds() {
+        return correlationIds;
+    }
+
+    public void setCorrelationIds(List<String> correlationIds) {
+        this.correlationIds = correlationIds;
+    }
+    
     public String getTokenId() {
         return tokenId;
     }
@@ -215,7 +224,6 @@ public class PersonTraits extends User {
     public void setTokenId(String tokenId) {
         this.tokenId = tokenId;
     }
-
     public String getUser(){
         return  getFirstName() + " " + getLastName();
     }
@@ -257,6 +265,9 @@ public class PersonTraits extends User {
 			return false;
 		if (pid != null ? !pid.equals(that.pid) : that.pid != null)
 			return false;
+		if (correlationIds != null ? !correlationIds.equals(that.correlationIds) : that.correlationIds != null)
+			return false;		
+
 		if (icn != null ? !icn.equals(that.icn) : that.icn != null)
 			return false;
 		return fileNumber != null ? fileNumber.equals(that.fileNumber) : that.fileNumber == null;
@@ -278,6 +289,7 @@ public class PersonTraits extends User {
         result = 31 * result + (pnidType != null ? pnidType.hashCode() : 0);
         result = 31 * result + (pnid != null ? pnid.hashCode() : 0);
         result = 31 * result + (pid != null ? pid.hashCode() : 0);
+        result = 31 * result + (correlationIds != null ? correlationIds.hashCode() : 0);        
         result = 31 * result + (icn != null ? icn.hashCode() : 0);
         result = 31 * result + (fileNumber != null ? fileNumber.hashCode() : 0);
         return result;
@@ -300,6 +312,7 @@ public class PersonTraits extends User {
                 ", pnid='" + pnid + '\'' +
                 ", pid='" + pid + '\'' +
                 ", icn='" + icn + '\'' +
+                ", correlationIds='" + correlationIds + '\'' +                
                 ", fileNumber='" + fileNumber + '\'' +
                 '}';
     }
