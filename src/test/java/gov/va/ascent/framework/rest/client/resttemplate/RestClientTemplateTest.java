@@ -5,11 +5,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import gov.va.ascent.framework.service.ServiceResponse;
@@ -22,8 +20,6 @@ public class RestClientTemplateTest {
 	private RestClientTemplate restClientTemplate;
 	private AnnotationConfigWebApplicationContext context;
 	
-	@Mock
-	private RestTemplate restTemplate;
 
     
 	@Before

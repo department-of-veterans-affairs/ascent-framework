@@ -1,6 +1,8 @@
 package gov.va.ascent.framework.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -18,8 +20,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import gov.va.ascent.framework.messages.Message;
-import gov.va.ascent.framework.messages.MessageSeverity;
 import gov.va.ascent.framework.validation.ViolationMessageParts;
 
 @RunWith(MockitoJUnitRunner.class)
