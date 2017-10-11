@@ -21,9 +21,21 @@ public class BaseAuditAspect {
 	 * 
 	 * Ensure you follow that pattern to make use of this standard pointcut.
 	 */
-    @Pointcut("@annotation(gov.va.ascent.framework.audit.Auditable) && execution(* *(..))")
+	@Pointcut("@annotation(gov.va.ascent.framework.audit.Auditable)")
     protected static final void auditableAnnotation() {
   	  // Do nothing.
+	}
+    
+	 /**
+	 * This aspect defines the pointcut of methods that...
+	 * 
+	 * (1) are annotated with gov.va.ascent.framework.audit.Auditable
+	 * (2) the execution of any method regardless of return or parameter types
+	 * Ensure you follow that pattern to make use of this standard pointcut.
+	 */
+	@Pointcut("auditableAnnotation() && execution(* *(..))")
+	protected static final void auditableExecution() {
+    	  // Do nothing.
 	}
     
     /**

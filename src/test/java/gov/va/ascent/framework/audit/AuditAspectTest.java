@@ -21,7 +21,6 @@ import gov.va.ascent.framework.service.ServiceResponse;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {Config.class, JacksonAutoConfiguration.class})
-@Ignore
 public class AuditAspectTest {
 
     @Autowired
