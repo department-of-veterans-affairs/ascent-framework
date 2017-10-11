@@ -40,7 +40,7 @@ import gov.va.ascent.framework.validation.ViolationMessageParts;
 @Order(-9998)
 public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 	
-	private final static Logger LOGGER = LoggerFactory.getLogger(ServiceValidationToMessageAspect.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ServiceValidationToMessageAspect.class);
 	
 	@Around("publicStandardServiceMethod() && args(request)")
 	public Object aroundAdvice(ProceedingJoinPoint joinPoint, Validatable request) throws Throwable {	
@@ -57,7 +57,7 @@ public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 
 		// start creating the response
 		ServiceResponse serviceResponse = null;
-		final Map<String, List<ViolationMessageParts>> messages = new LinkedHashMap<String, List<ViolationMessageParts>>();
+		final Map<String, List<ViolationMessageParts>> messages = new LinkedHashMap<>();
 		if (joinPoint.getArgs().length > 0) {
 			MethodSignature methodSignature = (MethodSignature) joinPoint.getStaticPart().getSignature();
 			if (serviceRequest == null) {
@@ -77,17 +77,21 @@ public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 		}
 
 		try {
-        	if (serviceResponse == null) {
-    			serviceResponse = (ServiceResponse) joinPoint.proceed();
-    		} else {
-    			LOGGER.debug("ServiceValidationToMessageAspect encountered validation errors, not proceeding with call.");
-    		}
-        } catch (Throwable throwable) {
-        	throw throwable;
-        }
-        finally {
-        	LOGGER.debug("ServiceValidationToMessageAspect after method was called.");
-        }
+			if (serviceResponse == null) {
+				serviceResponse = (ServiceResponse) joinPoint.proceed();
+			} else {
+				LOGGER.debug(
+						"ServiceValidationToMessageAspect encountered validation errors, not proceeding with call.");
+			}
+		} catch (Throwable throwable) {
+			LOGGER.error("ServiceValidationToMessageAspect encountered uncaught exception. Throwable Cause.",
+					throwable.getCause());
+			LOGGER.error("ServiceValidationToMessageAspect encountered uncaught exception. Throwable Message.",
+					throwable.getMessage());
+			throw throwable;
+		} finally {
+			LOGGER.debug("ServiceValidationToMessageAspect after method was called.");
+		}
 
 		return serviceResponse;
 		

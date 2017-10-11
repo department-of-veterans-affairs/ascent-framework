@@ -178,7 +178,7 @@ public class Db4oDatabase {
 	public final Object queryForUnique(final Object objectExample) {
 		final List<Object> foundEm = client.queryByExample(objectExample);
 
-		if(foundEm.size() > 0){
+		if(!foundEm.isEmpty()){
 			//refresh our copy
 			client.ext().refresh(foundEm.get(0), updateDepth);
 			return foundEm.get(0);
@@ -302,16 +302,19 @@ public class Db4oDatabase {
 		try {
 			openClientInClientServerMode();
 		} catch (final com.db4o.ext.Db4oIOException ioe) {
+			LOGGER.info(ioe.getMessage(), ioe);
 			LOGGER.warn("client failed to open, trying to start server.");
 			try {
 				openServerForClientServerMode();
 			} catch (final Exception e) {
+				LOGGER.info(e.getMessage(), e);
 				LOGGER.warn("db4o server startup failed, assuming server started/cleaned on other server.");
 				try {
 					// pause, wait for server to start if its starting on another node in the cluster.					
 					Thread.sleep(5000);
 				} catch (final InterruptedException ie) {
 					LOGGER.error("error sleeping trying to wait for db4o server to startup.", ie);
+					Thread.currentThread().interrupt();
 				}
 			}
 			openClientInClientServerMode(); // if an error occurs, raise it as, we are dead in the water at this point

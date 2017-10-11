@@ -161,7 +161,7 @@ public final class ModelValidator implements Serializable {
 			if(messages.containsKey(propertyPathKey)){
 				messagePartsForPropertyPath = messages.get(propertyPathKey);
 			} else {
-				messagePartsForPropertyPath = new ArrayList<ViolationMessageParts>();
+				messagePartsForPropertyPath = new ArrayList<>();
 				messages.put(propertyPathKey, messagePartsForPropertyPath);
 			}
 			messagePartsForPropertyPath.add(violationMessageParts);
@@ -254,7 +254,7 @@ public final class ModelValidator implements Serializable {
 	/**
 	 * Model validation modes.
 	 */
-	public static enum Modes {
+	public enum Modes {
 		/**
 		 * Validate the model as a whole.
 		 */

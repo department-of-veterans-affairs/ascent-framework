@@ -14,7 +14,7 @@ import gov.va.ascent.framework.properties.AscentPropertySourcesPlaceholderConfig
  * 
  * @author Jon Shrader
  */
-public class BasePropertiesConfig implements AscentCommonSpringProfiles {
+public class BasePropertiesConfig {
 
 	/**
 	 * AbstractPropertiesEnvironment, parent of all our properties environments.
@@ -46,6 +46,12 @@ public class BasePropertiesConfig implements AscentCommonSpringProfiles {
 	public static final String PROPERTIES_FILE_EXT = ".properties";
 
 	/**
+	 * protected utility class constructor.
+	 */
+	protected BasePropertiesConfig() {
+	}
+	
+	/**
 	 * properties bean
 	 * 
 	 * @return the property sources placeholder configurer
@@ -57,12 +63,6 @@ public class BasePropertiesConfig implements AscentCommonSpringProfiles {
 			PropertySourcesPlaceholderConfigurer properties() {
 		// CHECKSTYLE:ON
 		return new AscentPropertySourcesPlaceholderConfigurer();
-	}
-
-	/**
-	 * protected utility class constructor.
-	 */
-	protected BasePropertiesConfig() {
 	}
 
 }

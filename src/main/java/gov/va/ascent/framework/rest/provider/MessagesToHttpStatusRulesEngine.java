@@ -33,7 +33,7 @@ public final class MessagesToHttpStatusRulesEngine {
 	private static final String DOT = ".";
 
 	/** The collection of rules, will maintain insert order so insert in order you want them evaluated. */
-	private final Set<MessagesToHttpStatusRule> rules = new LinkedHashSet<MessagesToHttpStatusRule>();
+	private final Set<MessagesToHttpStatusRule> rules = new LinkedHashSet<>();
 
 	/**
 	 * Messages to http status.
@@ -73,7 +73,7 @@ public final class MessagesToHttpStatusRulesEngine {
 	private static HttpStatus evalMessagesAgainstRules(final List<Message> messagesInResponse, final Set<MessagesToHttpStatusRule> rules) {
 		HttpStatus returnResponse = null;
 		// convert current messages into Set of Message objects for quicker matching
-		final Set<Message> messagesToEval = new HashSet<Message>();
+		final Set<Message> messagesToEval = new HashSet<>();
 		for (final Message message : messagesInResponse) {
 			messagesToEval.add(new Message(message.getSeverity(), message.getKey()));
 		}

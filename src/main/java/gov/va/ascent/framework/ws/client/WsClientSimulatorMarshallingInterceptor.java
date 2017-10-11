@@ -54,7 +54,7 @@ public class WsClientSimulatorMarshallingInterceptor implements
 			final Map<String, Jaxb2Marshaller> marshallerForPackageMap) {
 		super();
 		this.marshallerForPackageMap = marshallerForPackageMap;
-		this.objectFactoryForPackageMap = new HashMap<String, Object>();
+		this.objectFactoryForPackageMap = new HashMap<>();
 	}
 
 	/**
@@ -105,8 +105,7 @@ public class WsClientSimulatorMarshallingInterceptor implements
 					LOGGER.debug("marshalled request xml: " + marshalled);
 				}
 			} else {
-				LOGGER.warn("no marshaller found for request, not marshalling. "
-						+ request);
+				LOGGER.warn("no marshaller found for request, not marshalling. %s%", request);
 			}
 
 		} else {
@@ -126,8 +125,7 @@ public class WsClientSimulatorMarshallingInterceptor implements
 					LOGGER.debug("marshalled response xml: " + marshalled);
 				}
 			} else {
-				LOGGER.warn("no marshaller found for response, not marshalling. "
-						+ response);
+				LOGGER.warn("no marshaller found for response, not marshalling. %s% ", response);
 			}
 
 		} else {
@@ -214,13 +212,8 @@ public class WsClientSimulatorMarshallingInterceptor implements
 					final Method createMethod = objectFactory.getClass()
 							.getMethod(methodName, obj.getClass());
 					objectToMarshal = createMethod.invoke(objectFactory, obj);
-				} catch (NoSuchMethodException methodEx) {
-					LOGGER.warn(obj.getClass().getName() + XML_ROOT_ERROR);
-				} catch (IllegalArgumentException e) {
-					LOGGER.warn(obj.getClass().getName() + XML_ROOT_ERROR);
-				} catch (IllegalAccessException e) {
-					LOGGER.warn(obj.getClass().getName() + XML_ROOT_ERROR);
-				} catch (InvocationTargetException e) {
+				} catch (NoSuchMethodException | IllegalArgumentException | IllegalAccessException|InvocationTargetException methodEx) {
+					LOGGER.info(methodEx.getMessage(), methodEx);
 					LOGGER.warn(obj.getClass().getName() + XML_ROOT_ERROR);
 				}
 			}
