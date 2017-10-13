@@ -310,8 +310,10 @@ public class Db4oDatabase {
 				LOGGER.info(e.getMessage(), e);
 				LOGGER.warn("db4o server startup failed, assuming server started/cleaned on other server.");
 				try {
-					// pause, wait for server to start if its starting on another node in the cluster.					
-					Thread.sleep(5000);
+					// pause, wait for server to start if its starting on another node in the cluster.
+					synchronized(this) {
+					    this.wait(5000);
+					}
 				} catch (final InterruptedException ie) {
 					LOGGER.error("error sleeping trying to wait for db4o server to startup.", ie);
 					Thread.currentThread().interrupt();

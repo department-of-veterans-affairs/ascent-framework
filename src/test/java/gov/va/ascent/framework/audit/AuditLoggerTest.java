@@ -1,122 +1,139 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package gov.va.ascent.framework.audit;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 
-import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
+
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.Appender;
 
 /**
- *
- * @author rthota
+ * Audit Logger Test class that shows how to hook logback with mockito to see
+ * the logging activity
  */
+@RunWith(MockitoJUnitRunner.class)
 public class AuditLoggerTest {
-    
-    public AuditLoggerTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
-    @Before
-    public void setUp() {
-/*        Authentication authentication = Mockito.mock(Authentication.class);
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);*/
-    }
-    
-    @After
-    public void tearDown() {
-    }
 
-    /**
-     * Test of debug method, of class AuditLogger.
-     */
-    @Test
-    public void testDebug() {
-        System.out.println("debug");
-        Auditable auditable = new testAuditable();
-        String activityDetail = "test";
-        AuditLogger.debug(auditable, activityDetail);
-    }
+	@SuppressWarnings("rawtypes")
+	@Mock
+	private Appender mockAppender;
+	// Captor is genericised with ch.qos.logback.classic.spi.LoggingEvent
+	@Captor
+	private ArgumentCaptor<LoggingEvent> captorLoggingEvent;
 
-    /**
-     * Test of info method, of class AuditLogger.
-     */
-    @Test
-    public void testInfo() {
-        System.out.println("info");
-        Auditable auditable = new testAuditable();
-        String activityDetail = "test";
-        AuditLogger.info(auditable, activityDetail);
-    }
+	// added the mockAppender to the root logger
+	@SuppressWarnings("unchecked")
+	// It's not quite necessary but it also shows you how it can be done
+	@Before
+	public void setup() {
+		final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+		logger.addAppender(mockAppender);
+	}
 
-    /**
-     * Test of warn method, of class AuditLogger.
-     */
-    @Test
-    public void testWarn() {
-        System.out.println("warn");
-        Auditable auditable = new testAuditable();
-        String activityDetail = "test";
-        AuditLogger.warn(auditable, activityDetail);
-    }
+	// Always have this teardown otherwise we can stuff up our expectations.
+	// Besides, it's
+	// good coding practice
+	@SuppressWarnings("unchecked")
+	@After
+	public void teardown() {
+		final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+		logger.detachAppender(mockAppender);
+	}
 
-    /**
-     * Test of error method, of class AuditLogger.
-     */
-    @Test
-    public void testError() {
-        System.out.println("error");
-        Auditable auditable = new testAuditable();
-        String activityDetail = "test";
-        AuditLogger.error(auditable, activityDetail);
-    }
-    
-    
-    class testAuditable implements Auditable {
+	@Test
+	public void auditLoggerConstructor() throws Exception {
+		Constructor<AuditLogger> auditLogger = AuditLogger.class.getDeclaredConstructor();
+		assertTrue(Modifier.isPublic(auditLogger.getModifiers()));
+		auditLogger.setAccessible(true);
+		auditLogger.newInstance((Object[]) null);
+	}
 
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            // TODO Auto-generated method stub
-            return null;
-        }
+	@SuppressWarnings("unchecked")
+	@Test
+	public void auditDebug() throws NoSuchMethodException, SecurityException {
+		// given
+		AuditLogger.debug(
+				BaseAuditAspect.getDefaultAuditableInstance(AuditLoggerTest.class.getMethod("auditDebug", null)),
+				"Audit DEBUG Activity Detail");
 
-        @Override
-        public AuditEvents event() {
-            // TODO Auto-generated method stub
-            return AuditEvents.REQUEST_RESPONSE;
-        }
+		// Now verify our logging interactions
+		verify(mockAppender).doAppend(captorLoggingEvent.capture());
+		// Having a genricised captor means we don't need to cast
+		final LoggingEvent loggingEvent = captorLoggingEvent.getValue();
+		// Check log level is correct
+		assertThat(loggingEvent.getLevel(), is(Level.DEBUG));
+		assertThat(loggingEvent.getFormattedMessage(), is("Audit DEBUG Activity Detail"));
+	}
 
-        @Override
-        public String activity() {
-            // TODO Auto-generated method stub
-            return "test";
-        }
+	@SuppressWarnings("unchecked")
+	@Test
+	public void auditInfo() throws NoSuchMethodException, SecurityException {
+		// given
+		AuditLogger.info(
+				BaseAuditAspect.getDefaultAuditableInstance(AuditLoggerTest.class.getMethod("auditInfo", null)),
+				"Audit INFO Activity Detail");
 
-		@Override
-		public String auditClass() {
-			// TODO Auto-generated method stub
-			return null;
-		}
+		// Now verify our logging interactions
+		verify(mockAppender).doAppend(captorLoggingEvent.capture());
+		// Having a genricised captor means we don't need to cast
+		final LoggingEvent loggingEvent = captorLoggingEvent.getValue();
+		// Check log level is correct
+		assertThat(loggingEvent.getLevel(), is(Level.INFO));
+		// Check the message being logged is correct
+		assertThat(loggingEvent.getFormattedMessage(), is("Audit INFO Activity Detail"));
+	}
 
-    }
+	@SuppressWarnings("unchecked")
+	@Test
+	public void auditWarn() throws NoSuchMethodException, SecurityException {
+		// given
+		AuditLogger.warn(
+				BaseAuditAspect.getDefaultAuditableInstance(AuditLoggerTest.class.getMethod("auditWarn", null)),
+				"Audit WARN Activity Detail");
+
+		// Now verify our logging interactions
+		verify(mockAppender).doAppend(captorLoggingEvent.capture());
+		// Having a genricised captor means we don't need to cast
+		final LoggingEvent loggingEvent = captorLoggingEvent.getValue();
+		System.out.println(ReflectionToStringBuilder.toString(loggingEvent.getMDCPropertyMap().values()));
+		// Check log level is correct
+		assertThat(loggingEvent.getLevel(), is(Level.WARN));
+		// Check the message being logged is correct
+		assertThat(loggingEvent.getFormattedMessage(), is("Audit WARN Activity Detail"));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void auditError() throws NoSuchMethodException, SecurityException {
+		// given and when
+		AuditLogger.error(
+				BaseAuditAspect.getDefaultAuditableInstance(AuditLoggerTest.class.getMethod("auditError", null)),
+				"Audit ERROR Activity Detail");
+
+		// Now verify our logging interactions
+		verify(mockAppender).doAppend(captorLoggingEvent.capture());
+		// Having a genricised captor means we don't need to cast
+		final LoggingEvent loggingEvent = captorLoggingEvent.getValue();
+		// Check log level is correct
+		assertThat(loggingEvent.getLevel(), is(Level.ERROR));
+		// Check the message being logged is correct
+		assertThat(loggingEvent.getFormattedMessage(), is("Audit ERROR Activity Detail"));
+	}
 }

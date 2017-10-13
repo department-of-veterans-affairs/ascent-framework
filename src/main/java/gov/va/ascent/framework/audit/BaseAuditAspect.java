@@ -46,7 +46,9 @@ public class BaseAuditAspect {
 	 * Ensure you follow that pattern to make use of this standard pointcut.
 	 */
 	@Pointcut("within(@org.springframework.web.bind.annotation.RestController *)")
-	protected static final void auditRestController() {}
+	protected static final void auditRestController() {
+		 // Do nothing.
+	}
 	
 	/**
 	 * This aspect defines the pointcut of standard REST endpoints.  Those are endpoints that...
@@ -58,7 +60,9 @@ public class BaseAuditAspect {
 	 * Ensure you follow that pattern to make use of this standard pointcut.
 	 */
 	@Pointcut("execution(public org.springframework.http.ResponseEntity<gov.va.ascent.framework.service.ServiceResponse+> *(..))")
-	protected static final void auditPublicServiceResponseRestMethod() {}
+	protected static final void auditPublicServiceResponseRestMethod() {
+		 // Do nothing.
+	}
 	
     /**
      * Gets the method and arguments as string.
@@ -109,9 +113,8 @@ public class BaseAuditAspect {
      * @param method the method
      * @return the auditable instance
      */
-    public static Auditable getDefaultAuditableInstance(final Method method) {
-        Auditable auditableAnnotation = new Auditable()
-        {
+	public static Auditable getDefaultAuditableInstance(final Method method) {
+		return new Auditable() {
 			@Override
 			public AuditEvents event() {
 				return AuditEvents.REQUEST_RESPONSE;
@@ -119,7 +122,7 @@ public class BaseAuditAspect {
 
 			@Override
 			public String activity() {
-				if (method==null) {
+				if (method == null) {
 					return "";
 				} else {
 					return method.getName();
@@ -133,16 +136,14 @@ public class BaseAuditAspect {
 
 			@Override
 			public String auditClass() {
-				if (method==null) {
+				if (method == null) {
 					return "";
 				} else {
 					return method.getDeclaringClass().getName();
 				}
 			}
-        };
-        
-        return auditableAnnotation;
-    }
+		};
+	}
     
     /**
      * Gets the modified auditable instance from Method argument.
@@ -151,50 +152,47 @@ public class BaseAuditAspect {
      * @param method the method
      * @return the auditable instance
      */
-    public static Auditable getAuditableInstance(final Auditable auditable, final Method method) {
-    	
-    	if (method==null) {
-    		return auditable;
-    	} 
-    	else if (auditable!=null) {
-	        Auditable auditableAnnotation = new Auditable()
-	        {
+	public static Auditable getAuditableInstance(final Auditable auditable, final Method method) {
+
+		if (method == null) {
+			return auditable;
+		} else if (auditable != null) {
+			return new Auditable() {
 				@Override
 				public AuditEvents event() {
-					if (auditable.event()==null) {
+					if (auditable.event() == null) {
 						return AuditEvents.REQUEST_RESPONSE;
 					} else {
 						return auditable.event();
 					}
 				}
-	
+
 				@Override
 				public String activity() {
-					if (auditable.activity()==null) {
+					if (auditable.activity() == null) {
 						return method.getName();
 					} else {
 						return auditable.activity();
 					}
 				}
-	
+
 				@Override
 				public String auditClass() {
-					if (auditable.auditClass()==null) {
+					if (auditable.auditClass() == null) {
 						return method.getDeclaringClass().getName();
 					} else {
 						return auditable.auditClass();
 					}
 				}
-				
+
 				@Override
 				public Class<? extends Annotation> annotationType() {
 					return Auditable.class;
 				}
-	        };
-	        return auditableAnnotation;
-    	} 
-    	else {
-    		return null;
-    	}	
-    }
+			};
+
+		} else {
+			return null;
+		}
+	}
 }
