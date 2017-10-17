@@ -4,42 +4,45 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-@RunWith(MockitoJUnitRunner.class)
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RunWith(SpringRunner.class)
+@ContextConfiguration
 public class SecurityUtilsTest  {
-	@Mock
-	SecurityContextHolder mockSecurityContextHolder;
-	@Mock
-	SecurityContext mockSecurityContext;
-	@Mock
-	Authentication mockAuthentication;
-	@Mock
-	PersonTraits mockPersonalTraits;
-	
-	
+
 	@Before
-	public void setUp() throws Exception {
+	public void setup() {
+		PersonTraits personTraits = new PersonTraits("user", "password",
+				AuthorityUtils.createAuthorityList("ROLE_TEST"));
+		Authentication auth = new UsernamePasswordAuthenticationToken(personTraits,
+				personTraits.getPassword(), personTraits.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(auth);
 	}
 
 	@After
-	public void tearDown() throws Exception {
+	public void tearDown(){
+		SecurityContextHolder.clearContext();
 	}
 
 	@Test
@@ -50,19 +53,47 @@ public class SecurityUtilsTest  {
 
 	@Test
 	public void testGetUserId() {
-		//when(SecurityContextHolder.getContext().getAuthentication()).thenReturn(auth);
-		//when(mockAuthentication.isAuthenticated()).thenReturn(true);
-		//when(mockAuthentication.getPrincipal()).thenReturn(mockPersonalTraits);
+		SecurityContextHolder.clearContext();
 		assertNull(SecurityUtils.getUserId());
 	}
 
 	@Test
+	@WithMockUser
+	public void testGetUserIdNotNull() {
+		assertEquals("user",SecurityUtils.getUserId());
+	}
+
+	@Test
 	public void testGetPersonTraits() {
+
+		assertTrue(SecurityUtils.getPersonTraits() instanceof PersonTraits);
+	}
+
+	@Test
+	public void testGetPersonTraitsNotPersonTraits() {
+		SecurityContextHolder.clearContext();
+		assertFalse(SecurityUtils.getPersonTraits() instanceof PersonTraits);
+	}
+
+	@Test
+	public void testGetPersonTraitsAuthenticationFalse() {
+		SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
 		assertNull(SecurityUtils.getPersonTraits());
 	}
 
 	@Test
 	public void testGetAuthorities() {
+		assertEquals(1,SecurityUtils.getAuthorities().size());
+		SimpleGrantedAuthority result = (SimpleGrantedAuthority) SecurityUtils.getAuthorities().stream()
+				.filter(role -> "ROLE_TEST".equals(role.getAuthority()))
+				.findFirst()
+				.orElse(null);
+		assertEquals("ROLE_TEST", result.getAuthority());
+	}
+
+	@Test
+	public void testGetAuthoritiesRoleTestNull() {
+		SecurityContextHolder.clearContext();
 		assertEquals(0,SecurityUtils.getAuthorities().size());
 	}
 
@@ -72,8 +103,14 @@ public class SecurityUtilsTest  {
 	}
 
 	@Test
+	public void testIsUserInRoleTrue() {
+		assertTrue(SecurityUtils.isUserInRole("ROLE_TEST"));
+	}
+
+	@Test
 	public void testLogout() {
 		SecurityUtils.logout();
+		assertTrue(SecurityContextHolder.getContext().getAuthentication() == null);
 	}
 
 }
