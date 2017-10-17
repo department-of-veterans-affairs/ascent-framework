@@ -117,7 +117,8 @@ public class BaseWsClientConfigTest {
 			Assert.assertNotNull(e.getMessage());		
 		}
 	}
-
+	//pkg-gov.va.ascent.demo.partner.person.ws.transfer
+	//resource-xsd/PersonService/PersonWebService.xsd
 	@Test
 	public void testGetPerformanceLogMethodInterceptor() {
 		BaseWsClientConfig test = new BaseWsClientConfig();
