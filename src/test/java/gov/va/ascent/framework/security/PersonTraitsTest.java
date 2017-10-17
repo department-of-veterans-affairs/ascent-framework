@@ -352,7 +352,7 @@ public class PersonTraitsTest {
 		o.setPnidType("testValidPnidType");
 		assertFalse(personTraitsDefault.equals(o));
 		o.setIcn("testValidIcn");
-		assertTrue(personTraitsDefault.equals(o));
+		assertFalse(personTraitsDefault.equals(o));
 	}	
 	
 	@Test
