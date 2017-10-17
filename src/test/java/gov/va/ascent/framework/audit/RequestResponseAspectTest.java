@@ -54,6 +54,16 @@ public class RequestResponseAspectTest {
 		Object obj = requestResponseAspect.logAnnotatedMethodRequestResponse(proceedingJoinPoint);
 		assertNotNull(obj);
 	}
+	
+	@Test
+	public void testLogRestPublicMethodRequestResponse() {
+		try{
+			Object obj = requestResponseAspect.logRestPublicMethodRequestResponse(proceedingJoinPoint);
+			assertNotNull(obj);
+		}catch(Throwable e) {
+			
+		}
+	}
 
     public Method myMethod() throws NoSuchMethodException{
         return getClass().getDeclaredMethod("someMethod");

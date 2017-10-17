@@ -83,7 +83,7 @@ public class ServiceValidationToMessageAspectTest {
 		}
 	}
 
-	//@Test
+	@Test
 	public void testConvertMapToMessages() {
 		map.put("errors", testMessageList);
 		ServiceValidationToMessageAspect.convertMapToMessages(mockServiceResponse, map);

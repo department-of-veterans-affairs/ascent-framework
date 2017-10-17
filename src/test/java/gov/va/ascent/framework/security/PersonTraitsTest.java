@@ -29,7 +29,6 @@ public class PersonTraitsTest {
 	    Date sysDate = new Date(System.currentTimeMillis());
 	    Date oneDayBefore = new Date(sysDate.getTime() - 10);  		
 		personTraitsDefault.setBirthDate(oneDayBefore);
-		personTraitsDefault.setDodedipnid("testvaliddodedipnid");
 		personTraitsDefault.setAssuranceLevel("testvalidassurancelevel");
 		personTraitsDefault.setEmail("validemail@testdomain.com");
 		personTraitsDefault.setFileNumber("testValidFN");
@@ -43,7 +42,7 @@ public class PersonTraitsTest {
 	public void tearDown() throws Exception {
 	}
 
-	//@Test
+	@Test
 	public void testHashCode() {
 		assertNotNull(personTraitsDefault.hashCode());
 	}
@@ -307,7 +306,6 @@ public class PersonTraitsTest {
 	@Test
 	public void testEqualsNotNullObject() {
 		PersonTraits o = new PersonTraits();
-		o.setDodedipnid("TestDodedipnid");
 		o.setFirstName("FN");
 		o.setLastName("ln");
 		o.setMiddleName("mn");
@@ -323,8 +321,40 @@ public class PersonTraitsTest {
 		o.setPnidType("testPnidType");
 		o.setIcn("testIcn");
 		assertFalse(personTraitsDefault.equals(o));
+		
+		o.setDodedipnid("TestDodedipnid");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setFirstName("FN");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setLastName("LN");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setMiddleName("MN");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setPrefix("Dr.");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setSuffix("Jr");
+		assertFalse(personTraitsDefault.equals(o));
+	    Date sysDate = new Date(System.currentTimeMillis());
+	    Date oneDayBefore = new Date(sysDate.getTime() - 10);  		
+		o.setBirthDate(oneDayBefore);
+		assertFalse(personTraitsDefault.equals(o));
+				
+		o.setAssuranceLevel("testvalidassurancelevel");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setEmail("validemail@testdomain.com");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setFileNumber("testValidFN");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setGender("M");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setPnid("testValidPnid");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setPnidType("testValidPnidType");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setIcn("testValidIcn");
+		assertTrue(personTraitsDefault.equals(o));
 	}	
-
+	
 	@Test
 	public void testToString() {
 		assertNotNull(personTraitsDefault.toString());

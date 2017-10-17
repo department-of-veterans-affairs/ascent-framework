@@ -1,5 +1,6 @@
 package gov.va.ascent.framework.rest.provider;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
@@ -13,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import gov.va.ascent.framework.messages.Message;
@@ -52,6 +54,19 @@ public class RestProviderHttpResponseCodeAspectTest {
 	public void tearDown() throws Exception {
 	}
 
+	@Test
+	public void testConstructorWithParam() {
+		MessagesToHttpStatusRulesEngine ruleEngine = new MessagesToHttpStatusRulesEngine();
+		ruleEngine.addRule(
+				new MessageSeverityMatchRule(MessageSeverity.FATAL, HttpStatus.INTERNAL_SERVER_ERROR)); 
+		ruleEngine.addRule(
+				new MessageSeverityMatchRule(MessageSeverity.ERROR, 
+						HttpStatus.BAD_REQUEST));
+		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect(ruleEngine);
+		assertNotNull(restProviderHttpResponseCodeAspect);
+		
+	}
+	
 	@Test
 	public void testAroundAdvice() {
 		try {
