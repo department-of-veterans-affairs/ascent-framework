@@ -9,25 +9,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertyResolver;
 import org.springframework.core.env.PropertySources;
-import org.springframework.core.env.PropertySourcesPropertyResolver;
 import org.springframework.core.io.support.ResourcePropertySource;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import gov.va.ascent.framework.config.BasePropertiesConfig.BasePropertiesEnvironment;
@@ -39,22 +32,12 @@ import gov.va.ascent.framework.config.BasePropertiesConfig.BasePropertiesEnviron
 @RunWith(SpringJUnit4ClassRunner.class)
 public class AscentPropertySourcesPropertyResolverTest {
 	public static final String APP_NAME = "framework-test";
-
 	private static final String DEFAULT_PROPERTIES = "classpath:/config/" + APP_NAME + ".properties";
+	
 	AscentPropertySourcesPropertyResolver instance;
     public AscentPropertySourcesPropertyResolverTest() {
     }
     
-/*	@Autowired
-	private PropertySources propertySources;*/
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
     
     @Before
     public void setUp() {
