@@ -34,6 +34,13 @@ public class PerformanceLoggingAspect {
 
 	/** The Constant DOT. */
 	private static final String DOT = ".";
+
+	private static final String sonar_error = ".";
+
+	public static final void TestSonarViolations() {
+		String error = null;
+		String blah = error.toUpperCase();
+	}
 	
 	public static final Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {	
 		
