@@ -38,7 +38,6 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
      * 
      * Use a custom bean and the other constructor to customize the rules.
      *
-     * @param rulesEngine the rules engine
      */
 	public RestProviderHttpResponseCodeAspect() {
 		MessagesToHttpStatusRulesEngine ruleEngine = new MessagesToHttpStatusRulesEngine();

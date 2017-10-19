@@ -1,5 +1,6 @@
 package gov.va.ascent.framework.rest.provider;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
@@ -7,6 +8,11 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import gov.va.ascent.framework.aspect.PerformanceLoggingAspect;
+import gov.va.ascent.framework.exception.AscentRuntimeException;
+import gov.va.ascent.framework.transfer.jaxb.adapters.DateAdapterLoggingTestAppender;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.junit.After;
 import org.junit.Before;
@@ -22,6 +28,8 @@ import gov.va.ascent.framework.messages.MessageSeverity;
 import gov.va.ascent.framework.service.ServiceResponse;
 @RunWith(MockitoJUnitRunner.class)
 public class RestProviderHttpResponseCodeAspectTest {
+
+	private Logger restProviderLog = (Logger) org.slf4j.LoggerFactory.getLogger(RestProviderHttpResponseCodeAspect.class);
 	
 	private RestProviderHttpResponseCodeAspect restProviderHttpResponseCodeAspect;
     @Mock
@@ -37,7 +45,8 @@ public class RestProviderHttpResponseCodeAspectTest {
 
 	@Before
 	public void setUp() throws Exception {
-
+		RestProviderHttpResponseCodeAspectLogAppender.events.clear();
+		restProviderLog.setLevel(Level.DEBUG);
 		try {
 			Message msg = new Message(MessageSeverity.FATAL,"FatalKey","Fatal Message");
 			detailedMsg.add(msg);
@@ -52,6 +61,8 @@ public class RestProviderHttpResponseCodeAspectTest {
 
 	@After
 	public void tearDown() throws Exception {
+		RestProviderHttpResponseCodeAspectLogAppender.events.clear();
+		restProviderLog.setLevel(Level.DEBUG);
 	}
 
 	@Test
@@ -76,6 +87,39 @@ public class RestProviderHttpResponseCodeAspectTest {
 			
 		}
 
+	}
+
+	@Test
+	public void testAroundAdviceCatchAscentExceptionLogging()  {
+		restProviderLog.setLevel(Level.ERROR);
+		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
+		ResponseEntity<ServiceResponse> returnObject = null;
+		try {
+			when(proceedingJoinPoint.proceed()).thenThrow(new AscentRuntimeException());
+			returnObject = restProviderHttpResponseCodeAspect.aroundAdvice(proceedingJoinPoint);
+		} catch (Throwable throwable) {
+
+		}
+		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, returnObject.getStatusCode());
+		assertEquals("RestHttpResponseCodeAspect encountered uncaught exception in REST endpoint.",
+				RestProviderHttpResponseCodeAspectLogAppender.events.get(0).getMessage());
+	}
+
+	@Test
+	public void testAroundAdviceCatchExceptionLogging()  {
+		restProviderLog.setLevel(Level.ERROR);
+		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
+		ResponseEntity<ServiceResponse> returnObject = null;
+		try {
+			when(proceedingJoinPoint.proceed()).thenThrow(new Throwable("Unit Test Throwable converted to AscentRuntimException"));
+			returnObject = restProviderHttpResponseCodeAspect.aroundAdvice(proceedingJoinPoint);
+		} catch (Throwable throwable) {
+
+		}
+		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, returnObject.getStatusCode());
+		assertEquals("RestHttpResponseCodeAspect encountered uncaught exception in REST endpoint.",
+				RestProviderHttpResponseCodeAspectLogAppender.events.get(0).getMessage());
+		assertEquals("gov.va.ascent.framework.exception.AscentRuntimeException", RestProviderHttpResponseCodeAspectLogAppender.events.get(0).getThrowableProxy().getClassName());
 	}
 
 }
