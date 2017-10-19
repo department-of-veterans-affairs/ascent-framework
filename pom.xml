@@ -18,10 +18,6 @@
     <name>${project.artifactId}</name>
     <description>Ascent Framework</description>
 
-	<scm>
-		<developerConnection>scm:git:https://github.com/department-of-veterans-affairs/ascent-framework.git</developerConnection>
-	</scm>
-
     <dependencies>
     
     	<!-- spring framework project dependencies -->
