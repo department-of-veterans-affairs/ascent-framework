@@ -34,12 +34,6 @@ public class PerformanceLoggingAspect {
 
 	/** The Constant DOT. */
 	private static final String DOT = ".";
-
-	@java.lang.SuppressWarnings("squid:S1213")
-	public static final void TestSonarViolations() {
-		String error = null;
-		String blah = error.toUpperCase();
-	}
 	
 	public static final Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {	
 		
