@@ -35,9 +35,7 @@ public class PerformanceLoggingAspect {
 	/** The Constant DOT. */
 	private static final String DOT = ".";
 
-	private static final String sonar_error = ".";
-
-	//Try again
+	@java.lang.SuppressWarnings("squid:S1213")
 	public static final void TestSonarViolations() {
 		String error = null;
 		String blah = error.toUpperCase();
