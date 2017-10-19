@@ -1,12 +1,17 @@
 package gov.va.ascent.framework.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import gov.va.ascent.framework.validation.ViolationMessageParts;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +42,7 @@ public class ServiceResponseTest {
 		testMessages.add(infoMessage);
 		testMessages.add(warnMessage);
 		testMessages.add(errorMessage);
-		testMessages.add(fatalMessage);		
+		testMessages.add(fatalMessage);
 	}
 	
 	@After
@@ -48,6 +53,8 @@ public class ServiceResponseTest {
 	@Test
 	public void testAddMessage() {
 		mockServiceResponse.addMessage(MessageSeverity.INFO, "InfoKey", "Dummy info text");
+		assertNotNull(mockServiceResponse.validate(null));
+
 		assertNotNull(mockServiceResponse.getMessages());
 		assertEquals(1,mockServiceResponse.getMessages().size());
 		
@@ -57,6 +64,8 @@ public class ServiceResponseTest {
 	public void testAddMessages() {
 		mockServiceResponse.addMessages(testMessages);
 		assertNotNull(mockServiceResponse.getMessages());
+		Map<String, List<ViolationMessageParts>> messages = new HashMap<>();
+		assertNotNull(mockServiceResponse.validate(messages));
 		assertEquals(4,mockServiceResponse.getMessages().size());
 	}
 
@@ -70,6 +79,10 @@ public class ServiceResponseTest {
 	@Test
 	public void testSetMessages() {
 		mockServiceResponse.setMessages(testMessages);
+		ServiceResponse serviceResponseForEqualsTest = new ServiceResponse();
+		assertFalse(mockServiceResponse.equals(serviceResponseForEqualsTest));
+		serviceResponseForEqualsTest.setMessages(testMessages);
+		assertTrue(mockServiceResponse.equals(serviceResponseForEqualsTest));
 		assertNotNull(mockServiceResponse.getMessages());
 		assertEquals(4,mockServiceResponse.getMessages().size());
 	}
