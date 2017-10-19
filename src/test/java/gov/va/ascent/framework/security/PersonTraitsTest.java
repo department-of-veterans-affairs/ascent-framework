@@ -52,6 +52,34 @@ public class PersonTraitsTest {
 	@Test
 	public void testHashCode() {
 		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setFirstName(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setLastName(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setMiddleName(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setPrefix(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setSuffix(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setBirthDate(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setGender(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setAssuranceLevel(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setPid(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setPnid(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setPnidType(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setCorrelationIds(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setIcn(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setFileNumber(null);
+		assertNotNull(personTraitsDefault.hashCode());		
 	}
 
 	@Test
