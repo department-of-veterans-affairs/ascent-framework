@@ -37,6 +37,7 @@ public class PerformanceLoggingAspect {
 
 	private static final String sonar_error = ".";
 
+	//Try again
 	public static final void TestSonarViolations() {
 		String error = null;
 		String blah = error.toUpperCase();
