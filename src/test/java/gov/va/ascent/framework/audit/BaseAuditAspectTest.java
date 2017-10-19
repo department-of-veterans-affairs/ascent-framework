@@ -30,8 +30,7 @@ public class BaseAuditAspectTest {
     private ProceedingJoinPoint proceedingJoinPoint;
     @Mock
     private MethodSignature signature;
-/*    @Mock
-    private Method method;*/
+
     
     @Mock
     private JoinPoint.StaticPart staticPart;
@@ -41,11 +40,11 @@ public class BaseAuditAspectTest {
 	@Before
 	public void setUp() throws Exception {
 		value = new Object[1];
-		value[0] = "asd";
+		value[0] = "";
 		when(proceedingJoinPoint.getArgs()).thenReturn(value);
 		when(proceedingJoinPoint.getStaticPart()).thenReturn(staticPart);
         when(proceedingJoinPoint.getSignature()).thenReturn(signature);
-        //when(signature.getMethod()).thenReturn(method);
+        when(signature.getMethod()).thenReturn(myMethod());
 	}
     /**
      * Test of auditableAnnotation method, of class BaseAuditAspect.
@@ -90,9 +89,9 @@ public class BaseAuditAspectTest {
     public void testGetMethodAndArgumentsAsString() {
         System.out.println("getMethodAndArgumentsAsString");
         BaseAuditAspect instance = new BaseAuditAspect();
-        String expResult = "";
-/*        String result = instance.getMethodAndArgumentsAsString(proceedingJoinPoint);
-        assertEquals(expResult, result);*/
+        String expResult = "someMethod()";
+        String result = instance.getMethodAndArgumentsAsString(proceedingJoinPoint);
+        assertEquals(expResult, result);
 
     }
 
@@ -102,11 +101,10 @@ public class BaseAuditAspectTest {
     @Test
     public void testGetMethodName() {
         System.out.println("getMethodName");
-        ProceedingJoinPoint joinPoint = null;
         BaseAuditAspect instance = new BaseAuditAspect();
-        String expResult = "";
-/*        String result = instance.getMethodName(joinPoint);
-        assertEquals(expResult, result);*/
+        String expResult = "someMethod";
+        String result = instance.getMethodName(proceedingJoinPoint);
+        assertEquals(expResult, result);
     }
 
     /**
@@ -162,5 +160,13 @@ public class BaseAuditAspectTest {
         Auditable result = BaseAuditAspect.getAuditableInstance(auditable, method);
         assertEquals(expResult, result);
     }
+    
+    public Method myMethod() throws NoSuchMethodException{
+        return getClass().getDeclaredMethod("someMethod");
+    }
+
+    public void someMethod() {
+        // do nothing
+    }    
     
 }

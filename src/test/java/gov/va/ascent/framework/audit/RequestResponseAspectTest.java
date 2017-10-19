@@ -68,6 +68,17 @@ public class RequestResponseAspectTest {
     public Method myMethod() throws NoSuchMethodException{
         return getClass().getDeclaredMethod("someMethod");
     }
+    
+    @Test
+    public void testRequestResponse() {
+    	RequestResponse rr = new RequestResponse(mockRequestObject, mockReturnObject);
+    	assertNotNull(rr.getRequest());
+    	assertNotNull(rr.getResponse());
+    	rr.setRequest(new TestServiceRequest());
+    	assertNotNull(rr.getRequest());
+    	rr.setResponse(new TestServiceResponse());
+    	assertNotNull(rr.getResponse());
+    }
 
     @Auditable(event = AuditEvents.REQUEST_RESPONSE, activity = "unittestactivity")
     public void someMethod() {

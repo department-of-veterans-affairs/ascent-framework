@@ -29,5 +29,9 @@ public class BasePropertiesConfigTest {
         BasePropertiesEnvironment basePropertiesEnvironment = new BasePropertiesEnvironment();
         basePropertiesEnvironment.postConstruct();
     }
-    
+    @Test
+    public void testConstructor() {
+    	BasePropertiesConfig test = new BasePropertiesConfig();
+    	assertNotNull(test);
+    }
 }

@@ -4,10 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -35,7 +36,13 @@ public class PersonTraitsTest {
 		personTraitsDefault.setGender("M");
 		personTraitsDefault.setPnid("testValidPnid");
 		personTraitsDefault.setPnidType("testValidPnidType");
+		personTraitsDefault.setPid("796079018");
 		personTraitsDefault.setIcn("testValidIcn");
+		List<String> correlationIds = new ArrayList<>();
+		correlationIds.add("id1");
+		correlationIds.add("id2");
+		
+		personTraitsDefault.setCorrelationIds(correlationIds);
 	}
 
 	@After
@@ -298,6 +305,21 @@ public class PersonTraitsTest {
 	public void testGetUser() {
 		assertTrue("FN LN".equals(personTraitsDefault.getUser()));
 	}
+	
+	@Test
+	public void testGetCorrelationId() {
+		assertNotNull(personTraitsDefault.getCorrelationIds());
+		assertTrue(personTraitsDefault.getCorrelationIds().size()>0);
+	}
+	
+	@Test
+	public void testSetCorrelationId() {
+		List<String> correlationIds = new ArrayList<>();
+		correlationIds.add("corr_id1");
+		correlationIds.add("corr_id2");
+		personTraitsDefault.setCorrelationIds(correlationIds);
+		assertNotNull(personTraitsDefault.getCorrelationIds());
+	}
 
 	@Test
 	public void testEqualsNullObject() {
@@ -319,6 +341,7 @@ public class PersonTraitsTest {
 		o.setGender("m");
 		o.setPnid("testpnid");
 		o.setPnidType("testPnidType");
+		o.setPid("testPid");
 		o.setIcn("testIcn");
 		assertFalse(personTraitsDefault.equals(o));
 		
@@ -334,24 +357,28 @@ public class PersonTraitsTest {
 		assertFalse(personTraitsDefault.equals(o));
 		o.setSuffix("Jr");
 		assertFalse(personTraitsDefault.equals(o));
-	    Date sysDate = new Date(System.currentTimeMillis());
-	    Date oneDayBefore = new Date(sysDate.getTime() - 10);  		
-		o.setBirthDate(oneDayBefore);
+		o.setGender("M");
 		assertFalse(personTraitsDefault.equals(o));
-				
 		o.setAssuranceLevel("testvalidassurancelevel");
 		assertFalse(personTraitsDefault.equals(o));
 		o.setEmail("validemail@testdomain.com");
 		assertFalse(personTraitsDefault.equals(o));
-		o.setFileNumber("testValidFN");
-		assertFalse(personTraitsDefault.equals(o));
-		o.setGender("M");
+		o.setPnidType("testValidPnidType");
 		assertFalse(personTraitsDefault.equals(o));
 		o.setPnid("testValidPnid");
 		assertFalse(personTraitsDefault.equals(o));
-		o.setPnidType("testValidPnidType");
+		o.setPid("796079018");
 		assertFalse(personTraitsDefault.equals(o));
+		List<String> correlationIds = new ArrayList<>();
+		correlationIds.add("id1");
+		correlationIds.add("id2");
+		o.setCorrelationIds(correlationIds);
+		assertFalse(personTraitsDefault.equals(o));	
 		o.setIcn("testValidIcn");
+		assertFalse(personTraitsDefault.equals(o));		
+	    Date sysDate = new Date(System.currentTimeMillis());
+	    Date oneDayBefore = new Date(sysDate.getTime() - 10);  		
+		o.setBirthDate(oneDayBefore);
 		assertFalse(personTraitsDefault.equals(o));
 	}	
 	

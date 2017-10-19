@@ -251,8 +251,6 @@ public class PersonTraits extends User {
 			return false;
 		if (suffix != null ? !suffix.equals(that.suffix) : that.suffix != null)
 			return false;
-		if (birthDate != null ? !birthDate.equals(that.birthDate) : that.birthDate != null)
-			return false;
 		if (gender != null ? !gender.equals(that.gender) : that.gender != null)
 			return false;
 		if (assuranceLevel != null ? !assuranceLevel.equals(that.assuranceLevel) : that.assuranceLevel != null)
@@ -270,6 +268,9 @@ public class PersonTraits extends User {
 
 		if (icn != null ? !icn.equals(that.icn) : that.icn != null)
 			return false;
+		
+		if (birthDate != null ? !birthDate.equals(that.birthDate) : that.birthDate != null)
+			return false;		
 		return fileNumber != null ? fileNumber.equals(that.fileNumber) : that.fileNumber == null;
     }
 

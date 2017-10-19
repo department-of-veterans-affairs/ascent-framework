@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +55,7 @@ public class ServiceValidationToMessageAspectTest {
 		when(proceedingJoinPoint.getArgs()).thenReturn(value);
 		when(proceedingJoinPoint.getStaticPart()).thenReturn(staticPart);
         when(staticPart.getSignature()).thenReturn(signature);
+        when(signature.getMethod()).thenReturn(myMethod());
 
         testMessageList = new ArrayList<ViolationMessageParts>();
 		ViolationMessageParts errorMessage1 = new ViolationMessageParts();
@@ -82,6 +84,32 @@ public class ServiceValidationToMessageAspectTest {
 			
 		}
 	}
+	
+	@Test
+	public void testAroundAdviceForResponse() {
+		try{
+			value = new Object[1];
+			when(proceedingJoinPoint.getArgs()).thenReturn(value);			
+			assertNotNull(mockServiceValidationToMessageAspect.aroundAdvice(proceedingJoinPoint, mockServiceRequest));
+
+			
+		}catch(Throwable throwable) {
+			throwable.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testAroundAdviceForException() {
+		try{
+			when(proceedingJoinPoint.proceed()).thenReturn(new ServiceRequest());
+			assertNotNull(mockServiceValidationToMessageAspect.aroundAdvice(proceedingJoinPoint, mockServiceRequest));
+
+			
+		}catch(Throwable throwable) {
+			
+			assertNotNull(throwable);
+		}
+	}		
 
 	@Test
 	public void testConvertMapToMessages() {
@@ -91,4 +119,11 @@ public class ServiceValidationToMessageAspectTest {
 		assertEquals(2,mockServiceResponse.getMessages().size());
 	}
 
+    public Method myMethod() throws NoSuchMethodException{
+        return getClass().getDeclaredMethod("someResponseMethod",String.class);
+    }
+
+    public ServiceResponse someResponseMethod(String simpleParam) {
+        return new ServiceResponse();
+    } 	
 }
