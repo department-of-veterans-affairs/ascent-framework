@@ -14,6 +14,10 @@
 
     </appender>
 
+    <appender name="DateAdapterLoggingTestAppender" class="gov.va.ascent.framework.transfer.jaxb.adapters.DateAdapterLoggingTestAppender">
+
+    </appender>
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 
     </appender>
@@ -26,6 +30,9 @@
     </logger>
     <logger name="gov.va.ascent.framework.log" level="DEBUG">
         <appender-ref ref="LogTestAppender"/>
+    </logger>
+    <logger name="gov.va.ascent.framework.transfer.jaxb.adapters" level="DEBUG">
+        <appender-ref ref="DateAdapterLoggingTestAppender"/>
     </logger>
 
     <root level="DEBUG">
