@@ -24,6 +24,10 @@
 
     </appender>
 
+    <appender name="Db4oTestLogAppender"
+              class="gov.va.ascent.framework.persist.Db4oTestLogAppender">
+
+    </appender>
 
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -44,6 +48,9 @@
     </logger>
     <logger name="gov.va.ascent.framework.rest.provider" level="DEBUG">
         <appender-ref ref="RestProviderHttpResponseCodeAspectLogAppender"/>
+    </logger>
+    <logger name="gov.va.ascent.framework.persist" level="DEBUG">
+        <appender-ref ref="Db4oTestLogAppender"/>
     </logger>
 
     <root level="DEBUG">

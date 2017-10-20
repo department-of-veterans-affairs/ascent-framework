@@ -6,11 +6,18 @@
 package gov.va.ascent.framework.persist;
 
 import java.util.List;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import gov.va.ascent.framework.aspect.PerformanceLoggingAspect;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import gov.va.ascent.framework.messages.Message;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.*;
 
@@ -18,11 +25,17 @@ import static org.junit.Assert.*;
  *
  * @author rthota
  */
+@RunWith(SpringRunner.class)
 public class Db4oDatabaseTest {
+
+    private Logger db4oLogger = (Logger) org.slf4j.LoggerFactory.getLogger(Db4oDatabase.class);
+
 	Db4oDatabase instance;
     
     @Before
     public void setUp() {
+        Db4oTestLogAppender.events.clear();
+        db4oLogger.setLevel(Level.DEBUG);
         instance = new Db4oDatabase();
         instance.postConstruct();
         Message message = new Message();
@@ -131,6 +144,24 @@ public class Db4oDatabaseTest {
     public void testPreDestroy() {
         System.out.println("preDestroy");
         instance.preDestroy();
+    }
+
+    /**
+     * Test of preDestroy method, of class Db4oDatabase.
+     */
+    @Test
+    public void testPreDestroyServer() {
+        db4oLogger.setLevel(Level.INFO);
+        System.out.println("preDestroy");
+        instance.preDestroy();
+        Db4oTestLogAppender.events.clear();
+        Db4oDatabase db = new Db4oDatabase();
+        db.setClientServerMode(false);
+        db.setDb4oFile("singleClientModeTest");
+        db.postConstruct();
+        assertEquals("cleanData==true and db isn't started, deleting old database prior to starting.",
+                Db4oTestLogAppender.events.get(1).getMessage());
+        assertEquals("database client instantiated.",Db4oTestLogAppender.events.get(2).getMessage());
     }
 
     /**
