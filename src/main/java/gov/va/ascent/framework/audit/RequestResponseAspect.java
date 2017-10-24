@@ -16,13 +16,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import gov.va.ascent.framework.exception.AscentRuntimeException;
+
 
 /**
  * The Class RequestResponseAspect.
  */
 @Aspect
 public class RequestResponseAspect extends BaseAuditAspect {
-
+	
     @Autowired
     ObjectMapper mapper;
 
@@ -43,7 +45,7 @@ public class RequestResponseAspect extends BaseAuditAspect {
         try {
         	response = joinPoint.proceed();
         } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
+            throw new AscentRuntimeException(throwable);
         }
         Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
         Auditable auditableAnnotation = method.getAnnotation(Auditable.class);
@@ -74,7 +76,7 @@ public class RequestResponseAspect extends BaseAuditAspect {
          try {
         	 response = joinPoint.proceed();
          } catch (Throwable throwable) {
-             throw new RuntimeException(throwable);
+             throw new AscentRuntimeException(throwable);
          }
          final Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
          final Auditable auditableAnnotation = getDefaultAuditableInstance(method);

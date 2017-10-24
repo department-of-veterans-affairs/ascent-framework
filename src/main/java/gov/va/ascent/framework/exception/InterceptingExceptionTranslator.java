@@ -45,11 +45,9 @@ public class InterceptingExceptionTranslator implements ThrowsAdvice {
 	 * 
 	 * @param method the method
 	 * @param args the args
-	 * @param target the target
 	 * @param throwable the throwable
 	 */
-	public final void afterThrowing(final Method method, final Object[] args, final Object target,
-			final Throwable throwable) {
+	public final void afterThrowing(final Method method, final Object[] args, final Throwable throwable) {
 
 		try {
 			if (exclusionSet != null

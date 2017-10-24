@@ -12,6 +12,12 @@ public class AuditLogger {
 
      static final Logger LOGGER = LoggerFactory.getLogger(AuditLogger.class);
 
+     /*
+      * private constructor
+      */
+     private AuditLogger() {
+    	 
+     }
     /**
      * Debug.
      *

@@ -60,7 +60,7 @@ public class AuditLoggerTest {
 	@Test
 	public void auditLoggerConstructor() throws Exception {
 		Constructor<AuditLogger> auditLogger = AuditLogger.class.getDeclaredConstructor();
-		assertTrue(Modifier.isPublic(auditLogger.getModifiers()));
+		assertTrue(Modifier.isPrivate(auditLogger.getModifiers()));
 		auditLogger.setAccessible(true);
 		auditLogger.newInstance((Object[]) null);
 	}
