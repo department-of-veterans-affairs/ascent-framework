@@ -70,7 +70,7 @@ public class BaseAuditAspect {
      * @return the method and arguments as string
      */
     protected String getMethodAndArgumentsAsString(ProceedingJoinPoint joinPoint) {
-        return Arrays.stream(joinPoint.getArgs()).map(arg -> arg.toString())
+        return Arrays.stream(joinPoint.getArgs()).map(Object::toString)
                 .collect(Collectors.joining(", ", getMethodName(joinPoint) + "(", ")"));
     }
 
