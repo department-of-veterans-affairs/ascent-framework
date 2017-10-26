@@ -5,8 +5,6 @@
  */
 package gov.va.ascent.framework.audit;
 
-import java.lang.reflect.Method;
-
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -16,7 +14,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
+import java.lang.reflect.Method;
+
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 /**
@@ -139,26 +139,42 @@ public class BaseAuditAspectTest {
      * Test of getDefaultAuditableInstance method, of class BaseAuditAspect.
      */
     @Test
-    public void testGetDefaultAuditableInstance() {
+    public void testGetDefaultAuditableInstance() throws Exception {
         System.out.println("getDefaultAuditableInstance");
-        Method method = null;
+        Method method = myMethod();
         AuditEvents expResult = AuditEvents.REQUEST_RESPONSE;
-        Auditable result = BaseAuditAspect.getDefaultAuditableInstance(method);
-        assertEquals(expResult, result.event());
-        assertEquals("", result.activity());
+        AuditData result = BaseAuditAspect.getDefaultAuditableInstance(method);
+        assertEquals(expResult, result.getEvent());
+        assertEquals("someMethod", result.getActivity());
+        assertEquals("gov.va.ascent.framework.audit.BaseAuditAspectTest", result.getAuditClass());
     }
 
     /**
-     * Test of getAuditableInstance method, of class BaseAuditAspect.
+     * Test of getDefaultAuditableInstance method, of class BaseAuditAspect.
      */
     @Test
-    public void testGetAuditableInstance() {
-        System.out.println("getAuditableInstance");
-        Auditable auditable = null;
+    public void testGetDefaultAuditableInstanceMethodNotNull() throws Exception{
+        System.out.println("getDefaultAuditableInstance");
+        Method method = myMethod();
+        AuditEvents expResult = AuditEvents.REQUEST_RESPONSE;
+        AuditData result = BaseAuditAspect.getDefaultAuditableInstance(method);
+        assertEquals(expResult, result.getEvent());
+        assertEquals(method.getName(), result.getActivity());
+        assertEquals(method.getDeclaringClass().getName(), result.getAuditClass());
+    }
+
+    /**
+     * Test of getDefaultAuditableInstance method, of class BaseAuditAspect.
+     */
+    @Test
+    public void testGetDefaultAuditableInstanceMethodNull() throws Exception{
+        System.out.println("getDefaultAuditableInstance");
         Method method = null;
-        Auditable expResult = null;
-        Auditable result = BaseAuditAspect.getAuditableInstance(auditable, method);
-        assertEquals(expResult, result);
+        AuditEvents expResult = AuditEvents.REQUEST_RESPONSE;
+        AuditData result = BaseAuditAspect.getDefaultAuditableInstance(method);
+        assertEquals(expResult, result.getEvent());
+        assertEquals("", result.getActivity());
+        assertEquals("", result.getAuditClass());
     }
     
     public Method myMethod() throws NoSuchMethodException{
@@ -167,6 +183,6 @@ public class BaseAuditAspectTest {
 
     public void someMethod() {
         // do nothing
-    }    
+    }
     
 }

@@ -1,13 +1,12 @@
 package gov.va.ascent.framework.audit;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Created by vgadda on 8/17/17.
@@ -113,86 +112,11 @@ public class BaseAuditAspect {
      * @param method the method
      * @return the auditable instance
      */
-	public static Auditable getDefaultAuditableInstance(final Method method) {
-		return new Auditable() {
-			@Override
-			public AuditEvents event() {
-				return AuditEvents.REQUEST_RESPONSE;
-			}
-
-			@Override
-			public String activity() {
-				if (method == null) {
-					return "";
-				} else {
-					return method.getName();
-				}
-			}
-
-			@Override
-			public Class<? extends Annotation> annotationType() {
-				return Auditable.class;
-			}
-
-			@Override
-			public String auditClass() {
-				if (method == null) {
-					return "";
-				} else {
-					return method.getDeclaringClass().getName();
-				}
-			}
-		};
-	}
-    
-    /**
-     * Gets the modified auditable instance from Method argument.
-     *
-     * @param auditable the auditable
-     * @param method the method
-     * @return the auditable instance
-     */
-	public static Auditable getAuditableInstance(final Auditable auditable, final Method method) {
-
-		if (method == null) {
-			return auditable;
-		} else if (auditable != null) {
-			return new Auditable() {
-				@Override
-				public AuditEvents event() {
-					if (auditable.event() == null) {
-						return AuditEvents.REQUEST_RESPONSE;
-					} else {
-						return auditable.event();
-					}
-				}
-
-				@Override
-				public String activity() {
-					if (auditable.activity() == null) {
-						return method.getName();
-					} else {
-						return auditable.activity();
-					}
-				}
-
-				@Override
-				public String auditClass() {
-					if (auditable.auditClass() == null) {
-						return method.getDeclaringClass().getName();
-					} else {
-						return auditable.auditClass();
-					}
-				}
-
-				@Override
-				public Class<? extends Annotation> annotationType() {
-					return Auditable.class;
-				}
-			};
-
+	public static AuditData getDefaultAuditableInstance(final Method method) {
+		if(method != null) {
+			return new AuditData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName());
 		} else {
-			return null;
+			return new AuditData(AuditEvents.REQUEST_RESPONSE, "", "");
 		}
 	}
 }

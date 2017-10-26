@@ -8,6 +8,13 @@ import org.aspectj.lang.annotation.Pointcut;
  * @author jshrader
  */
 public class BaseRestProviderAspect {
+
+	/**
+	 * Protected constructor.
+	 */
+	protected BaseRestProviderAspect(){
+		super();
+	}
 	
 	/**
 	 * This aspect defines the pointcut of standard REST controller.  Those are controllers that...
