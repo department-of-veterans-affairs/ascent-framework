@@ -9,6 +9,7 @@ package gov.va.ascent.framework.swagger;
  */
 //jshrader interface constants is an approved pattern here, this rule should be disabled
 //CHECKSTYLE:OFF
+@SuppressWarnings({"squid:S1214","common-java:InsufficientLineCoverage"})
 public interface SwaggerResponseMessages {
 	//CHECKSTYLE:ON
 	

@@ -1,12 +1,11 @@
 package gov.va.ascent.framework.service;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
+import gov.va.ascent.framework.audit.AuditLogger;
+import gov.va.ascent.framework.audit.BaseAuditAspect;
+import gov.va.ascent.framework.messages.Message;
+import gov.va.ascent.framework.messages.MessageSeverity;
+import gov.va.ascent.framework.validation.Validatable;
+import gov.va.ascent.framework.validation.ViolationMessageParts;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -15,12 +14,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 
-import gov.va.ascent.framework.audit.AuditLogger;
-import gov.va.ascent.framework.audit.BaseAuditAspect;
-import gov.va.ascent.framework.messages.Message;
-import gov.va.ascent.framework.messages.MessageSeverity;
-import gov.va.ascent.framework.validation.Validatable;
-import gov.va.ascent.framework.validation.ViolationMessageParts;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * The Class ServiceValidationToMessageAspect is an aspect that performs validation (i.e. JSR 303) on the 
@@ -71,7 +70,7 @@ public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 					convertMapToMessages(serviceResponse, messages);
 					AuditLogger.error(
 							BaseAuditAspect.getDefaultAuditableInstance(methodSignature.getMethod()), 
-							serviceResponse.getMessages().stream().map(e -> e.toString()).reduce("", String::concat));
+							serviceResponse.getMessages().stream().map(Message::toString).reduce("", String::concat));
 				}
 			}
 		}
@@ -109,12 +108,7 @@ public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 				serviceResponse.addMessage(MessageSeverity.ERROR, fieldError.getNewKey(), fieldError.getText());
 			}
 		}
-		Collections.sort(serviceResponse.getMessages(), new Comparator<Message>() {
-			@Override
-			public int compare(Message message1, Message message2) {
-				return message1.getKey().compareTo(message2.getKey());
-			}
-		});
+		Collections.sort(serviceResponse.getMessages(), Comparator.comparing(Message::getKey));
 	}
 	
 }

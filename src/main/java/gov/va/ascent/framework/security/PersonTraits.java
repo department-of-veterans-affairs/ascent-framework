@@ -1,6 +1,9 @@
 package gov.va.ascent.framework.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
@@ -45,6 +48,10 @@ public class PersonTraits extends User {
 
     public PersonTraits() {
         super("NA","NA", AuthorityUtils.NO_AUTHORITIES);
+    }
+
+    protected String[] getToStringEqualsHashExcludeFields() {
+        return new String[] {};
     }
 
     @Override
@@ -229,92 +236,19 @@ public class PersonTraits extends User {
     }
 
     @Override
-    public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		if (!super.equals(o))
-			return false;
-
-		PersonTraits that = (PersonTraits) o;
-
-		if (!dodedipnid.equals(that.dodedipnid))
-			return false;
-		if (firstName != null ? !firstName.equals(that.firstName) : that.firstName != null)
-			return false;
-		if (lastName != null ? !lastName.equals(that.lastName) : that.lastName != null)
-			return false;
-		if (middleName != null ? !middleName.equals(that.middleName) : that.middleName != null)
-			return false;
-		if (prefix != null ? !prefix.equals(that.prefix) : that.prefix != null)
-			return false;
-		if (suffix != null ? !suffix.equals(that.suffix) : that.suffix != null)
-			return false;
-		if (gender != null ? !gender.equals(that.gender) : that.gender != null)
-			return false;
-		if (assuranceLevel != null ? !assuranceLevel.equals(that.assuranceLevel) : that.assuranceLevel != null)
-			return false;
-		if (email != null ? !email.equals(that.email) : that.email != null)
-			return false;
-		if (pnidType != null ? !pnidType.equals(that.pnidType) : that.pnidType != null)
-			return false;
-		if (pnid != null ? !pnid.equals(that.pnid) : that.pnid != null)
-			return false;
-		if (pid != null ? !pid.equals(that.pid) : that.pid != null)
-			return false;
-		if (correlationIds != null ? !correlationIds.equals(that.correlationIds) : that.correlationIds != null)
-			return false;		
-
-		if (icn != null ? !icn.equals(that.icn) : that.icn != null)
-			return false;
-		
-		if (birthDate != null ? !birthDate.equals(that.birthDate) : that.birthDate != null)
-			return false;		
-		return fileNumber != null ? fileNumber.equals(that.fileNumber) : that.fileNumber == null;
+    public boolean equals(final Object obj) {
+        return EqualsBuilder.reflectionEquals(this, obj, getToStringEqualsHashExcludeFields());
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + dodedipnid.hashCode();
-        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
-        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
-        result = 31 * result + (middleName != null ? middleName.hashCode() : 0);
-        result = 31 * result + (prefix != null ? prefix.hashCode() : 0);
-        result = 31 * result + (suffix != null ? suffix.hashCode() : 0);
-        result = 31 * result + (birthDate != null ? birthDate.hashCode() : 0);
-        result = 31 * result + (gender != null ? gender.hashCode() : 0);
-        result = 31 * result + (assuranceLevel != null ? assuranceLevel.hashCode() : 0);
-        result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (pnidType != null ? pnidType.hashCode() : 0);
-        result = 31 * result + (pnid != null ? pnid.hashCode() : 0);
-        result = 31 * result + (pid != null ? pid.hashCode() : 0);
-        result = 31 * result + (correlationIds != null ? correlationIds.hashCode() : 0);        
-        result = 31 * result + (icn != null ? icn.hashCode() : 0);
-        result = 31 * result + (fileNumber != null ? fileNumber.hashCode() : 0);
-        return result;
+        return HashCodeBuilder.reflectionHashCode(this, getToStringEqualsHashExcludeFields());
     }
 
     @Override
     public String toString() {
-        return "PersonTraits{" +
-                "dodedipnid='" + dodedipnid + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", middleName='" + middleName + '\'' +
-                ", prefix='" + prefix + '\'' +
-                ", suffix='" + suffix + '\'' +
-                ", birthDate=" + birthDate +
-                ", gender='" + gender + '\'' +
-                ", assuranceLevel='" + assuranceLevel + '\'' +
-                ", email='" + email + '\'' +
-                ", pnidType='" + pnidType + '\'' +
-                ", pnid='" + pnid + '\'' +
-                ", pid='" + pid + '\'' +
-                ", icn='" + icn + '\'' +
-                ", correlationIds='" + correlationIds + '\'' +                
-                ", fileNumber='" + fileNumber + '\'' +
-                '}';
+        final ReflectionToStringBuilder reflectionToStringBuilder = new ReflectionToStringBuilder(this);
+        reflectionToStringBuilder.setExcludeFieldNames(getToStringEqualsHashExcludeFields());
+        return reflectionToStringBuilder.toString();
     }
 }

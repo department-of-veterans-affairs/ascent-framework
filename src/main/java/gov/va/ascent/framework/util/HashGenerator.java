@@ -1,9 +1,9 @@
 package gov.va.ascent.framework.util;
 
+import org.springframework.util.Assert;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
-import org.springframework.util.Assert;
 
 /**
  * Utility class for generating hashes using different algorithms.
@@ -43,7 +43,7 @@ public final class HashGenerator {
 		digest.update(strInput.getBytes());
 		byte [] byteData = digest.digest();
 		
-		StringBuffer sBuffer = new StringBuffer();
+		StringBuilder sBuffer = new StringBuilder();
         for (int i = 0; i < byteData.length; i++) {
         	sBuffer.append(Integer.toString((byteData[i] & MD5_0XFF) + MD5_0X100, MD5_RANGE).substring(1));
         }
