@@ -1,13 +1,12 @@
 package gov.va.ascent.framework.rest.provider;
 
-import java.util.Set;
-
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.springframework.http.HttpStatus;
-
 import gov.va.ascent.framework.messages.Message;
 import gov.va.ascent.framework.messages.MessageSeverity;
 import gov.va.ascent.framework.util.Defense;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.springframework.http.HttpStatus;
+
+import java.util.Set;
 
 /**
  * The Class MessageSeverityMatchRule is a rule used to match a Message solely based on Severity.
@@ -31,6 +30,7 @@ public final class MessageSeverityMatchRule implements MessagesToHttpStatusRule 
 	public MessageSeverityMatchRule(final MessageSeverity severityToMatch, final HttpStatus httpStatus) {
 		super();
 		Defense.notNull(severityToMatch, "severityToMatch cannot be null!");
+		Defense.notNull(httpStatus, "httpStatus cannot be null!");
 		this.severityToMatch = severityToMatch;
 		this.httpStatus = httpStatus;
 	}

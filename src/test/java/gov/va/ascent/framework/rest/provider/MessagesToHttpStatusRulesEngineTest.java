@@ -1,17 +1,17 @@
 package gov.va.ascent.framework.rest.provider;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import gov.va.ascent.framework.messages.Message;
+import gov.va.ascent.framework.messages.MessageSeverity;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
-import gov.va.ascent.framework.messages.Message;
-import gov.va.ascent.framework.messages.MessageSeverity;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class MessagesToHttpStatusRulesEngineTest {
 
@@ -36,6 +36,13 @@ public class MessagesToHttpStatusRulesEngineTest {
 		MessageKeySeverityMatchRule errorRule = new MessageKeySeverityMatchRule(errMessage, HttpStatus.UNAUTHORIZED);
 		messagesToHttpStatusRulesEngine.addRule(errorRule);
 		assertEquals(HttpStatus.UNAUTHORIZED,messagesToHttpStatusRulesEngine.messagesToHttpStatus(messagesInResponse));
+	}
+
+	@Test
+	public void testAddRule() throws Exception {
+		messagesToHttpStatusRulesEngine.addRule(null);
+		messagesInResponse.clear();
+		assertNull(messagesToHttpStatusRulesEngine.messagesToHttpStatus(messagesInResponse));
 	}
 
 

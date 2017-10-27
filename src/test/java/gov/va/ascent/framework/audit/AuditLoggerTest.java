@@ -1,13 +1,10 @@
 package gov.va.ascent.framework.audit;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Modifier;
-
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.Appender;
+import gov.va.ascent.framework.security.PersonTraits;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.junit.After;
 import org.junit.Before;
@@ -18,17 +15,28 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.Appender;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 
 /**
  * Audit Logger Test class that shows how to hook logback with mockito to see
  * the logging activity
  */
 @RunWith(MockitoJUnitRunner.class)
+@ContextConfiguration
 public class AuditLoggerTest {
 
 	@SuppressWarnings("rawtypes")
@@ -69,8 +77,11 @@ public class AuditLoggerTest {
 	@Test
 	public void auditDebug() throws NoSuchMethodException, SecurityException {
 		// given
+		Method method = AuditLoggerTest.class.getMethod("auditDebug", null);
 		AuditLogger.debug(
-				BaseAuditAspect.getDefaultAuditableInstance(AuditLoggerTest.class.getMethod("auditDebug", null)),
+				new AuditData(AuditEvents.REQUEST_RESPONSE,
+						method.getName(),
+						method.getDeclaringClass().getName()),
 				"Audit DEBUG Activity Detail");
 
 		// Now verify our logging interactions
@@ -86,8 +97,9 @@ public class AuditLoggerTest {
 	@Test
 	public void auditInfo() throws NoSuchMethodException, SecurityException {
 		// given
+		Method method = AuditLoggerTest.class.getMethod("auditInfo", null);
 		AuditLogger.info(
-				BaseAuditAspect.getDefaultAuditableInstance(AuditLoggerTest.class.getMethod("auditInfo", null)),
+				new AuditData(AuditEvents.REQUEST_RESPONSE,method.getName(), method.getDeclaringClass().getName()),
 				"Audit INFO Activity Detail");
 
 		// Now verify our logging interactions
@@ -104,8 +116,9 @@ public class AuditLoggerTest {
 	@Test
 	public void auditWarn() throws NoSuchMethodException, SecurityException {
 		// given
+		Method method = AuditLoggerTest.class.getMethod("auditWarn", null);
 		AuditLogger.warn(
-				BaseAuditAspect.getDefaultAuditableInstance(AuditLoggerTest.class.getMethod("auditWarn", null)),
+				new AuditData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
 				"Audit WARN Activity Detail");
 
 		// Now verify our logging interactions
@@ -123,8 +136,34 @@ public class AuditLoggerTest {
 	@Test
 	public void auditError() throws NoSuchMethodException, SecurityException {
 		// given and when
+		Method method = AuditLoggerTest.class.getMethod("auditError", null);
 		AuditLogger.error(
-				BaseAuditAspect.getDefaultAuditableInstance(AuditLoggerTest.class.getMethod("auditError", null)),
+				new AuditData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
+				"Audit ERROR Activity Detail");
+
+		// Now verify our logging interactions
+		verify(mockAppender).doAppend(captorLoggingEvent.capture());
+		// Having a genricised captor means we don't need to cast
+		final LoggingEvent loggingEvent = captorLoggingEvent.getValue();
+		// Check log level is correct
+		assertThat(loggingEvent.getLevel(), is(Level.ERROR));
+		// Check the message being logged is correct
+		assertThat(loggingEvent.getFormattedMessage(), is("Audit ERROR Activity Detail"));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	@WithMockUser
+	public void auditErrorPersonTraits() throws NoSuchMethodException, SecurityException {
+		// given and when
+		PersonTraits personTraits = new PersonTraits("user", "password",
+				AuthorityUtils.createAuthorityList("ROLE_TEST"));
+		Authentication auth = new UsernamePasswordAuthenticationToken(personTraits,
+				personTraits.getPassword(), personTraits.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(auth);
+		Method method = AuditLoggerTest.class.getMethod("auditError", null);
+		AuditLogger.error(
+				new AuditData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
 				"Audit ERROR Activity Detail");
 
 		// Now verify our logging interactions

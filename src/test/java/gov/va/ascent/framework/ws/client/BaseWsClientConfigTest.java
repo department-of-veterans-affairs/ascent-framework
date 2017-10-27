@@ -1,10 +1,8 @@
 package gov.va.ascent.framework.ws.client;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import javax.xml.soap.SOAPException;
-
+import gov.va.ascent.framework.exception.InterceptingExceptionTranslator;
+import gov.va.ascent.framework.log.PerformanceLogMethodInterceptor;
+import gov.va.ascent.framework.ws.security.VAServiceWss4jSecurityInterceptor;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponseInterceptor;
 import org.junit.After;
@@ -22,9 +20,9 @@ import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.client.support.interceptor.ClientInterceptor;
 
-import gov.va.ascent.framework.exception.InterceptingExceptionTranslator;
-import gov.va.ascent.framework.log.PerformanceLogMethodInterceptor;
-import gov.va.ascent.framework.ws.security.VAServiceWss4jSecurityInterceptor;
+import javax.xml.soap.SOAPException;
+
+import static org.junit.Assert.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 public class BaseWsClientConfigTest {
 
@@ -128,7 +126,7 @@ public class BaseWsClientConfigTest {
 	@Test
 	public void testGetVAServiceWss4jSecurityInterceptor() {
 		BaseWsClientConfig test = new BaseWsClientConfig();
-		assertTrue(test.getVAServiceWss4jSecurityInterceptor("testuser", "test123", "EVSS", "STN_ID") instanceof VAServiceWss4jSecurityInterceptor);
+		assertTrue(test.getVAServiceWss4jSecurityInterceptor("testuser", "test123", "EVSS") instanceof VAServiceWss4jSecurityInterceptor);
 	}
 
 }

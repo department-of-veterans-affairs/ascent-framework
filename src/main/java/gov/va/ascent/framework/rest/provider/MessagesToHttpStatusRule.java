@@ -1,16 +1,16 @@
 package gov.va.ascent.framework.rest.provider;
 
-import java.util.Set;
-
+import gov.va.ascent.framework.messages.Message;
 import org.springframework.http.HttpStatus;
 
-import gov.va.ascent.framework.messages.Message;
+import java.util.Set;
 
 /**
  * The Interface MessagesToHttpStatusRule is the rule interface used in the MessagesToHttpStatusRulesEngine.
  *
  * @author jshrader
  */
+@FunctionalInterface
 public interface MessagesToHttpStatusRule {
 
 	/**

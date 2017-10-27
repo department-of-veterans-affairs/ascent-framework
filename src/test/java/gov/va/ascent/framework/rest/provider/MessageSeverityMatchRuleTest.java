@@ -1,17 +1,17 @@
 package gov.va.ascent.framework.rest.provider;
 
-import static org.junit.Assert.*;
-
-import java.util.HashSet;
-import java.util.Set;
-
+import gov.va.ascent.framework.messages.Message;
+import gov.va.ascent.framework.messages.MessageSeverity;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
-import gov.va.ascent.framework.messages.Message;
-import gov.va.ascent.framework.messages.MessageSeverity;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class MessageSeverityMatchRuleTest {
 	
@@ -39,6 +39,27 @@ public class MessageSeverityMatchRuleTest {
 	public void testEval() {
 		messageSeverityMatchRule = new MessageSeverityMatchRule(MessageSeverity.ERROR,HttpStatus.UNAUTHORIZED);
 		assertEquals(HttpStatus.UNAUTHORIZED,messageSeverityMatchRule.eval(messagesToEval));
+	}
+
+	@Test
+	public void testEvalMessagesNull() {
+		messageSeverityMatchRule = new MessageSeverityMatchRule(MessageSeverity.ERROR,HttpStatus.UNAUTHORIZED);
+		assertEquals(null,messageSeverityMatchRule.eval(null));
+	}
+
+	@Test
+	public void testEvalMessagesEmpty() {
+		messageSeverityMatchRule = new MessageSeverityMatchRule(MessageSeverity.ERROR,HttpStatus.UNAUTHORIZED);
+		assertEquals(null,messageSeverityMatchRule.eval(new HashSet<Message>()));
+	}
+
+	@Test
+	public void testEvalMessagesDoNotMatch() {
+		Message msg = new Message(MessageSeverity.INFO, "InfoKey", "Info Text");
+		Set<Message> messages = new HashSet<>();
+		messages.add(msg);
+		messageSeverityMatchRule = new MessageSeverityMatchRule(MessageSeverity.ERROR,HttpStatus.UNAUTHORIZED);
+		assertEquals(null,messageSeverityMatchRule.eval(messages));
 	}
 
 	@Test

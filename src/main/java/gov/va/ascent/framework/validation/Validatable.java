@@ -9,6 +9,7 @@ import java.util.Map;
  * 
  * @author jshrader
  */
+@FunctionalInterface
 public interface Validatable extends Serializable {
 
 	/**
