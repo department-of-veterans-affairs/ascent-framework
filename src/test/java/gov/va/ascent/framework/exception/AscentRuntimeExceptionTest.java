@@ -21,7 +21,6 @@ public class AscentRuntimeExceptionTest {
         AscentRuntimeException ascentRuntimeException = new AscentRuntimeException();
 
 
-        Assert.assertEquals(null,ascentRuntimeException.getCategory());
         Assert.assertEquals("Test Server", ascentRuntimeException.getServerName());
         Assert.assertThat(ascentRuntimeException.getMessage(), containsString("Unique ID: ["));
         Assert.assertTrue(ascentRuntimeException.getUniqueId().matches("[0-9]+"));
@@ -65,32 +64,9 @@ public class AscentRuntimeExceptionTest {
     @Test
     public void getMessageTestCategoryNull() throws Exception {
         AscentRuntimeException ascentRuntimeException = new AscentRuntimeException();
-        ascentRuntimeException.setCategory(null);
         Assert.assertEquals("Unique ID: ["
                         + ascentRuntimeException.getUniqueId() + "] Server Name: [Test Server] "
                 , ascentRuntimeException.getMessage());
-
-    }
-
-    @Test
-    public void getMessageTestCategory() throws Exception {
-        AscentRuntimeException ascentRuntimeException = new AscentRuntimeException();
-        ascentRuntimeException.setCategory("Test Category");
-        Assert.assertEquals("Unique ID: ["
-                        + ascentRuntimeException.getUniqueId()
-                        + "] Server Name: [Test Server] Category: [Test Category] "
-                , ascentRuntimeException.getMessage());
-
-    }
-
-    @Test
-    public void getSuperMessageTest() throws Exception {
-        AscentRuntimeException ascentRuntimeException = new AscentRuntimeException("Message Test");
-        ascentRuntimeException.setCategory("Test Category");
-//        Assert.assertEquals("Unique ID: ["
-//                        + ascentRuntimeException.getUniqueId()
-//                        + "] Server Name: [Test Server] Category: [Test Category] Message Test"
-//                , ascentRuntimeException.getMessage());
 
     }
 

@@ -31,7 +31,7 @@ public abstract class AbstractTransferObject implements Serializable, Validatabl
 	public Map<String, List<ViolationMessageParts>> validate(Map<String, List<ViolationMessageParts>> messages){
 		if(messages == null){
 			//jshrader allowing assignment of messages here in this framework class in case it is null
-			messages = new LinkedHashMap<>();
+			messages = new LinkedHashMap<>(); // NOSONAR
 			//CHECKSTYLE:ON
 		}
 		

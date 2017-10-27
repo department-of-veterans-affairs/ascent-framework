@@ -1,17 +1,5 @@
 package gov.va.ascent.framework.persist;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectServer;
@@ -21,6 +9,16 @@ import com.db4o.cs.Db4oClientServer;
 import com.db4o.cs.config.ClientConfiguration;
 import com.db4o.cs.config.ServerConfiguration;
 import com.db4o.ext.Db4oIOException;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.io.File;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.util.List;
 
 /**
  * This class is a simple database client and possibly server for db4o.
@@ -312,7 +310,7 @@ public class Db4oDatabase {
 				try {
 					// pause, wait for server to start if its starting on another node in the cluster.
 					synchronized(this) {
-					    this.wait(5000);
+					    this.wait(5000); // NOSONAR
 					}
 				} catch (final InterruptedException ie) {
 					LOGGER.error("error sleeping trying to wait for db4o server to startup.", ie);
