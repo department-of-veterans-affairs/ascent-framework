@@ -30,7 +30,7 @@ public final class AuditData {
      * @param activity the activity or method name.
      * @param auditClass the class name for class under audit.
      */
-    protected AuditData(final AuditEvents event, final String activity, final String auditClass){
+    public AuditData(final AuditEvents event, final String activity, final String auditClass){
         this.event = event;
         this.activity = activity;
         this.auditClass = auditClass;
