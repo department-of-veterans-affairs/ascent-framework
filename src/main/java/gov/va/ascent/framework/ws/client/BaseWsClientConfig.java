@@ -328,10 +328,11 @@ public class BaseWsClientConfig {
 	 * @param username          the username
 	 * @param password          the password
 	 * @param vaApplicationName the va application name
+	 * @param stationId the stationd id
 	 * @return the security interceptor
 	 */
 	protected final VAServiceWss4jSecurityInterceptor getVAServiceWss4jSecurityInterceptor(final String username,
-			final String password, final String vaApplicationName) {
+			final String password, final String vaApplicationName, final String stationId) {
 		final VAServiceWss4jSecurityInterceptor interceptor = new VAServiceWss4jSecurityInterceptor();
 		interceptor.setSecurementActions("UsernameToken");
 		interceptor.setSecurementUsername(username);

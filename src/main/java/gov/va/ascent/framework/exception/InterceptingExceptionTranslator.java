@@ -1,12 +1,12 @@
 package gov.va.ascent.framework.exception;
 
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.ThrowsAdvice;
+
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This is a configurable interceptor which will catch and translate one exception type into another. This is useful if
@@ -47,7 +47,7 @@ public class InterceptingExceptionTranslator implements ThrowsAdvice {
 	 * @param args the args
 	 * @param throwable the throwable
 	 */
-	public final void afterThrowing(final Method method, final Object[] args, final Throwable throwable) {
+	public final void afterThrowing(final Method method, final Object[] args, final Object target, final Throwable throwable) {
 
 		try {
 			if (exclusionSet != null

@@ -126,7 +126,7 @@ public class BaseWsClientConfigTest {
 	@Test
 	public void testGetVAServiceWss4jSecurityInterceptor() {
 		BaseWsClientConfig test = new BaseWsClientConfig();
-		assertTrue(test.getVAServiceWss4jSecurityInterceptor("testuser", "test123", "EVSS") instanceof VAServiceWss4jSecurityInterceptor);
+		assertTrue(test.getVAServiceWss4jSecurityInterceptor("testuser", "test123", "EVSS", "STN_ID") instanceof VAServiceWss4jSecurityInterceptor);
 	}
 
 }

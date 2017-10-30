@@ -48,7 +48,7 @@ public class InterceptingExceptionTranslatorTest {
 
         interceptingExceptionTranslator
                 .afterThrowing(this.getClass().getMethod("testAscentRunTimeExceptionDefault"),
-                null, throwable);
+                null,null, throwable);
     }
 
     @Test
@@ -59,7 +59,7 @@ public class InterceptingExceptionTranslatorTest {
 
         interceptingExceptionTranslator.afterThrowing(this.getClass()
                         .getMethod("testAscentRunTimeExceptionMapNullAndDefaultExceptionTypeNull"),
-                null, throwable);
+                null, null, throwable);
 
         Assert.assertEquals("InterceptingExceptionTranslator caught exception, handling it as configured."
                 +"  Here are details [java.lang.Throwable thrown by gov.va.ascent.framework.exception."
@@ -85,7 +85,7 @@ public class InterceptingExceptionTranslatorTest {
 
         interceptingExceptionTranslator
                 .afterThrowing(this.getClass().getMethod("testExcludeThrowableDebugStatementException"),
-                null, throwable);
+                null,null, throwable);
 
         Assert.assertEquals("Exception translator caught exception [class java.lang.Throwable]"
                         + " however per configuration not translating this exception.",
@@ -110,7 +110,7 @@ public class InterceptingExceptionTranslatorTest {
         // Test
         interceptingExceptionTranslator
                 .afterThrowing(this.getClass().getMethod("testExcludeThrowableExceptionNoDebugStatement"),
-                null, throwable);
+                null,null, throwable);
 
         // Nothing should have been logged because exception was excluded
         Assert.assertTrue(ExceptionTestAppender.events.isEmpty());
@@ -132,7 +132,7 @@ public class InterceptingExceptionTranslatorTest {
         exceptions.expectCause(Matchers.<Throwable>equalTo(throwable));
 
         interceptingExceptionTranslator.afterThrowing(this.getClass().getMethod("testResolvableException"),
-                null, throwable);
+                null,null, throwable);
 
     }
 }
