@@ -8,6 +8,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.lang.reflect.Method;
+
 
 public class ExceptionHandlingUtilsTest {
 
@@ -44,12 +46,20 @@ public class ExceptionHandlingUtilsTest {
     public void testLoggingWarnOff() throws Exception {
         LOG.setLevel(Level.ERROR);
 
-        ExceptionHandlingUtils.logException("Catcher", this.getClass().getMethod("testLoggingWarnOff"),null, new Throwable("test throw"));
-        Assert.assertEquals("[ERROR] Catcher caught exception, handling it as configured.  Here are details [java.lang.Throwable thrown by gov.va.ascent.framework.exception.ExceptionHandlingUtilsTest.testLoggingWarnOff] args [null].",
+        ExceptionHandlingUtils.logException("Catcher", myMethod(),null, new Throwable("test throw"));
+        Assert.assertEquals("[ERROR] Catcher caught exception, handling it as configured.  Here are details [java.lang.Throwable thrown by gov.va.ascent.framework.exception.ExceptionHandlingUtilsTest.someMethod] args [null].",
                 ExceptionTestAppender.events.get(0).toString());
         Assert.assertEquals(Level.ERROR, ExceptionTestAppender.events.get(0).getLevel());
 
 
+    }
+
+    public Method myMethod() throws NoSuchMethodException{
+        return getClass().getDeclaredMethod("someMethod");
+    }
+
+    public void someMethod() {
+        // do nothing
     }
 
 }
