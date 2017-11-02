@@ -19,30 +19,24 @@ public class SwaggerResponseMessagesTest {
             + "  Response will contain a  \"messages\" element that will provide further information on the error."
             + "  Please retry.  If problem persists, please contact support with a copy of the Response.";
 
-    SwaggerResponseMessages swaggerResponseMessages = new SwaggerResponseMessagesTestImpl();
-
-
     @Test
     public void response200MessageTextTest() throws Exception {
-        Assert.assertEquals(RESPONSE_200_MESSAGE, this.swaggerResponseMessages.MESSAGE_200);
+        Assert.assertEquals(RESPONSE_200_MESSAGE, SwaggerResponseMessages.MESSAGE_200);
     }
 
     @Test
     public void response403MessageTextTest() throws Exception {
-        Assert.assertEquals(RESPONSE_403_MESSAGE, this.swaggerResponseMessages.MESSAGE_403);
+        Assert.assertEquals(RESPONSE_403_MESSAGE, SwaggerResponseMessages.MESSAGE_403);
     }
 
     @Test
     public void response400MessageTextTest() throws Exception {
-        Assert.assertEquals(RESPONSE_400_MESSAGE, this.swaggerResponseMessages.MESSAGE_400);
+        Assert.assertEquals(RESPONSE_400_MESSAGE, SwaggerResponseMessages.MESSAGE_400);
     }
 
     @Test
     public void response500MessageTextTest() throws Exception {
-        Assert.assertEquals(RESPONSE_500_MESSAGE, this.swaggerResponseMessages.MESSAGE_500);
+        Assert.assertEquals(RESPONSE_500_MESSAGE, SwaggerResponseMessages.MESSAGE_500);
     }
 
-    class SwaggerResponseMessagesTestImpl implements SwaggerResponseMessages {
-
-    }
 }

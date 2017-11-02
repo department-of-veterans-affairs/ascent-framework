@@ -1,12 +1,12 @@
 package gov.va.ascent.framework.exception;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class ExceptionToExceptionTranslationHandler is an exception handler that does a translation to a 
@@ -82,6 +82,8 @@ public class ExceptionToExceptionTranslationHandler {
 	 * @param args the args
 	 * @param throwable the throwable
 	 */
+	@SuppressWarnings("squid:S00112")
+	// Sonar - ignore throws Throwable because this method could be translating any error.
 	public final void handleViaTranslation(final Method method, final Object[] args, final Throwable throwable) throws Throwable {
 
 		if(method == null || throwable == null){

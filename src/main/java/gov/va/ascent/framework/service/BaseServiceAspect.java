@@ -8,6 +8,10 @@ import org.aspectj.lang.annotation.Pointcut;
  * @author jshrader
  */
 public class BaseServiceAspect {
+
+	protected BaseServiceAspect(){
+		super();
+	}
 	
 	/**
 	 * This pointcut reflects a public standard service method.

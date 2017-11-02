@@ -1,18 +1,17 @@
 package gov.va.ascent.framework.rest.provider;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.HashSet;
-import java.util.Set;
-
+import gov.va.ascent.framework.messages.Message;
+import gov.va.ascent.framework.messages.MessageSeverity;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
-import gov.va.ascent.framework.messages.Message;
-import gov.va.ascent.framework.messages.MessageSeverity;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class MessageKeySeverityMatchRuleTest {
 
@@ -48,6 +47,13 @@ public class MessageKeySeverityMatchRuleTest {
 		Message messageToMatch = new Message(MessageSeverity.ERROR, "ErrorKey", "Error Text");
 		messageKeySeverityMatchRule = new MessageKeySeverityMatchRule(messageToMatch, HttpStatus.UNAUTHORIZED);
 		assertNotNull(messageKeySeverityMatchRule.toString());
+	}
+
+	@Test
+	public void testEvalNull() {
+		Message messageToMatch = new Message(MessageSeverity.ERROR, "klahsdjh", "Error kuahdkj");
+		messageKeySeverityMatchRule = new MessageKeySeverityMatchRule(messageToMatch, HttpStatus.UNAUTHORIZED);
+		assertEquals(null,messageKeySeverityMatchRule.eval(messagesToEval));
 	}
 
 }

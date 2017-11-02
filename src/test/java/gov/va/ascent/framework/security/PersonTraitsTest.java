@@ -1,18 +1,19 @@
 package gov.va.ascent.framework.security;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.Calendar;
-import java.util.Date;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.core.authority.AuthorityUtils;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class PersonTraitsTest {
 
@@ -29,23 +30,56 @@ public class PersonTraitsTest {
 	    Date sysDate = new Date(System.currentTimeMillis());
 	    Date oneDayBefore = new Date(sysDate.getTime() - 10);  		
 		personTraitsDefault.setBirthDate(oneDayBefore);
-		personTraitsDefault.setDodedipnid("testvaliddodedipnid");
 		personTraitsDefault.setAssuranceLevel("testvalidassurancelevel");
 		personTraitsDefault.setEmail("validemail@testdomain.com");
 		personTraitsDefault.setFileNumber("testValidFN");
 		personTraitsDefault.setGender("M");
 		personTraitsDefault.setPnid("testValidPnid");
 		personTraitsDefault.setPnidType("testValidPnidType");
+		personTraitsDefault.setPid("796079018");
 		personTraitsDefault.setIcn("testValidIcn");
+		List<String> correlationIds = new ArrayList<>();
+		correlationIds.add("id1");
+		correlationIds.add("id2");
+		
+		personTraitsDefault.setCorrelationIds(correlationIds);
 	}
 
 	@After
 	public void tearDown() throws Exception {
 	}
 
-	//@Test
+	@Test
 	public void testHashCode() {
 		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setFirstName(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setLastName(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setMiddleName(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setPrefix(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setSuffix(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setBirthDate(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setGender(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setAssuranceLevel(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setPid(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setPnid(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setPnidType(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setCorrelationIds(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setIcn(null);
+		assertNotNull(personTraitsDefault.hashCode());
+		personTraitsDefault.setFileNumber(null);
+		assertNotNull(personTraitsDefault.hashCode());		
 	}
 
 	@Test
@@ -299,6 +333,21 @@ public class PersonTraitsTest {
 	public void testGetUser() {
 		assertTrue("FN LN".equals(personTraitsDefault.getUser()));
 	}
+	
+	@Test
+	public void testGetCorrelationId() {
+		assertNotNull(personTraitsDefault.getCorrelationIds());
+		assertTrue(personTraitsDefault.getCorrelationIds().size()>0);
+	}
+	
+	@Test
+	public void testSetCorrelationId() {
+		List<String> correlationIds = new ArrayList<>();
+		correlationIds.add("corr_id1");
+		correlationIds.add("corr_id2");
+		personTraitsDefault.setCorrelationIds(correlationIds);
+		assertNotNull(personTraitsDefault.getCorrelationIds());
+	}
 
 	@Test
 	public void testEqualsNullObject() {
@@ -307,7 +356,6 @@ public class PersonTraitsTest {
 	@Test
 	public void testEqualsNotNullObject() {
 		PersonTraits o = new PersonTraits();
-		o.setDodedipnid("TestDodedipnid");
 		o.setFirstName("FN");
 		o.setLastName("ln");
 		o.setMiddleName("mn");
@@ -321,10 +369,47 @@ public class PersonTraitsTest {
 		o.setGender("m");
 		o.setPnid("testpnid");
 		o.setPnidType("testPnidType");
+		o.setPid("testPid");
 		o.setIcn("testIcn");
 		assertFalse(personTraitsDefault.equals(o));
+		
+		o.setDodedipnid("TestDodedipnid");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setFirstName("FN");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setLastName("LN");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setMiddleName("MN");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setPrefix("Dr.");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setSuffix("Jr");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setGender("M");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setAssuranceLevel("testvalidassurancelevel");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setEmail("validemail@testdomain.com");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setPnidType("testValidPnidType");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setPnid("testValidPnid");
+		assertFalse(personTraitsDefault.equals(o));
+		o.setPid("796079018");
+		assertFalse(personTraitsDefault.equals(o));
+		List<String> correlationIds = new ArrayList<>();
+		correlationIds.add("id1");
+		correlationIds.add("id2");
+		o.setCorrelationIds(correlationIds);
+		assertFalse(personTraitsDefault.equals(o));	
+		o.setIcn("testValidIcn");
+		assertFalse(personTraitsDefault.equals(o));		
+	    Date sysDate = new Date(System.currentTimeMillis());
+	    Date oneDayBefore = new Date(sysDate.getTime() - 10);  		
+		o.setBirthDate(oneDayBefore);
+		assertFalse(personTraitsDefault.equals(o));
 	}	
-
+	
 	@Test
 	public void testToString() {
 		assertNotNull(personTraitsDefault.toString());

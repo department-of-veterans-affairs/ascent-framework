@@ -73,7 +73,7 @@ public final class AscentCommonSpringProfiles {
 	 */
 	public static final String PROFILE_REMOTE_AUDIT_IMPLS = "remote_audit_client_impl";
 
-	private AscentCommonSpringProfiles() {
+	AscentCommonSpringProfiles() {
 		throw new IllegalStateException("Utility class");
 	}
 }

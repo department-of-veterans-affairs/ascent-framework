@@ -1,20 +1,22 @@
 package gov.va.ascent.framework.audit;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-
-import org.apache.commons.lang3.StringUtils;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gov.va.ascent.framework.exception.AscentRuntimeException;
+import org.apache.commons.lang3.StringUtils;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
 
 
 /**
@@ -22,6 +24,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Aspect
 public class RequestResponseAspect extends BaseAuditAspect {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestResponseAspect.class);
 
     @Autowired
     ObjectMapper mapper;
@@ -43,14 +47,15 @@ public class RequestResponseAspect extends BaseAuditAspect {
         try {
         	response = joinPoint.proceed();
         } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
+            throw new AscentRuntimeException(throwable);
         }
         Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
         Auditable auditableAnnotation = method.getAnnotation(Auditable.class);
         
         if(auditableAnnotation != null && AuditEvents.REQUEST_RESPONSE.equals(auditableAnnotation.event())) {
-            auditableAnnotation = getAuditableInstance(auditableAnnotation, method);
-            writeAudit(joinPoint, new RequestResponse(request, response), auditableAnnotation);
+            AuditData auditData = new AuditData(auditableAnnotation.event(),
+                    auditableAnnotation.activity(), auditableAnnotation.auditClass());
+            writeAudit(joinPoint, new RequestResponse(request, response), auditData);
         }
         return response;
     }
@@ -74,12 +79,12 @@ public class RequestResponseAspect extends BaseAuditAspect {
          try {
         	 response = joinPoint.proceed();
          } catch (Throwable throwable) {
-             throw new RuntimeException(throwable);
+             throw new AscentRuntimeException(throwable);
          }
          final Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
-         final Auditable auditableAnnotation = getDefaultAuditableInstance(method);
-         
-    	 writeAudit(joinPoint, new RequestResponse(request, response), auditableAnnotation);
+         AuditData auditData = new AuditData(AuditEvents.REQUEST_RESPONSE,
+                 method.getName(), method.getDeclaringClass().getName());
+    	 writeAudit(joinPoint, new RequestResponse(request, response), auditData);
          
          return response;
 		
@@ -89,12 +94,11 @@ public class RequestResponseAspect extends BaseAuditAspect {
 	 * Write audit.
 	 *
 	 * @param joinPoint the join point
-	 * @param returnObject the return object
-	 * @param request the request
-	 * @param auditableAnnotation the auditable annotation
+     * @param requestResponse the request and response
+	 * @param auditData the auditable annotation
 	 */
 	private void writeAudit(final ProceedingJoinPoint joinPoint, RequestResponse requestResponse,
-			Auditable auditableAnnotation) {
+			AuditData auditData) {
 		mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
 		mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 		
@@ -106,6 +110,7 @@ public class RequestResponseAspect extends BaseAuditAspect {
 				request = mapper.writeValueAsString(requestResponse.getRequest()); 
 			}
 		} catch (JsonProcessingException ex) {
+		    LOGGER.error("Json Processing Exception occurred, converting to string: ", ex);
 			request = getMethodAndArgumentsAsString(joinPoint);
 		}
 		try {
@@ -114,9 +119,10 @@ public class RequestResponseAspect extends BaseAuditAspect {
 				response = mapper.writeValueAsString(requestResponse.getResponse()); 
 			}
 		} catch (JsonProcessingException ex) {
+            LOGGER.error("Json Processing Exception occurred, converting to string: ", ex);
 			response = getResultAsString(requestResponse.getResponse());
 		}
-		AuditLogger.info(auditableAnnotation, request.concat(response));
+            AuditLogger.info(auditData, request.concat(response));
 	}
 }
 

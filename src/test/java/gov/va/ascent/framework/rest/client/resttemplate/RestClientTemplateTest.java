@@ -1,7 +1,6 @@
 package gov.va.ascent.framework.rest.client.resttemplate;
 
-import static org.junit.Assert.assertTrue;
-
+import gov.va.ascent.framework.service.ServiceResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-import gov.va.ascent.framework.service.ServiceResponse;
+import static org.junit.Assert.assertTrue;
 
 public class RestClientTemplateTest {
 	

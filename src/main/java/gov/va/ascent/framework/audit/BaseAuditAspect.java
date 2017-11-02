@@ -1,13 +1,12 @@
 package gov.va.ascent.framework.audit;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Created by vgadda on 8/17/17.
@@ -46,7 +45,9 @@ public class BaseAuditAspect {
 	 * Ensure you follow that pattern to make use of this standard pointcut.
 	 */
 	@Pointcut("within(@org.springframework.web.bind.annotation.RestController *)")
-	protected static final void auditRestController() {}
+	protected static final void auditRestController() {
+		 // Do nothing.
+	}
 	
 	/**
 	 * This aspect defines the pointcut of standard REST endpoints.  Those are endpoints that...
@@ -58,7 +59,9 @@ public class BaseAuditAspect {
 	 * Ensure you follow that pattern to make use of this standard pointcut.
 	 */
 	@Pointcut("execution(public org.springframework.http.ResponseEntity<gov.va.ascent.framework.service.ServiceResponse+> *(..))")
-	protected static final void auditPublicServiceResponseRestMethod() {}
+	protected static final void auditPublicServiceResponseRestMethod() {
+		 // Do nothing.
+	}
 	
     /**
      * Gets the method and arguments as string.
@@ -67,7 +70,7 @@ public class BaseAuditAspect {
      * @return the method and arguments as string
      */
     protected String getMethodAndArgumentsAsString(ProceedingJoinPoint joinPoint) {
-        return Arrays.stream(joinPoint.getArgs()).map(arg -> arg.toString())
+        return Arrays.stream(joinPoint.getArgs()).map(Object::toString)
                 .collect(Collectors.joining(", ", getMethodName(joinPoint) + "(", ")"));
     }
 
@@ -109,92 +112,11 @@ public class BaseAuditAspect {
      * @param method the method
      * @return the auditable instance
      */
-    public static Auditable getDefaultAuditableInstance(final Method method) {
-        Auditable auditableAnnotation = new Auditable()
-        {
-			@Override
-			public AuditEvents event() {
-				return AuditEvents.REQUEST_RESPONSE;
-			}
-
-			@Override
-			public String activity() {
-				if (method==null) {
-					return "";
-				} else {
-					return method.getName();
-				}
-			}
-
-			@Override
-			public Class<? extends Annotation> annotationType() {
-				return Auditable.class;
-			}
-
-			@Override
-			public String auditClass() {
-				if (method==null) {
-					return "";
-				} else {
-					return method.getDeclaringClass().getName();
-				}
-			}
-        };
-        
-        return auditableAnnotation;
-    }
-    
-    /**
-     * Gets the modified auditable instance from Method argument.
-     *
-     * @param auditable the auditable
-     * @param method the method
-     * @return the auditable instance
-     */
-    public static Auditable getAuditableInstance(final Auditable auditable, final Method method) {
-    	
-    	if (method==null) {
-    		return auditable;
-    	} 
-    	else if (auditable!=null) {
-	        Auditable auditableAnnotation = new Auditable()
-	        {
-				@Override
-				public AuditEvents event() {
-					if (auditable.event()==null) {
-						return AuditEvents.REQUEST_RESPONSE;
-					} else {
-						return auditable.event();
-					}
-				}
-	
-				@Override
-				public String activity() {
-					if (auditable.activity()==null) {
-						return method.getName();
-					} else {
-						return auditable.activity();
-					}
-				}
-	
-				@Override
-				public String auditClass() {
-					if (auditable.auditClass()==null) {
-						return method.getDeclaringClass().getName();
-					} else {
-						return auditable.auditClass();
-					}
-				}
-				
-				@Override
-				public Class<? extends Annotation> annotationType() {
-					return Auditable.class;
-				}
-	        };
-	        return auditableAnnotation;
-    	} 
-    	else {
-    		return null;
-    	}	
-    }
+	public static AuditData getDefaultAuditableInstance(final Method method) {
+		if(method != null) {
+			return new AuditData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName());
+		} else {
+			return new AuditData(AuditEvents.REQUEST_RESPONSE, "", "");
+		}
+	}
 }

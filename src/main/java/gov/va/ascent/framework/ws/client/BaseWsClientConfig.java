@@ -1,18 +1,10 @@
 package gov.va.ascent.framework.ws.client;
 
-import java.io.File;
-import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.xml.soap.MessageFactory;
-import javax.xml.soap.SOAPException;
-
+import gov.va.ascent.framework.constants.AnnotationConstants;
+import gov.va.ascent.framework.exception.InterceptingExceptionTranslator;
+import gov.va.ascent.framework.log.PerformanceLogMethodInterceptor;
+import gov.va.ascent.framework.util.Defense;
+import gov.va.ascent.framework.ws.security.VAServiceWss4jSecurityInterceptor;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -31,11 +23,17 @@ import org.springframework.ws.soap.axiom.AxiomSoapMessageFactory;
 import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
-import gov.va.ascent.framework.constants.AnnotationConstants;
-import gov.va.ascent.framework.exception.InterceptingExceptionTranslator;
-import gov.va.ascent.framework.log.PerformanceLogMethodInterceptor;
-import gov.va.ascent.framework.util.Defense;
-import gov.va.ascent.framework.ws.security.VAServiceWss4jSecurityInterceptor;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.SOAPException;
+import java.io.File;
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Base WebService Client configuration, consolidates core/common web service configuration operations used across the applications.
@@ -330,7 +328,7 @@ public class BaseWsClientConfig {
 	 * @param username          the username
 	 * @param password          the password
 	 * @param vaApplicationName the va application name
-	 * @param stationId         the station id
+	 * @param stationId the stationd id
 	 * @return the security interceptor
 	 */
 	protected final VAServiceWss4jSecurityInterceptor getVAServiceWss4jSecurityInterceptor(final String username,

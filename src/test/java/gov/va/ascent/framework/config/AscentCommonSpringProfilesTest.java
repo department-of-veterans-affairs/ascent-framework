@@ -2,10 +2,9 @@ package gov.va.ascent.framework.config;
 
 import static org.junit.Assert.*;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
+
+import gov.va.ascent.framework.constants.AnnotationConstants;
 
 public class AscentCommonSpringProfilesTest {
 
@@ -128,4 +127,9 @@ public class AscentCommonSpringProfilesTest {
     public void profileUnitTestingTest() throws Exception {
         assertEquals(TEST_PROFILE_UNIT_TEST, AscentCommonSpringProfiles.PROFILE_UNIT_TEST);
     }      
+    
+    @Test(expected = IllegalStateException.class)
+    public void ascentCommonSpringProfilesConstructor() throws Exception {
+    		AscentCommonSpringProfiles instance = new AscentCommonSpringProfiles();
+    }    
 }

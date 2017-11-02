@@ -22,9 +22,6 @@ public class AscentRuntimeException extends RuntimeException {
 	/** Unique Identifier for the exception */
 	private final String uniqueId = Long.toString(System.currentTimeMillis());
 
-	/** Category for the exception, if any */
-	private String category;
-
 	/**
 	 * Instantiates a new exception.
 	 */
@@ -61,24 +58,6 @@ public class AscentRuntimeException extends RuntimeException {
 	}
 
 	/**
-	 * Gets the category.
-	 * 
-	 * @return the category
-	 */
-	public final String getCategory() {
-		return category;
-	}
-
-	/**
-	 * Sets the category.
-	 * 
-	 * @param category the new category
-	 */
-	public final void setCategory(final String category) {
-		this.category = category;
-	}
-
-	/**
 	 * Gets the unique id.
 	 * 
 	 * @return the unique id
@@ -107,9 +86,6 @@ public class AscentRuntimeException extends RuntimeException {
 		details.append("Unique ID: [" + getUniqueId() + END_BRACKET);
 		if (getServerName() != null) {
 			details.append("Server Name: [" + getServerName() + END_BRACKET);
-		}
-		if (getCategory() != null) {
-			details.append("Category: [" + getCategory() + END_BRACKET);
 		}
 		if (super.getMessage() != null) {
 			details.append(super.getMessage());
