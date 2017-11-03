@@ -5,21 +5,21 @@
  */
 package gov.va.ascent.framework.persist;
 
-import java.util.List;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import gov.va.ascent.framework.aspect.PerformanceLoggingAspect;
+import gov.va.ascent.framework.messages.Message;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-
-import gov.va.ascent.framework.messages.Message;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.*;
+import java.io.File;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -46,6 +46,17 @@ public class Db4oDatabaseTest {
     
     @After
     public void tearDown() {
+
+    }
+
+    @AfterClass
+    public static void clean() throws Exception {
+        File dir = new File("./");
+        for (File file:dir.listFiles()) {
+            if(file.getName().equals("datafile.db4o") || file.getName().equals("singleClientModeTest"))
+            file.delete();
+        }
+        
     }
 
     /**
@@ -161,7 +172,7 @@ public class Db4oDatabaseTest {
         db.postConstruct();
         assertEquals("cleanData==true and db isn't started, deleting old database prior to starting.",
                 Db4oTestLogAppender.events.get(1).getMessage());
-        assertEquals("database client instantiated.",Db4oTestLogAppender.events.get(2).getMessage());
+        assertEquals("database client instantiated.",Db4oTestLogAppender.events.get(3).getMessage());
     }
 
     /**
