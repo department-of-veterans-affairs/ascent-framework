@@ -67,7 +67,7 @@ public class RequestResponseAspect extends BaseAuditAspect {
      * @return the object
      * @throws Throwable the throwable
      */
-    @Around("!@annotation(gov.va.ascent.framework.audit.Auditable) && auditRestController() && auditPublicServiceResponseRestMethod()")
+    @Around("!@annotation(gov.va.ascent.framework.audit.Auditable) && auditRestController() || auditPublicServiceResponseRestMethod()")
 	public Object logRestPublicMethodRequestResponse(final ProceedingJoinPoint joinPoint) throws Throwable {
     	 
     	 Object response = null;
