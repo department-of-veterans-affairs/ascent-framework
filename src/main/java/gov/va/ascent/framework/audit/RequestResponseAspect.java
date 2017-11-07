@@ -6,7 +6,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.va.ascent.framework.exception.AscentRuntimeException;
-import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -14,9 +13,14 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.io.Serializable;
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -55,7 +59,7 @@ public class RequestResponseAspect extends BaseAuditAspect {
         if(auditableAnnotation != null && AuditEvents.REQUEST_RESPONSE.equals(auditableAnnotation.event())) {
             AuditData auditData = new AuditData(auditableAnnotation.event(),
                     auditableAnnotation.activity(), auditableAnnotation.auditClass());
-            writeAudit(joinPoint, new RequestResponse(request, response), auditData);
+            writeAudit(joinPoint, request, response, auditData);
         }
         return response;
     }
@@ -69,13 +73,13 @@ public class RequestResponseAspect extends BaseAuditAspect {
      */
     @Around("!@annotation(gov.va.ascent.framework.audit.Auditable) && auditRestController() && auditPublicServiceResponseRestMethod()")
 	public Object logRestPublicMethodRequestResponse(final ProceedingJoinPoint joinPoint) throws Throwable {
-    	 
+
     	 Object response = null;
     	 Object request = null;
     	 if (joinPoint.getArgs().length > 0 && joinPoint.getArgs()[0] != null) {
     		 request = joinPoint.getArgs()[0];
     	 }
-         
+
          try {
         	 response = joinPoint.proceed();
          } catch (Throwable throwable) {
@@ -84,8 +88,8 @@ public class RequestResponseAspect extends BaseAuditAspect {
          final Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
          AuditData auditData = new AuditData(AuditEvents.REQUEST_RESPONSE,
                  method.getName(), method.getDeclaringClass().getName());
-    	 writeAudit(joinPoint, new RequestResponse(request, response), auditData);
-         
+    	 writeAudit(joinPoint, request, response, auditData);
+
          return response;
 		
     }
@@ -94,62 +98,59 @@ public class RequestResponseAspect extends BaseAuditAspect {
 	 * Write audit.
 	 *
 	 * @param joinPoint the join point
-     * @param requestResponse the request and response
+     * @param request the request
+     * @param response the response
 	 * @param auditData the auditable annotation
 	 */
-	private void writeAudit(final ProceedingJoinPoint joinPoint, RequestResponse requestResponse,
+	private void writeAudit(final ProceedingJoinPoint joinPoint, Object request, Object response,
 			AuditData auditData) {
 		mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
 		mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-		
-		String request = StringUtils.EMPTY;
-		String response = StringUtils.EMPTY;
+		RequestResponseAuditData requestResponseAuditData = new RequestResponseAuditData();
+
+        HttpServletRequest httpServletRequest = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+
+        if(httpServletRequest != null){
+            requestResponseAuditData.setHttpRequestAuditData(getHttpRequestAuditData(httpServletRequest));
+        }
+
 		try {
-			if (requestResponse.getRequest()!=null) {
+			if (request != null) {
 				// serialize request as json
-				request = mapper.writeValueAsString(requestResponse.getRequest()); 
+                requestResponseAuditData.setRequest(mapper.writeValueAsString(request));
 			}
 		} catch (JsonProcessingException ex) {
 		    LOGGER.error("Json Processing Exception occurred, converting to string: ", ex);
-			request = getMethodAndArgumentsAsString(joinPoint);
+            requestResponseAuditData.setRequest(getMethodAndArgumentsAsString(joinPoint));
 		}
 		try {
-			if (requestResponse.getResponse()!=null) {
+			if (response != null) {
 				 // serialize response as json
-				response = mapper.writeValueAsString(requestResponse.getResponse()); 
+                requestResponseAuditData.setResponse(mapper.writeValueAsString(response));
 			}
 		} catch (JsonProcessingException ex) {
             LOGGER.error("Json Processing Exception occurred, converting to string: ", ex);
-			response = getResultAsString(requestResponse.getResponse());
+            requestResponseAuditData.setResponse(getResultAsString(response));
 		}
-            AuditLogger.info(auditData, request.concat(response));
+		try{
+            AuditLogger.info(auditData, mapper.writeValueAsString(requestResponseAuditData));
+        } catch (JsonProcessingException ex){
+		    LOGGER.error("Error occurred on JSON processing, calling toString", ex);
+		    AuditLogger.info(auditData, requestResponseAuditData.toString());
+        }
 	}
-}
 
-class RequestResponse implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
-	private transient Object request;
-    private transient Object response;
+	private HttpRequestAuditData getHttpRequestAuditData(HttpServletRequest request){
+	    final Map<String, String> headers = new HashMap<>();
 
-    public RequestResponse(Object request, Object response) {
-        this.request = request;
-        this.response = response;
-    }
+        Enumeration<String> headerNames = request.getHeaderNames();
 
-    public Object getRequest() {
-        return request;
-    }
-
-    public void setRequest(Object request) {
-        this.request = request;
-    }
-
-    public Object getResponse() {
-        return response;
-    }
-
-    public void setResponse(Object response) {
-        this.response = response;
+	    while(headerNames.hasMoreElements()){
+	        String headerName = headerNames.nextElement();
+	        headers.put(headerName, request.getHeader(headerName));
+        }
+        return new HttpRequestAuditData(headers, request.getRequestURI(),
+                request.getMethod());
     }
 }
+

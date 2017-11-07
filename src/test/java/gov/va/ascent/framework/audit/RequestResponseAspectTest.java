@@ -1,15 +1,7 @@
 package gov.va.ascent.framework.audit;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-
-import java.lang.reflect.Method;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
+import gov.va.ascent.framework.service.ServiceRequest;
+import gov.va.ascent.framework.service.ServiceResponse;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.junit.After;
@@ -17,12 +9,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-import gov.va.ascent.framework.service.ServiceRequest;
-import gov.va.ascent.framework.service.ServiceResponse;
+import java.lang.reflect.Method;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class RequestResponseAspectTest {
 
@@ -116,17 +110,6 @@ public class RequestResponseAspectTest {
 
     public Method myMethod() throws NoSuchMethodException{
         return getClass().getDeclaredMethod("someMethod");
-    }
-    
-    @Test
-    public void testRequestResponse() {
-    	RequestResponse rr = new RequestResponse(mockRequestObject, mockReturnObject);
-    	assertNotNull(rr.getRequest());
-    	assertNotNull(rr.getResponse());
-    	rr.setRequest(new TestServiceRequest());
-    	assertNotNull(rr.getRequest());
-    	rr.setResponse(new TestServiceResponse());
-    	assertNotNull(rr.getResponse());
     }
 
     @Auditable(event = AuditEvents.REQUEST_RESPONSE, activity = "unittestactivity")
