@@ -54,7 +54,7 @@ public class RequestResponseAspect extends BaseAuditAspect {
         if(auditableAnnotation != null && AuditEvents.REQUEST_RESPONSE.equals(auditableAnnotation.event())) {
             AuditEventData auditEventData = new AuditEventData(auditableAnnotation.event(),
                     auditableAnnotation.activity(), auditableAnnotation.auditClass());
-            writeAudit(joinPoint, request, response, auditEventData);
+            writeAudit(request, response, auditEventData);
         }
         return response;
     }
@@ -83,7 +83,7 @@ public class RequestResponseAspect extends BaseAuditAspect {
          final Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
          AuditEventData auditEventData = new AuditEventData(AuditEvents.REQUEST_RESPONSE,
                  method.getName(), method.getDeclaringClass().getName());
-    	 writeAudit(joinPoint, request, response, auditEventData);
+    	 writeAudit(request, response, auditEventData);
 
          return response;
 		
@@ -92,12 +92,11 @@ public class RequestResponseAspect extends BaseAuditAspect {
 	/**
 	 * Write audit.
 	 *
-	 * @param joinPoint the join point
      * @param request the request
      * @param response the response
 	 * @param auditEventData the auditable annotation
 	 */
-	private void writeAudit(final ProceedingJoinPoint joinPoint, Object request, Object response,
+	private void writeAudit(Object request, Object response,
 			AuditEventData auditEventData) {
 		RequestResponseAuditData requestResponseAuditData = new RequestResponseAuditData();
 
