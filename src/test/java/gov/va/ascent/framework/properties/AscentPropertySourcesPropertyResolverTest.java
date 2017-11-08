@@ -46,7 +46,6 @@ public class AscentPropertySourcesPropertyResolverTest {
 			propertySource1 = new ResourcePropertySource(
 			        "resource", DEFAULT_PROPERTIES);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         MutablePropertySources propertySources = new MutablePropertySources();

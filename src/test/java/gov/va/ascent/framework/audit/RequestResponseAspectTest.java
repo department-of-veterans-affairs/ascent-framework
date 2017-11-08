@@ -8,8 +8,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import java.lang.reflect.Method;
@@ -17,11 +21,17 @@ import java.lang.reflect.Method;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 public class RequestResponseAspectTest {
 
+	@Mock
+	RequestResponseLogSerializer requestResponseLogSerializer;
+
+
+	@InjectMocks
+	private RequestResponseAspect requestResponseAspect = new RequestResponseAspect();
+
 	private AnnotationConfigWebApplicationContext context;
-	private RequestResponseAspect requestResponseAspect;
     @Mock
     private ProceedingJoinPoint proceedingJoinPoint;
     private TestServiceResponse mockReturnObject = new TestServiceResponse();
@@ -31,17 +41,16 @@ public class RequestResponseAspectTest {
     private Object[] mockArray = {mockRequestObject};
 	@Before
 	public void setUp() throws Exception {
+		MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest));
 		try{
-	        context = new AnnotationConfigWebApplicationContext();
-	        context.register(TestObjectMapperConfig.class);
-	        context.refresh();
-	        requestResponseAspect = context.getBean(RequestResponseAspect.class);	        
+
 			when(proceedingJoinPoint.proceed()).thenReturn(mockReturnObject);
 			when(proceedingJoinPoint.getArgs()).thenReturn(mockArray);
 			when(proceedingJoinPoint.getSignature()).thenReturn(mockSignature);
 			when(mockSignature.getMethod()).thenReturn(myMethod());
 		}catch(Throwable e) {
-			
+
 		}
 	}
 

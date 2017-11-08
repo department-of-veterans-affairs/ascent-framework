@@ -112,11 +112,11 @@ public class BaseAuditAspect {
      * @param method the method
      * @return the auditable instance
      */
-	public static AuditData getDefaultAuditableInstance(final Method method) {
+	public static AuditEventData getDefaultAuditableInstance(final Method method) {
 		if(method != null) {
-			return new AuditData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName());
+			return new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName());
 		} else {
-			return new AuditData(AuditEvents.REQUEST_RESPONSE, "", "");
+			return new AuditEventData(AuditEvents.REQUEST_RESPONSE, "", "");
 		}
 	}
 }
