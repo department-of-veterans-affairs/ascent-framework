@@ -21,10 +21,10 @@ public class RequestResponseAuditData implements Serializable{
     private String method;
 
     /* The response. */
-    private Object response;
+    private transient Object response;
 
     /* The request. */
-    private Object request;
+    private transient Object request;
 
     /**
      * Gets the response.
