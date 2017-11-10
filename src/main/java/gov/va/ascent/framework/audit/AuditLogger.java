@@ -24,7 +24,7 @@ public class AuditLogger {
      * @param auditable the auditable
      * @param activityDetail the activity detail
      */
-    public static void debug(AuditData auditable, String activityDetail) {
+    public static void debug(AuditEventData auditable, String activityDetail) {
         addMdcSecurityEntries(auditable);
         LOGGER.debug(activityDetail);
         MDC.clear();
@@ -36,7 +36,7 @@ public class AuditLogger {
      * @param auditable the auditable
      * @param activityDetail the activity detail
      */
-    public static void info(AuditData auditable, String activityDetail) {
+    public static void info(AuditEventData auditable, String activityDetail) {
         addMdcSecurityEntries(auditable);
         LOGGER.info(activityDetail);
         MDC.clear();
@@ -49,7 +49,7 @@ public class AuditLogger {
      * @param auditable the auditable
      * @param activityDetail the activity detail
      */
-    public static void warn(AuditData auditable, String activityDetail) {
+    public static void warn(AuditEventData auditable, String activityDetail) {
         addMdcSecurityEntries(auditable);
         LOGGER.warn(activityDetail);
         MDC.clear();
@@ -62,7 +62,7 @@ public class AuditLogger {
      * @param auditable the auditable
      * @param activityDetail the activity detail
      */
-    public static void error(AuditData auditable, String activityDetail) {
+    public static void error(AuditEventData auditable, String activityDetail) {
         addMdcSecurityEntries(auditable);
         LOGGER.error(activityDetail);
         MDC.clear();
@@ -74,7 +74,7 @@ public class AuditLogger {
      *
      * @param auditable the auditable
      */
-    private static void addMdcSecurityEntries(AuditData auditable) {
+    private static void addMdcSecurityEntries(AuditEventData auditable) {
     	MDC.put("logType", "auditlogs");
         MDC.put("activity", auditable.getActivity());
         MDC.put("event", auditable.getEvent().name());

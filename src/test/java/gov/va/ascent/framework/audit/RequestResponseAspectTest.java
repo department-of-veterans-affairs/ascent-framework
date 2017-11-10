@@ -1,33 +1,37 @@
 package gov.va.ascent.framework.audit;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-
-import java.lang.reflect.Method;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
+import gov.va.ascent.framework.service.ServiceRequest;
+import gov.va.ascent.framework.service.ServiceResponse;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-import gov.va.ascent.framework.service.ServiceRequest;
-import gov.va.ascent.framework.service.ServiceResponse;
-@RunWith(MockitoJUnitRunner.class)
+import java.lang.reflect.Method;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+@RunWith(SpringRunner.class)
 public class RequestResponseAspectTest {
 
+	@Mock
+	RequestResponseLogSerializer requestResponseLogSerializer;
+
+
+	@InjectMocks
+	private RequestResponseAspect requestResponseAspect = new RequestResponseAspect();
+
 	private AnnotationConfigWebApplicationContext context;
-	private RequestResponseAspect requestResponseAspect;
     @Mock
     private ProceedingJoinPoint proceedingJoinPoint;
     private TestServiceResponse mockReturnObject = new TestServiceResponse();
@@ -37,17 +41,16 @@ public class RequestResponseAspectTest {
     private Object[] mockArray = {mockRequestObject};
 	@Before
 	public void setUp() throws Exception {
+		MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest));
 		try{
-	        context = new AnnotationConfigWebApplicationContext();
-	        context.register(TestObjectMapperConfig.class);
-	        context.refresh();
-	        requestResponseAspect = context.getBean(RequestResponseAspect.class);	        
+
 			when(proceedingJoinPoint.proceed()).thenReturn(mockReturnObject);
 			when(proceedingJoinPoint.getArgs()).thenReturn(mockArray);
 			when(proceedingJoinPoint.getSignature()).thenReturn(mockSignature);
 			when(mockSignature.getMethod()).thenReturn(myMethod());
 		}catch(Throwable e) {
-			
+
 		}
 	}
 
@@ -116,17 +119,6 @@ public class RequestResponseAspectTest {
 
     public Method myMethod() throws NoSuchMethodException{
         return getClass().getDeclaredMethod("someMethod");
-    }
-    
-    @Test
-    public void testRequestResponse() {
-    	RequestResponse rr = new RequestResponse(mockRequestObject, mockReturnObject);
-    	assertNotNull(rr.getRequest());
-    	assertNotNull(rr.getResponse());
-    	rr.setRequest(new TestServiceRequest());
-    	assertNotNull(rr.getRequest());
-    	rr.setResponse(new TestServiceResponse());
-    	assertNotNull(rr.getResponse());
     }
 
     @Auditable(event = AuditEvents.REQUEST_RESPONSE, activity = "unittestactivity")

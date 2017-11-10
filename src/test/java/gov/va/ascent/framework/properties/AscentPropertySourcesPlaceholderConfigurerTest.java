@@ -5,29 +5,30 @@
  */
 package gov.va.ascent.framework.properties;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import gov.va.ascent.framework.config.BasePropertiesConfig.BasePropertiesEnvironment;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.*;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.ConfigurablePropertyResolver;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.io.support.ResourcePropertySource;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import gov.va.ascent.framework.config.BasePropertiesConfig.BasePropertiesEnvironment;
-import org.springframework.core.env.Environment;;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+;
 /**
  *
  * @author rthota
@@ -58,7 +59,6 @@ public class AscentPropertySourcesPlaceholderConfigurerTest {
 			propertySource = new ResourcePropertySource(
 			        "resource", DEFAULT_PROPERTIES);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         MutablePropertySources propertySources = new MutablePropertySources();

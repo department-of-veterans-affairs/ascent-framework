@@ -6,7 +6,7 @@ package gov.va.ascent.framework.audit;
  *
  * @author npaulus
  */
-public final class AuditData {
+public final class AuditEventData {
 
     /**
      * The event type.
@@ -24,13 +24,13 @@ public final class AuditData {
     private final String auditClass;
 
     /**
-     * Constructs a new AuditData object.
+     * Constructs a new AuditEventData object.
      *
      * @param event the event type.
      * @param activity the activity or method name.
      * @param auditClass the class name for class under audit.
      */
-    public AuditData(final AuditEvents event, final String activity, final String auditClass){
+    public AuditEventData(final AuditEvents event, final String activity, final String auditClass){
         this.event = event;
         this.activity = activity;
         this.auditClass = auditClass;

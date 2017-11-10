@@ -79,7 +79,7 @@ public class AuditLoggerTest {
 		// given
 		Method method = AuditLoggerTest.class.getMethod("auditDebug", null);
 		AuditLogger.debug(
-				new AuditData(AuditEvents.REQUEST_RESPONSE,
+				new AuditEventData(AuditEvents.REQUEST_RESPONSE,
 						method.getName(),
 						method.getDeclaringClass().getName()),
 				"Audit DEBUG Activity Detail");
@@ -99,7 +99,7 @@ public class AuditLoggerTest {
 		// given
 		Method method = AuditLoggerTest.class.getMethod("auditInfo", null);
 		AuditLogger.info(
-				new AuditData(AuditEvents.REQUEST_RESPONSE,method.getName(), method.getDeclaringClass().getName()),
+				new AuditEventData(AuditEvents.REQUEST_RESPONSE,method.getName(), method.getDeclaringClass().getName()),
 				"Audit INFO Activity Detail");
 
 		// Now verify our logging interactions
@@ -118,7 +118,7 @@ public class AuditLoggerTest {
 		// given
 		Method method = AuditLoggerTest.class.getMethod("auditWarn", null);
 		AuditLogger.warn(
-				new AuditData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
+				new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
 				"Audit WARN Activity Detail");
 
 		// Now verify our logging interactions
@@ -138,7 +138,7 @@ public class AuditLoggerTest {
 		// given and when
 		Method method = AuditLoggerTest.class.getMethod("auditError", null);
 		AuditLogger.error(
-				new AuditData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
+				new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
 				"Audit ERROR Activity Detail");
 
 		// Now verify our logging interactions
@@ -163,7 +163,7 @@ public class AuditLoggerTest {
 		SecurityContextHolder.getContext().setAuthentication(auth);
 		Method method = AuditLoggerTest.class.getMethod("auditError", null);
 		AuditLogger.error(
-				new AuditData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
+				new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
 				"Audit ERROR Activity Detail");
 
 		// Now verify our logging interactions

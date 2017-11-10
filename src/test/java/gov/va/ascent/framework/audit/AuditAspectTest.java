@@ -1,6 +1,8 @@
 package gov.va.ascent.framework.audit;
 
-import org.junit.Ignore;
+import gov.va.ascent.framework.messages.MessageSeverity;
+import gov.va.ascent.framework.service.ServiceRequest;
+import gov.va.ascent.framework.service.ServiceResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,13 +10,12 @@ import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import gov.va.ascent.framework.messages.MessageSeverity;
-import gov.va.ascent.framework.service.ServiceRequest;
-import gov.va.ascent.framework.service.ServiceResponse;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * Created by vgadda on 8/17/17.
@@ -28,6 +29,8 @@ public class AuditAspectTest {
 
     @Test
     public void test(){
+        MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest));
         AuditServiceRequest request = new AuditServiceRequest();
         request.setText("AuditServiceRequest");
         auditableService.annotatedMethod(request);

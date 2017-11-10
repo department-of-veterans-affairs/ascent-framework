@@ -143,7 +143,7 @@ public class BaseAuditAspectTest {
         System.out.println("getDefaultAuditableInstance");
         Method method = myMethod();
         AuditEvents expResult = AuditEvents.REQUEST_RESPONSE;
-        AuditData result = BaseAuditAspect.getDefaultAuditableInstance(method);
+        AuditEventData result = BaseAuditAspect.getDefaultAuditableInstance(method);
         assertEquals(expResult, result.getEvent());
         assertEquals("someMethod", result.getActivity());
         assertEquals("gov.va.ascent.framework.audit.BaseAuditAspectTest", result.getAuditClass());
@@ -157,7 +157,7 @@ public class BaseAuditAspectTest {
         System.out.println("getDefaultAuditableInstance");
         Method method = myMethod();
         AuditEvents expResult = AuditEvents.REQUEST_RESPONSE;
-        AuditData result = BaseAuditAspect.getDefaultAuditableInstance(method);
+        AuditEventData result = BaseAuditAspect.getDefaultAuditableInstance(method);
         assertEquals(expResult, result.getEvent());
         assertEquals(method.getName(), result.getActivity());
         assertEquals(method.getDeclaringClass().getName(), result.getAuditClass());
@@ -171,7 +171,7 @@ public class BaseAuditAspectTest {
         System.out.println("getDefaultAuditableInstance");
         Method method = null;
         AuditEvents expResult = AuditEvents.REQUEST_RESPONSE;
-        AuditData result = BaseAuditAspect.getDefaultAuditableInstance(method);
+        AuditEventData result = BaseAuditAspect.getDefaultAuditableInstance(method);
         assertEquals(expResult, result.getEvent());
         assertEquals("", result.getActivity());
         assertEquals("", result.getAuditClass());
