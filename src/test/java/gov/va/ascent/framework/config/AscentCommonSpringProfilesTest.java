@@ -29,11 +29,6 @@ public class AscentCommonSpringProfilesTest {
 	public static final String TEST_PROFILE_ENV_AWS_CI = "aws-ci";
 
 	/**
-	 * Spring profile for AWS DEV environment
-	 */
-	public static final String TEST_PROFILE_ENV_AWS_DEV = "aws-dev";
-
-	/**
 	 * Spring profile for AWS STAGE environment
 	 */
 	public static final String TEST_PROFILE_ENV_AWS_STAGE = "aws-stage";
@@ -86,11 +81,6 @@ public class AscentCommonSpringProfilesTest {
     @Test
     public void profileAwsCITest() throws Exception {
         assertEquals(TEST_PROFILE_ENV_AWS_CI, AscentCommonSpringProfiles.PROFILE_ENV_AWS_CI);
-    }
-    
-    @Test
-    public void profileAwsDevTest() throws Exception {
-        assertEquals(TEST_PROFILE_ENV_AWS_DEV, AscentCommonSpringProfiles.PROFILE_ENV_AWS_DEV);
     }
     
     @Test

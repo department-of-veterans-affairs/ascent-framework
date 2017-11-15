@@ -34,11 +34,6 @@ public final class AscentCommonSpringProfiles {
 	public static final String PROFILE_ENV_AWS_CI = "aws-ci";
 
 	/**
-	 * Spring profile for AWS DEV environment
-	 */
-	public static final String PROFILE_ENV_AWS_DEV = "aws-dev";
-
-	/**
 	 * Spring profile for AWS STAGE environment
 	 */
 	public static final String PROFILE_ENV_AWS_STAGE = "aws-stage";
