@@ -92,9 +92,6 @@ public class PerformanceLoggingAspectTest {
             assertEquals("PerformanceLoggingAspect encountered uncaught exception. Throwable Cause.",
                     AspectLoggingTestAppender.events.get(0).getMessage());
             assertEquals(Level.ERROR, AspectLoggingTestAppender.events.get(0).getLevel());
-            assertEquals("PerformanceLoggingAspect encountered uncaught exception. Throwable Message.",
-                    AspectLoggingTestAppender.events.get(1).getMessage());
-            assertEquals(Level.ERROR, AspectLoggingTestAppender.events.get(1).getLevel());
         }
 
 

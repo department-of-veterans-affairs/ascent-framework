@@ -137,8 +137,6 @@ public class BaseWsClientConfig {
 		final AxiomSoapMessageFactory axiomSoapMessageFactory = new AxiomSoapMessageFactory();
 		axiomSoapMessageFactory.setAttachmentCacheDir(new File(System.getProperty(BaseWsClientConfig.JAVA_IO_TMPDIR)));
 		
-		LOGGER.info("System.getProperty(BaseWsClientConfig.JAVA_IO_TMPDIR): " + System.getProperty(BaseWsClientConfig.JAVA_IO_TMPDIR));
-
 		return this
 				.createWebServiceTemplate(endpoint, readTimeout, connectionTimeout, marshaller, unmarshaller, httpRequestInterceptors,
 						httpResponseInterceptors, wsInterceptors, axiomSoapMessageFactory);

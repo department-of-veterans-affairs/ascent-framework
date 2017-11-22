@@ -11,6 +11,7 @@
 		<relativePath/>
 	</parent>
 
+
     <artifactId>ascent-framework</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -42,6 +43,10 @@
 	        <groupId>org.apache.commons</groupId>
 	        <artifactId>commons-lang3</artifactId>
 	    </dependency>
+		<dependency>
+		    <groupId>commons-io</groupId>
+		    <artifactId>commons-io</artifactId>
+		</dependency> 
 		<!-- org aspectj project dependencies -->
         <dependency>
 		    <groupId>org.aspectj</groupId>
@@ -76,7 +81,7 @@
 			 <version>1.2.14</version>
 		</dependency>
 		
-		<dependency>
+		 <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -119,13 +124,12 @@
 		    <artifactId>mockito-core</artifactId>
 		    <scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<scope>provided</scope>
-		</dependency>
-
+		</dependency>	
     </dependencies>
 <build>
     <plugins>

@@ -13,6 +13,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
@@ -220,7 +221,14 @@ public class WsClientSimulatorMarshallingInterceptor implements
 		}
 
 		marshaller.marshal(objectToMarshal, result);
-		return result.getOutputStream().toString();
+		String ret = null;
+		try {
+			ret = result.getOutputStream().toString();
+		} catch (Exception ex) {
+			LOGGER.info(ex.getMessage(), ex);
+		} finally  {
+			IOUtils.closeQuietly(result.getOutputStream());
+		}
+		return ret;
 	}
-
 }

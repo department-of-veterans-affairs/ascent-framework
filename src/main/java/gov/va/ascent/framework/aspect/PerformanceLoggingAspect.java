@@ -60,9 +60,6 @@ public class PerformanceLoggingAspect {
         } catch (Throwable throwable) {
 			LOGGER.error("PerformanceLoggingAspect encountered uncaught exception. Throwable Cause.",
 					throwable.getCause());
-			LOGGER.error(
-					"PerformanceLoggingAspect encountered uncaught exception. Throwable Message.",
-					throwable.getMessage());
 			throw throwable;
         }
         finally {
