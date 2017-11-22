@@ -1,6 +1,7 @@
 package gov.va.ascent.framework.audit;
 
 import gov.va.ascent.framework.security.SecurityUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -38,7 +39,7 @@ public class AuditLogger {
      */
     public static void info(AuditEventData auditable, String activityDetail) {
         addMdcSecurityEntries(auditable);
-        LOGGER.info(activityDetail);
+        LOGGER.info(sanitize(activityDetail));
         MDC.clear();
 
     }
@@ -85,4 +86,14 @@ public class AuditLogger {
         }
     }
 
+    /**
+     * 
+     * @param message
+     * @return Sanitzed string.
+     */
+	public static String sanitize(String message) {
+		return message.replace( '\n' ,  '_' ).replace( '\r' , '_' )
+	      .replace( '\t' , '_' );
+		
+	}
 }

@@ -9,7 +9,7 @@
         <xs:extension base="person">
           <xs:sequence>
             <xs:element name="headOfFamily" type="person" nillable="true" minOccurs="0"/>
-            <xs:element name="personAssociated" type="personAssociated" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="personAssociated" type="personAssociated" minOccurs="0" maxOccurs="100"/>
           </xs:sequence>
         </xs:extension>
       </xs:complexContent>
@@ -39,8 +39,8 @@
       <xs:complexContent>
         <xs:extension base="person">
           <xs:sequence>
-            <xs:element name="relationshipType" type="relationshipType" form="qualified" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="permissionType" type="permissionType" form="qualified" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="relationshipType" type="relationshipType" form="qualified" minOccurs="0" maxOccurs="100"/>
+            <xs:element name="permissionType" type="permissionType" form="qualified" minOccurs="0" maxOccurs="100"/>
           </xs:sequence>
         </xs:extension>
       </xs:complexContent>
@@ -61,8 +61,8 @@
         <xs:element name="deathDate" type="xs:dateTime" minOccurs="0"/>
         <xs:element name="status" type="personStatus" minOccurs="0"/>
         <xs:element name="associationReason" type="associationReason" minOccurs="0"/>
-        <xs:element name="personnel" type="personnel" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element name="benefit" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="personnel" type="personnel" minOccurs="0" maxOccurs="100"/>
+        <xs:element name="benefit" type="xs:string" minOccurs="0" maxOccurs="100"/>
       </xs:sequence>
     </xs:complexType>
 

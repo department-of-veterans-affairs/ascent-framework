@@ -9,6 +9,7 @@ import com.db4o.cs.Db4oClientServer;
 import com.db4o.cs.config.ClientConfiguration;
 import com.db4o.cs.config.ServerConfiguration;
 import com.db4o.ext.Db4oIOException;
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -305,7 +306,6 @@ public class Db4oDatabase {
 			try {
 				openServerForClientServerMode();
 			} catch (final Exception e) {
-				LOGGER.info(e.getMessage(), e);
 				LOGGER.warn("db4o server startup failed, assuming server started/cleaned on other server.");
 				try {
 					// pause, wait for server to start if its starting on another node in the cluster.

@@ -122,11 +122,11 @@ public class RequestResponseAspect extends BaseAuditAspect {
 
 	    while(headerNames.hasMoreElements()){
 	        String headerName = headerNames.nextElement();
-	        headers.put(headerName, httpServletRequest.getHeader(headerName));
+	        headers.put(AuditLogger.sanitize(headerName), AuditLogger.sanitize(httpServletRequest.getHeader(headerName)));
         }
         requestResponseAuditData.setHeaders(headers);
-	    requestResponseAuditData.setUri(httpServletRequest.getRequestURI());
-	    requestResponseAuditData.setMethod(httpServletRequest.getMethod());
+	    requestResponseAuditData.setUri(AuditLogger.sanitize(httpServletRequest.getRequestURI()));
+	    requestResponseAuditData.setMethod(AuditLogger.sanitize(httpServletRequest.getMethod()));
     }
 }
 

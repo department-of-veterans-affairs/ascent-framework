@@ -85,8 +85,6 @@ public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 		} catch (Throwable throwable) {
 			LOGGER.error("ServiceValidationToMessageAspect encountered uncaught exception. Throwable Cause.",
 					throwable.getCause());
-			LOGGER.error("ServiceValidationToMessageAspect encountered uncaught exception. Throwable Message.",
-					throwable.getMessage());
 			throw throwable;
 		} finally {
 			LOGGER.debug("ServiceValidationToMessageAspect after method was called.");
