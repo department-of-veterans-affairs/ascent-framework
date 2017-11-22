@@ -11,7 +11,6 @@
 		<relativePath/>
 	</parent>
 
-
     <artifactId>ascent-framework</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -24,10 +23,6 @@
 		<dependency>
 		    <groupId>org.springframework.ws</groupId>
 		    <artifactId>spring-ws-security</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -47,10 +42,6 @@
 	        <groupId>org.apache.commons</groupId>
 	        <artifactId>commons-lang3</artifactId>
 	    </dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-		</dependency>
 		<!-- org aspectj project dependencies -->
         <dependency>
 		    <groupId>org.aspectj</groupId>
@@ -85,7 +76,7 @@
 			 <version>1.2.14</version>
 		</dependency>
 		
-		 <dependency>
+		<dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -107,13 +98,28 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Spring Security Test -->
+		<!-- Spring Test Dependencies -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.mockito</groupId>
+		    <artifactId>mockito-core</artifactId>
+		    <scope>test</scope>
+		</dependency>
+		
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
