@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -175,4 +176,17 @@ public class AuditLoggerTest {
 		// Check the message being logged is correct
 		assertThat(loggingEvent.getFormattedMessage(), is("Audit ERROR Activity Detail"));
 	}
+	
+	@Test
+	public void testSanitize() {
+		String str = "test string";
+		assertTrue(str.equals(AuditLogger.sanitize(str)));
+		
+		str = "test \nstring";
+		assertTrue("test _string".equals(AuditLogger.sanitize(str)));
+		
+		str = null;
+		assertNull(AuditLogger.sanitize(str));
+	}
+	
 }
