@@ -80,10 +80,8 @@ public class AuditLogger {
         MDC.put("activity", auditable.getActivity());
         MDC.put("event", auditable.getEvent().name());
         MDC.put("audit_class", auditable.getAuditClass());
-        if(SecurityUtils.getPersonTraits() != null) {
-            MDC.put("user", SecurityUtils.getPersonTraits().getUser());
-            MDC.put("tokenId", SecurityUtils.getPersonTraits().getTokenId());
-        }
+        MDC.put("user", auditable.getUser());
+        MDC.put("tokenId", auditable.getTokenId());
     }
 
     /**

@@ -1,5 +1,9 @@
 package gov.va.ascent.framework.audit;
 
+import org.apache.commons.lang3.StringUtils;
+
+import gov.va.ascent.framework.security.SecurityUtils;
+
 /**
  *
  * Used as a data transfer object from the Auditable annotation for writing to the audit log.
@@ -22,6 +26,16 @@ public final class AuditEventData {
      * The class being audited.
      */
     private final String auditClass;
+    
+    /**
+     * The user from person traits.
+     */
+    private String user = StringUtils.EMPTY;
+    
+    /**
+     * The tokenId from person traits.
+     */
+    private String tokenId = StringUtils.EMPTY;
 
     /**
      * Constructs a new AuditEventData object.
@@ -34,6 +48,10 @@ public final class AuditEventData {
         this.event = event;
         this.activity = activity;
         this.auditClass = auditClass;
+        if(SecurityUtils.getPersonTraits() != null) {
+        	this.user = SecurityUtils.getPersonTraits().getUser();
+        	this.tokenId = SecurityUtils.getPersonTraits().getTokenId();
+        }
     }
 
     /**
@@ -52,6 +70,24 @@ public final class AuditEventData {
      */
     public String getActivity() {
         return activity;
+    }
+    
+    /**
+     * Gets the user.
+     *
+     * @return the user.
+     */
+    public String getUser() {
+        return user;
+    }
+    
+    /**
+     * Gets the tokenId.
+     *
+     * @return the tokenId.
+     */
+    public String getTokenId() {
+        return tokenId;
     }
 
     /**
