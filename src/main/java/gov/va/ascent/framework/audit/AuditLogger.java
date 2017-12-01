@@ -92,8 +92,9 @@ public class AuditLogger {
      * @return Sanitzed string.
      */
 	public static String sanitize(String message) {
-		return message.replace( '\n' ,  '_' ).replace( '\r' , '_' )
-	      .replace( '\t' , '_' );
-		
+		if (message != null) {
+			return message.replace('\n', '_').replace('\r', '_').replace('\t', '_');
+		}
+		return message;
 	}
 }
