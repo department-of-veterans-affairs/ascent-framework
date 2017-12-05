@@ -1,7 +1,5 @@
 package gov.va.ascent.framework.audit;
 
-import gov.va.ascent.framework.security.SecurityUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;

@@ -1,17 +1,16 @@
 package gov.va.ascent.framework.config;
 
 /**
- * Constants to store the profiles we commonly used in WSS applications.
+ * Constants to store the profiles commonly used in ASCENT applications.
  *
- * @author jshrader
  */
-// JSHRADER - supressing the "interface is type" check from checkstyle as we are going to
+// Suppressing the "interface is type" check from checkstyle as we are going to
 // want to store these constants somewhere, and an interface is just as ugly
 // as doing this in a constants class. Both will fail Sonar, the pattern isn't
 // something we want all over the codebase but in some situations it is ok.
 // CHECKSTYLE:OFF
 public final class AscentCommonSpringProfiles {
-	// CHECKSTYLE:ON
+// CHECKSTYLE:ON
 
 	/**
 	 * Spring default profile
@@ -67,6 +66,11 @@ public final class AscentCommonSpringProfiles {
 	 * Spring profile for remote audit impl implementations
 	 */
 	public static final String PROFILE_REMOTE_AUDIT_IMPLS = "remote_audit_client_impl";
+	
+	/** 
+	 * Spring Profile to signify that the application will run embedded redis
+	 */
+    public static final String PROFILE_EMBEDDED_REDIS = "embedded-redis";
 
 	AscentCommonSpringProfiles() {
 		throw new IllegalStateException("Utility class");

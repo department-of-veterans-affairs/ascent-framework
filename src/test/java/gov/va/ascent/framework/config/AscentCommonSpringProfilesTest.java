@@ -4,8 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import gov.va.ascent.framework.constants.AnnotationConstants;
-
 public class AscentCommonSpringProfilesTest {
 
 	/**
@@ -62,6 +60,11 @@ public class AscentCommonSpringProfilesTest {
 	 * Spring profile for remote audit impl implementations
 	 */
 	public static final String TEST_PROFILE_REMOTE_AUDIT_IMPLS = "remote_audit_client_impl";
+	
+	/** 
+	 * Spring Profile to signify that the application will run embedded redis
+	 */
+    public static final String TEST_PROFILE_EMBEDDED_REDIS = "embedded-redis";
 
     @Test
     public void profileDefaultTest() throws Exception {
@@ -116,10 +119,15 @@ public class AscentCommonSpringProfilesTest {
     @Test
     public void profileUnitTestingTest() throws Exception {
         assertEquals(TEST_PROFILE_UNIT_TEST, AscentCommonSpringProfiles.PROFILE_UNIT_TEST);
-    }      
+    }
+    
+    @Test
+    public void profileEmbeddedRedisTest() throws Exception {
+        assertEquals(TEST_PROFILE_EMBEDDED_REDIS, AscentCommonSpringProfiles.PROFILE_EMBEDDED_REDIS);
+    }
     
     @Test(expected = IllegalStateException.class)
     public void ascentCommonSpringProfilesConstructor() throws Exception {
-    		AscentCommonSpringProfiles instance = new AscentCommonSpringProfiles();
+    		new AscentCommonSpringProfiles();
     }    
 }
