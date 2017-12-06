@@ -25,10 +25,10 @@ public class PerformanceLogMethodInterceptor implements MethodInterceptor {
 	/** number of milliseconds in a second */
 	private static final int NUMBER_OF_MILLIS_N_A_SECOND = 1000;
 
-	/** the default warning threshhold */
+	/** the default warning threshold */
 	public static final Integer DEFAULT_WARNING_THRESHHOLD = Integer.valueOf(1500);
 
-	/** The custom set warning threshhold. */
+	/** The custom set warning threshold. */
 	private Integer warningThreshhold;
 
 	/** The custom warning threshold that is based on the class+method being run */
@@ -106,7 +106,7 @@ public class PerformanceLogMethodInterceptor implements MethodInterceptor {
 	/**
 	 * Get the warning threshold
 	 * 
-	 * @return warning threshhold
+	 * @return warning threshold
 	 */
 	public final Integer getWarningThreshhold() {
 		return getWarningThreshold(null);
@@ -116,7 +116,7 @@ public class PerformanceLogMethodInterceptor implements MethodInterceptor {
 	 * Gets the warning threshold. Priority is 1. <code>methoToWarningThreshold</code> 2. <code>warningThreshhold</code> 3.
 	 * <code>DEFAULT_WARNING_THRESHHOLD</code>
 	 * 
-	 * @param callingMethod - the method the interceptor is running on
+	 * @param callingMethod - the method the intercepter is running on
 	 * @return the warning threshold
 	 */
 	public final Integer getWarningThreshold(final String callingMethod) {
@@ -141,9 +141,9 @@ public class PerformanceLogMethodInterceptor implements MethodInterceptor {
 	}
 
 	/**
-	 * Set a threshold, in millisecods, for which we log warnings if method responses come to us slower than the threshold.
+	 * Set a threshold, in milliseconds, for which we log warnings if method responses come to us slower than the threshold.
 	 * 
-	 * @param warningThreshhold the new warning threshhold
+	 * @param warningThreshhold the new warning threshold
 	 */
 	public final void setWarningThreshhold(final Integer warningThreshhold) {
 		this.warningThreshhold = warningThreshhold;

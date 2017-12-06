@@ -1,12 +1,15 @@
 package gov.va.ascent.framework.audit;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author npaulus
@@ -26,10 +29,12 @@ public class RequestResponseLogSerializer {
      * @param requestResponseAuditData The request and response audit data
      */
     @Async
-    public void asyncLogRequestResponseAspectAuditData(AuditEventData auditEventData, RequestResponseAuditData requestResponseAuditData){
+    public void asyncLogRequestResponseAspectAuditData(
+    		AuditEventData auditEventData, RequestResponseAuditData requestResponseAuditData){
 
         String auditDetails;
         try{
+        	mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
             auditDetails = mapper.writeValueAsString(requestResponseAuditData);
         } catch (JsonProcessingException ex){
             LOGGER.error("Error occurred on JSON processing, calling toString", ex);
