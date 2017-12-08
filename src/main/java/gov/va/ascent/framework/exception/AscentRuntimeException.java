@@ -19,9 +19,6 @@ public class AscentRuntimeException extends RuntimeException {
 	/** End Bracket String */
 	private static final String END_BRACKET = "] ";
 
-	/** Unique Identifier for the exception */
-	private final String uniqueId = Long.toString(System.currentTimeMillis());
-
 	/**
 	 * Instantiates a new exception.
 	 */
@@ -58,15 +55,6 @@ public class AscentRuntimeException extends RuntimeException {
 	}
 
 	/**
-	 * Gets the unique id.
-	 * 
-	 * @return the unique id
-	 */
-	public final String getUniqueId() {
-		return uniqueId;
-	}
-
-	/**
 	 * Gets the server name.
 	 * 
 	 * @return the server name
@@ -83,7 +71,6 @@ public class AscentRuntimeException extends RuntimeException {
 	@Override
 	public final String getMessage() {
 		final StringBuilder details = new StringBuilder();
-		details.append("Unique ID: [" + getUniqueId() + END_BRACKET);
 		if (getServerName() != null) {
 			details.append("Server Name: [" + getServerName() + END_BRACKET);
 		}
