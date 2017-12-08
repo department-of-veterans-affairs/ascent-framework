@@ -1,6 +1,5 @@
 package gov.va.ascent.framework.audit;
 
-import gov.va.ascent.framework.exception.AscentRuntimeException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -36,18 +35,16 @@ public class RequestResponseAspect extends BaseAuditAspect {
      * @return the object
      */
     @Around("auditableExecution()")
-    public Object logAnnotatedMethodRequestResponse(final ProceedingJoinPoint joinPoint) {
+    public Object logAnnotatedMethodRequestResponse(final ProceedingJoinPoint joinPoint) throws Throwable {
         Object response = null;
         Object request = null;
         
         if (joinPoint.getArgs().length > 0 && joinPoint.getArgs()[0] != null) {
    		 request = joinPoint.getArgs()[0];
    	 	}
-        try {
-        	response = joinPoint.proceed();
-        } catch (Throwable throwable) {
-            throw new AscentRuntimeException(throwable);
-        }
+        
+        response = joinPoint.proceed();
+
         Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
         Auditable auditableAnnotation = method.getAnnotation(Auditable.class);
         
@@ -75,11 +72,8 @@ public class RequestResponseAspect extends BaseAuditAspect {
     		 request = joinPoint.getArgs()[0];
     	 }
 
-         try {
-        	 response = joinPoint.proceed();
-         } catch (Throwable throwable) {
-             throw new AscentRuntimeException(throwable);
-         }
+         response = joinPoint.proceed();
+         
          final Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
          AuditEventData auditEventData = new AuditEventData(AuditEvents.REQUEST_RESPONSE,
                  method.getName(), method.getDeclaringClass().getName());
@@ -129,4 +123,3 @@ public class RequestResponseAspect extends BaseAuditAspect {
 	    requestResponseAuditData.setMethod(AuditLogger.sanitize(httpServletRequest.getMethod()));
     }
 }
-

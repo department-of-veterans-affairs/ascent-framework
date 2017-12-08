@@ -60,8 +60,13 @@ public class RequestResponseAspectTest {
 
 	@Test
 	public void testAnnotatedMethodRequestResponse() {
-		Object obj = requestResponseAspect.logAnnotatedMethodRequestResponse(proceedingJoinPoint);
-		assertNotNull(obj);
+		Object obj;
+		try {
+			obj = requestResponseAspect.logAnnotatedMethodRequestResponse(proceedingJoinPoint);
+			assertNotNull(obj);
+		} catch (Throwable throwable) {
+			assertTrue(throwable instanceof RuntimeException);
+		}
 	}
 
 	@Test
@@ -71,7 +76,7 @@ public class RequestResponseAspectTest {
 			Object[] array = {null, new Object()};
 			when(proceedingJoinPoint.getArgs()).thenReturn(array);
 			when(proceedingJoinPoint.proceed()).thenThrow(new RuntimeException("Unit Test Exception"));
-			Object obj = requestResponseAspect.logAnnotatedMethodRequestResponse(proceedingJoinPoint);
+			requestResponseAspect.logAnnotatedMethodRequestResponse(proceedingJoinPoint);
 		} catch(Throwable throwable){
 			assertTrue(throwable instanceof RuntimeException);
 		}
@@ -85,7 +90,7 @@ public class RequestResponseAspectTest {
 			Object[] array = new Object[0];
 			when(proceedingJoinPoint.getArgs()).thenReturn(array);
 			when(proceedingJoinPoint.proceed()).thenThrow(new RuntimeException("Unit Test Exception"));
-			Object obj = requestResponseAspect.logAnnotatedMethodRequestResponse(proceedingJoinPoint);
+			requestResponseAspect.logAnnotatedMethodRequestResponse(proceedingJoinPoint);
 		} catch(Throwable throwable){
 			assertTrue(throwable instanceof RuntimeException);
 		}
@@ -99,7 +104,7 @@ public class RequestResponseAspectTest {
 			Object[] array = {null, new Object()};
 			when(proceedingJoinPoint.getArgs()).thenReturn(array);
 			when(proceedingJoinPoint.proceed()).thenThrow(new RuntimeException("Unit Test Exception"));
-			Object obj = requestResponseAspect.logRestPublicMethodRequestResponse(proceedingJoinPoint);
+			requestResponseAspect.logRestPublicMethodRequestResponse(proceedingJoinPoint);
 		} catch(Throwable throwable){
 			assertTrue(throwable instanceof RuntimeException);
 		}
