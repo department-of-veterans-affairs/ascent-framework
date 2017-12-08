@@ -40,7 +40,6 @@ public class ExceptionToExceptionTranslationHandler_UnitTest {
 		} catch (Throwable throwable){
 			Assert.assertTrue(throwable instanceof AscentRuntimeException);
 			Assert.assertEquals(runtimeException, throwable.getCause());
-			Assert.assertTrue(throwable.getMessage().contains("Unique ID: ["));
 		}
 		
 		//asserts the default custom type isn't wrapped
@@ -52,7 +51,6 @@ public class ExceptionToExceptionTranslationHandler_UnitTest {
 			Assert.assertTrue(throwable instanceof AscentRuntimeException);
 			Assert.assertEquals(ascentRuntimeException, throwable);
 			Assert.assertNull(throwable.getCause());
-			Assert.assertTrue(throwable.getMessage().contains("Unique ID: ["));
 		}
 		
 		//asserts the subclass of default custom type isn't wrapped
@@ -64,7 +62,6 @@ public class ExceptionToExceptionTranslationHandler_UnitTest {
 			Assert.assertTrue(throwable instanceof ServiceException);
 			Assert.assertEquals(serviceException, throwable);
 			Assert.assertNull(throwable.getCause());
-			Assert.assertTrue(throwable.getMessage().contains("Unique ID: ["));
 		}
 		
 	}
