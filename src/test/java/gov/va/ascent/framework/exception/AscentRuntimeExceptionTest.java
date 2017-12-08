@@ -7,8 +7,6 @@ import org.junit.Test;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import static org.hamcrest.CoreMatchers.containsString;
-
 public class AscentRuntimeExceptionTest {
 
     @BeforeClass
@@ -22,10 +20,7 @@ public class AscentRuntimeExceptionTest {
 
 
         Assert.assertEquals("Test Server", ascentRuntimeException.getServerName());
-        Assert.assertThat(ascentRuntimeException.getMessage(), containsString("Unique ID: ["));
-        Assert.assertTrue(ascentRuntimeException.getUniqueId().matches("[0-9]+"));
         // length of 12 because current time in millis should be longer than 12 digits
-        Assert.assertTrue(ascentRuntimeException.getUniqueId().length() > 12);
         Assert.assertEquals(null, ascentRuntimeException.getCleanMessage());
     }
 
@@ -33,8 +28,7 @@ public class AscentRuntimeExceptionTest {
     public void getMessageTestServerName() throws Exception {
         AscentRuntimeException ascentRuntimeException = new AscentRuntimeException();
 
-        Assert.assertEquals("Unique ID: [" + ascentRuntimeException.getUniqueId()
-                + "] Server Name: [Test Server] "
+        Assert.assertEquals("Server Name: [Test Server] "
                 , ascentRuntimeException.getMessage());
 
     }
@@ -54,7 +48,7 @@ public class AscentRuntimeExceptionTest {
 
         AscentRuntimeException ascentRuntimeException = new AscentRuntimeException();
 
-        Assert.assertEquals("Unique ID: [" + ascentRuntimeException.getUniqueId() + "] "
+        Assert.assertEquals(""
                 , ascentRuntimeException.getMessage());
 
         // Reset server name to Test Server
@@ -64,8 +58,7 @@ public class AscentRuntimeExceptionTest {
     @Test
     public void getMessageTestCategoryNull() throws Exception {
         AscentRuntimeException ascentRuntimeException = new AscentRuntimeException();
-        Assert.assertEquals("Unique ID: ["
-                        + ascentRuntimeException.getUniqueId() + "] Server Name: [Test Server] "
+        Assert.assertEquals("Server Name: [Test Server] "
                 , ascentRuntimeException.getMessage());
 
     }
@@ -74,9 +67,7 @@ public class AscentRuntimeExceptionTest {
     public void getSuperCauseTest() throws Exception {
         Throwable cause = new Throwable("test");
         AscentRuntimeException ascentRuntimeException = new AscentRuntimeException(cause);
-        Assert.assertEquals("Unique ID: ["
-                        + ascentRuntimeException.getUniqueId()
-                        + "] Server Name: [Test Server] java.lang.Throwable: test"
+        Assert.assertEquals("Server Name: [Test Server] java.lang.Throwable: test"
                 , ascentRuntimeException.getMessage());
 
     }
@@ -85,9 +76,7 @@ public class AscentRuntimeExceptionTest {
     public void getMessageCauseAndMessageTest() throws Exception {
         Throwable cause = new Throwable("test");
         AscentRuntimeException ascentRuntimeException = new AscentRuntimeException("Test Message", cause);
-        Assert.assertEquals("Unique ID: ["
-                        + ascentRuntimeException.getUniqueId()
-                        + "] Server Name: [Test Server] Test Message"
+        Assert.assertEquals("Server Name: [Test Server] Test Message"
                 , ascentRuntimeException.getMessage());
 
     }
