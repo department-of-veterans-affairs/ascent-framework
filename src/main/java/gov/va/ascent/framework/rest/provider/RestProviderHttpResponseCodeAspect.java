@@ -9,6 +9,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import gov.va.ascent.framework.audit.AuditEventData;
+import gov.va.ascent.framework.audit.AuditEvents;
+import gov.va.ascent.framework.audit.AuditLogger;
 import gov.va.ascent.framework.exception.AscentRuntimeException;
 import gov.va.ascent.framework.messages.MessageSeverity;
 import gov.va.ascent.framework.service.ServiceResponse;
@@ -65,21 +68,27 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	 * @return the response entity
 	 * @throws Throwable the throwable
 	 */
+	@SuppressWarnings("unchecked")
 	@Around("restController() && publicServiceResponseRestMethod()")
 	public ResponseEntity<ServiceResponse> aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
-		if(LOGGER.isDebugEnabled()){
-			LOGGER.debug("RestHttpResponseCodeAspect executing around method:" + joinPoint.toLongString());			
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("RestHttpResponseCodeAspect executing around method:" + joinPoint.toLongString());
 		}
-		
 		ResponseEntity<ServiceResponse> returnObject = null;
-        try {
-            returnObject = (ResponseEntity<ServiceResponse>) joinPoint.proceed();
-            ServiceResponse serviceResponse = returnObject.getBody();
-            if (serviceResponse == null) {
-            	serviceResponse = new ServiceResponse();
-            }
+		try {
+			returnObject = (ResponseEntity<ServiceResponse>) joinPoint.proceed();
+			ServiceResponse serviceResponse = returnObject.getBody();
+			if (serviceResponse == null) {
+				serviceResponse = new ServiceResponse();
+			}
 			final HttpStatus ruleStatus = rulesEngine.messagesToHttpStatus(serviceResponse.getMessages());
+
 			if (ruleStatus != null) {
+				if (ruleStatus.value() > 400) {
+					AuditEventData auditData = new AuditEventData(AuditEvents.REQUEST_RESPONSE, generateMethodName(joinPoint),
+							RestProviderHttpResponseCodeAspect.class.getName());
+					AuditLogger.error(auditData, "Exception occurred");
+				}
 				returnObject = new ResponseEntity<>(serviceResponse, ruleStatus);
 			}
 		} catch (AscentRuntimeException ascentRuntimeException) {
@@ -88,6 +97,10 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 			ServiceResponse serviceResponse = new ServiceResponse();
 			serviceResponse.addMessage(MessageSeverity.FATAL, "UNEXPECTED_ERROR", ascentRuntimeException.getMessage());
 			returnObject = new ResponseEntity<>(serviceResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+
+			AuditEventData auditData = new AuditEventData(AuditEvents.REQUEST_RESPONSE, generateMethodName(joinPoint),
+					RestProviderHttpResponseCodeAspect.class.getName());
+			AuditLogger.error(auditData, ascentRuntimeException.getMessage());
 		} catch (Throwable throwable) {
 			AscentRuntimeException ascentRuntimeException = new AscentRuntimeException(throwable);
 			LOGGER.error("RestHttpResponseCodeAspect encountered uncaught exception in REST endpoint.",
@@ -95,11 +108,24 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 			ServiceResponse serviceResponse = new ServiceResponse();
 			serviceResponse.addMessage(MessageSeverity.FATAL, "UNEXPECTED_ERROR", ascentRuntimeException.getMessage());
 			returnObject = new ResponseEntity<>(serviceResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        finally {
-        	LOGGER.debug("RestHttpResponseCodeAspect after method was called.");
-        }
-        return returnObject;
-    }
+
+			AuditEventData auditData = new AuditEventData(AuditEvents.REQUEST_RESPONSE, generateMethodName(joinPoint),
+					RestProviderHttpResponseCodeAspect.class.getName());
+			AuditLogger.error(auditData, ascentRuntimeException.getMessage());
+		} finally {
+			LOGGER.debug("RestHttpResponseCodeAspect after method was called.");
+		}
+		return returnObject;
+	}
 	
+	/**
+	 * Returns the string with method name and class name.
+	 * @param joinPoint
+	 * @return
+	 */
+	private String generateMethodName(ProceedingJoinPoint joinPoint) {
+		StringBuilder sb = new StringBuilder();
+		return sb.append(joinPoint.getTarget().getClass().getName()).append("#")
+				.append(joinPoint.getSignature().getName()).toString();
+	}
 }
