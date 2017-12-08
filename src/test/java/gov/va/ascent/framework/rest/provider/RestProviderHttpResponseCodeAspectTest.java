@@ -5,15 +5,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import gov.va.ascent.framework.aspect.PerformanceLoggingAspect;
 import gov.va.ascent.framework.exception.AscentRuntimeException;
-import gov.va.ascent.framework.transfer.jaxb.adapters.DateAdapterLoggingTestAppender;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import gov.va.ascent.framework.messages.Message;
 import gov.va.ascent.framework.messages.MessageSeverity;
 import gov.va.ascent.framework.service.ServiceResponse;
+
 @RunWith(MockitoJUnitRunner.class)
 public class RestProviderHttpResponseCodeAspectTest {
 
@@ -41,6 +42,9 @@ public class RestProviderHttpResponseCodeAspectTest {
     @Mock
     private ServiceResponse serviceResponse;
 	
+    @Mock
+    private MethodSignature mockSignature;
+    
     private List<Message> detailedMsg = new ArrayList<Message>();
 
 	@Before
@@ -91,11 +95,16 @@ public class RestProviderHttpResponseCodeAspectTest {
 
 	@Test
 	public void testAroundAdviceCatchAscentExceptionLogging()  {
+		
 		restProviderLog.setLevel(Level.ERROR);
 		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
 		ResponseEntity<ServiceResponse> returnObject = null;
 		try {
 			when(proceedingJoinPoint.proceed()).thenThrow(new AscentRuntimeException());
+			when(proceedingJoinPoint.getSignature()).thenReturn(mockSignature);
+			when(mockSignature.getMethod()).thenReturn(myMethod());			
+			when(proceedingJoinPoint.getTarget()).thenReturn(new TestClass());
+			
 			returnObject = restProviderHttpResponseCodeAspect.aroundAdvice(proceedingJoinPoint);
 		} catch (Throwable throwable) {
 
@@ -104,7 +113,7 @@ public class RestProviderHttpResponseCodeAspectTest {
 		assertEquals("RestHttpResponseCodeAspect encountered uncaught exception in REST endpoint.",
 				RestProviderHttpResponseCodeAspectLogAppender.events.get(0).getMessage());
 	}
-
+	
 	@Test
 	public void testAroundAdviceCatchExceptionLogging()  {
 		restProviderLog.setLevel(Level.ERROR);
@@ -112,6 +121,9 @@ public class RestProviderHttpResponseCodeAspectTest {
 		ResponseEntity<ServiceResponse> returnObject = null;
 		try {
 			when(proceedingJoinPoint.proceed()).thenThrow(new Throwable("Unit Test Throwable converted to AscentRuntimException"));
+			when(proceedingJoinPoint.getSignature()).thenReturn(mockSignature);
+			when(mockSignature.getMethod()).thenReturn(myMethod());			
+			when(proceedingJoinPoint.getTarget()).thenReturn(new TestClass());
 			returnObject = restProviderHttpResponseCodeAspect.aroundAdvice(proceedingJoinPoint);
 		} catch (Throwable throwable) {
 
@@ -121,5 +133,17 @@ public class RestProviderHttpResponseCodeAspectTest {
 				RestProviderHttpResponseCodeAspectLogAppender.events.get(0).getMessage());
 		assertEquals("gov.va.ascent.framework.exception.AscentRuntimeException", RestProviderHttpResponseCodeAspectLogAppender.events.get(0).getThrowableProxy().getClassName());
 	}
-
+	
+	
+    public Method myMethod() throws NoSuchMethodException{
+        return getClass().getDeclaredMethod("someMethod");
+    }
+    
+    public void someMethod() {
+        // do nothing
+    }	
+    
+	class TestClass {
+		
+	}
 }
