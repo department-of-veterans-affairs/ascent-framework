@@ -85,8 +85,8 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 
 			if (ruleStatus != null) {
 				if (ruleStatus.value() > 400) {
-					AuditEventData auditData = new AuditEventData(AuditEvents.REQUEST_RESPONSE, generateMethodName(joinPoint),
-							RestProviderHttpResponseCodeAspect.class.getName());
+					AuditEventData auditData = new AuditEventData(AuditEvents.REQUEST_RESPONSE, joinPoint.getSignature().getName(),
+							joinPoint.getTarget().getClass().getName());
 					AuditLogger.error(auditData, "Exception occurred");
 				}
 				returnObject = new ResponseEntity<>(serviceResponse, ruleStatus);
@@ -98,8 +98,8 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 			serviceResponse.addMessage(MessageSeverity.FATAL, "UNEXPECTED_ERROR", ascentRuntimeException.getMessage());
 			returnObject = new ResponseEntity<>(serviceResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 
-			AuditEventData auditData = new AuditEventData(AuditEvents.REQUEST_RESPONSE, generateMethodName(joinPoint),
-					RestProviderHttpResponseCodeAspect.class.getName());
+			AuditEventData auditData = new AuditEventData(AuditEvents.REQUEST_RESPONSE, joinPoint.getSignature().getName(),
+					joinPoint.getTarget().getClass().getName());
 			AuditLogger.error(auditData, ascentRuntimeException.getMessage());
 		} catch (Throwable throwable) {
 			AscentRuntimeException ascentRuntimeException = new AscentRuntimeException(throwable);
@@ -109,23 +109,12 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 			serviceResponse.addMessage(MessageSeverity.FATAL, "UNEXPECTED_ERROR", ascentRuntimeException.getMessage());
 			returnObject = new ResponseEntity<>(serviceResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 
-			AuditEventData auditData = new AuditEventData(AuditEvents.REQUEST_RESPONSE, generateMethodName(joinPoint),
-					RestProviderHttpResponseCodeAspect.class.getName());
+			AuditEventData auditData = new AuditEventData(AuditEvents.REQUEST_RESPONSE, joinPoint.getSignature().getName(),
+					joinPoint.getTarget().getClass().getName());
 			AuditLogger.error(auditData, ascentRuntimeException.getMessage());
 		} finally {
 			LOGGER.debug("RestHttpResponseCodeAspect after method was called.");
 		}
 		return returnObject;
-	}
-	
-	/**
-	 * Returns the string with method name and class name.
-	 * @param joinPoint
-	 * @return
-	 */
-	private String generateMethodName(ProceedingJoinPoint joinPoint) {
-		StringBuilder sb = new StringBuilder();
-		return sb.append(joinPoint.getTarget().getClass().getName()).append("#")
-				.append(joinPoint.getSignature().getName()).toString();
 	}
 }
