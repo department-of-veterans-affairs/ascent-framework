@@ -11,6 +11,8 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import gov.va.ascent.framework.messages.MessageSeverity;
+
 /**
  * @author npaulus
  * The purpose of this class is to asynchronuously serialize an object to JSON and then write it to the audit logs.
@@ -30,7 +32,7 @@ public class RequestResponseLogSerializer {
      */
     @Async
     public void asyncLogRequestResponseAspectAuditData(
-    		AuditEventData auditEventData, RequestResponseAuditData requestResponseAuditData){
+    		AuditEventData auditEventData, RequestResponseAuditData requestResponseAuditData, MessageSeverity messageSeverity){
 
         String auditDetails;
         try{
@@ -40,7 +42,11 @@ public class RequestResponseLogSerializer {
             LOGGER.error("Error occurred on JSON processing, calling toString", ex);
             auditDetails = requestResponseAuditData.toString();
         }
-        AuditLogger.info(auditEventData, auditDetails);
+        if (messageSeverity.equals(MessageSeverity.ERROR)) {
+        		AuditLogger.error(auditEventData, auditDetails);
+        } else {
+        		AuditLogger.info(auditEventData, auditDetails);
+        }
     }
 
 

@@ -11,9 +11,4 @@ public class TestObjectMapperConfig {
 	public ObjectMapper objectMapper() {
 		return new ObjectMapper();
 	}
-	
-	@Bean
-	public RequestResponseAspect requestResponseAspect() {
-		return new RequestResponseAspect();
-	}
 }

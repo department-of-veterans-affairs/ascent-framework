@@ -4,6 +4,8 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
+import gov.va.ascent.framework.messages.MessageSeverity;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
@@ -74,7 +76,7 @@ public class RequestResponseLogSerializerTest {
 
     @Test
     public void testJson() throws Exception {
-        requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData);
+        requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData, MessageSeverity.INFO);
         verify(mockAppender, times(1)).doAppend(captorLoggingEvent.capture());
         final List<LoggingEvent> loggingEvents = captorLoggingEvent.getAllValues();
         assertEquals("{\"headers\":{\"Header1\":\"Header1Value\"},\"uri\":\"/\",\"method\":\"GET\",\"response\":\"Response\",\"request\":\"Request\"}",
@@ -85,7 +87,7 @@ public class RequestResponseLogSerializerTest {
     @Test
     public void testJsonException() throws Exception {
         when(mapper.writeValueAsString(any())).thenThrow(JsonProcessingException.class);
-        requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData);
+        requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData, MessageSeverity.INFO);
         verify(mockAppender, times(2)).doAppend(captorLoggingEvent.capture());
         final List<LoggingEvent> loggingEvents = captorLoggingEvent.getAllValues();
         assertEquals("Error occurred on JSON processing, calling toString", loggingEvents.get(0).getMessage());
