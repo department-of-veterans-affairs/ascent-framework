@@ -42,7 +42,7 @@ public class RequestResponseLogSerializer {
             LOGGER.error("Error occurred on JSON processing, calling toString", ex);
             auditDetails = requestResponseAuditData.toString();
         }
-        if (messageSeverity.equals(MessageSeverity.ERROR)) {
+        if (messageSeverity.equals(MessageSeverity.ERROR) || messageSeverity.equals(MessageSeverity.FATAL)) {
         		AuditLogger.error(auditEventData, auditDetails);
         } else {
         		AuditLogger.info(auditEventData, auditDetails);

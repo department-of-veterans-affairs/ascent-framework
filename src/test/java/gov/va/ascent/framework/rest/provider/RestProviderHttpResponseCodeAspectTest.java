@@ -168,6 +168,7 @@ public class RestProviderHttpResponseCodeAspectTest {
 	public void testAnnotatedMethodRequestResponse() {
 		Object obj;
 		try {
+			restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
 			obj = restProviderHttpResponseCodeAspect.logAnnotatedMethodRequestResponse(proceedingJoinPoint);
 			assertNotNull(obj);
 		} catch (Throwable throwable) {
@@ -182,6 +183,7 @@ public class RestProviderHttpResponseCodeAspectTest {
 			Object[] array = {null, new Object()};
 			when(proceedingJoinPoint.getArgs()).thenReturn(array);
 			when(proceedingJoinPoint.proceed()).thenThrow(new RuntimeException("Unit Test Exception"));
+			restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
 			restProviderHttpResponseCodeAspect.logAnnotatedMethodRequestResponse(proceedingJoinPoint);
 		} catch(Throwable throwable){
 			assertTrue(throwable instanceof RuntimeException);
@@ -196,6 +198,7 @@ public class RestProviderHttpResponseCodeAspectTest {
 			Object[] array = new Object[0];
 			when(proceedingJoinPoint.getArgs()).thenReturn(array);
 			when(proceedingJoinPoint.proceed()).thenThrow(new RuntimeException("Unit Test Exception"));
+			restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
 			restProviderHttpResponseCodeAspect.logAnnotatedMethodRequestResponse(proceedingJoinPoint);
 		} catch(Throwable throwable){
 			assertTrue(throwable instanceof RuntimeException);
