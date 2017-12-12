@@ -71,7 +71,6 @@ public class RestProviderHttpResponseCodeAspectTest {
 		
 		try{
 
-
 		}catch(Throwable e) {
 
 		}

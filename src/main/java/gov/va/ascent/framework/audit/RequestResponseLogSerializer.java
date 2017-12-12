@@ -45,7 +45,7 @@ public class RequestResponseLogSerializer {
         if (messageSeverity.equals(MessageSeverity.ERROR) || messageSeverity.equals(MessageSeverity.FATAL)) {
         		AuditLogger.error(auditEventData, auditDetails);
         } else {
-        		AuditLogger.info(auditEventData, auditDetails);
+        		AuditLogger.info(auditEventData, auditDetails); 
         }
     }
 
