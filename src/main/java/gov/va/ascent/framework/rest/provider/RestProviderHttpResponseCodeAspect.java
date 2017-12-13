@@ -54,6 +54,31 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	RequestResponseLogSerializer asyncLogging;
 
 	/**
+     * Instantiates a new RestHttpResponseCodeAspect using a default MessagesToHttpStatusRulesEngine.
+     * 
+     * Use a custom bean and the other constructor to customize the rules.
+     *
+     */
+	public RestProviderHttpResponseCodeAspect() {
+		MessagesToHttpStatusRulesEngine ruleEngine = new MessagesToHttpStatusRulesEngine();
+		ruleEngine.addRule(
+				new MessageSeverityMatchRule(MessageSeverity.FATAL, HttpStatus.INTERNAL_SERVER_ERROR)); 
+		ruleEngine.addRule(
+				new MessageSeverityMatchRule(MessageSeverity.ERROR, 
+						HttpStatus.BAD_REQUEST));
+		this.rulesEngine = ruleEngine;
+    }
+	
+    /**
+     * Instantiates a new RestHttpResponseCodeAspect using the specified MessagesToHttpStatusRulesEngine
+     *
+     * @param rulesEngine the rules engine
+     */
+    public RestProviderHttpResponseCodeAspect(MessagesToHttpStatusRulesEngine rulesEngine) {
+    	this.rulesEngine = rulesEngine;
+    }
+    
+	/**
 	 * Log annotated method request response.
 	 *
 	 * @param joinPoint
@@ -82,30 +107,6 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 		return response;
 	}
 
-	/**
-     * Instantiates a new RestHttpResponseCodeAspect using a default MessagesToHttpStatusRulesEngine.
-     * 
-     * Use a custom bean and the other constructor to customize the rules.
-     *
-     */
-	public RestProviderHttpResponseCodeAspect() {
-		MessagesToHttpStatusRulesEngine ruleEngine = new MessagesToHttpStatusRulesEngine();
-		ruleEngine.addRule(
-				new MessageSeverityMatchRule(MessageSeverity.FATAL, HttpStatus.INTERNAL_SERVER_ERROR)); 
-		ruleEngine.addRule(
-				new MessageSeverityMatchRule(MessageSeverity.ERROR, 
-						HttpStatus.BAD_REQUEST));
-		this.rulesEngine = ruleEngine;
-    }
-    
-    /**
-     * Instantiates a new RestHttpResponseCodeAspect using the specified MessagesToHttpStatusRulesEngine
-     *
-     * @param rulesEngine the rules engine
-     */
-    public RestProviderHttpResponseCodeAspect(MessagesToHttpStatusRulesEngine rulesEngine) {
-    	this.rulesEngine = rulesEngine;
-    }
 	
 	/**
 	 * Around advice executes around the pointcut.

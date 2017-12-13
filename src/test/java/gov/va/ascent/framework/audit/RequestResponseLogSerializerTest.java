@@ -97,5 +97,27 @@ public class RequestResponseLogSerializerTest {
 
     }
 
+    @Test
+    public void testJsonExceptionError() throws Exception {
+        when(mapper.writeValueAsString(any())).thenThrow(JsonProcessingException.class);
+        requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData, MessageSeverity.ERROR);
+        verify(mockAppender, times(2)).doAppend(captorLoggingEvent.capture());
+        final List<LoggingEvent> loggingEvents = captorLoggingEvent.getAllValues();
+        assertEquals("Error occurred on JSON processing, calling toString", loggingEvents.get(0).getMessage());
+        assertThat(loggingEvents.get(0).getLevel(), is(Level.ERROR));
+        assertEquals("RequestResponseAuditData{headers={Header1=Header1Value}, uri='/', method='GET', response=Response, request=Request}", loggingEvents.get(1).getMessage());
+        assertThat(loggingEvents.get(1).getLevel(), is(Level.ERROR));
+    }
 
+    @Test
+    public void testJsonExceptionFatal() throws Exception {
+        when(mapper.writeValueAsString(any())).thenThrow(JsonProcessingException.class);
+        requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData, MessageSeverity.FATAL);
+        verify(mockAppender, times(2)).doAppend(captorLoggingEvent.capture());
+        final List<LoggingEvent> loggingEvents = captorLoggingEvent.getAllValues();
+        assertEquals("Error occurred on JSON processing, calling toString", loggingEvents.get(0).getMessage());
+        assertThat(loggingEvents.get(0).getLevel(), is(Level.ERROR));
+        assertEquals("RequestResponseAuditData{headers={Header1=Header1Value}, uri='/', method='GET', response=Response, request=Request}", loggingEvents.get(1).getMessage());
+        assertThat(loggingEvents.get(1).getLevel(), is(Level.ERROR));
+    }
 }
