@@ -144,6 +144,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 			if (ruleStatus != null && (HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.SERVER_ERROR
 					|| HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.CLIENT_ERROR)) {
 				writeAudit(requestObject, responseObject, auditEventData, MessageSeverity.ERROR);
+				return new ResponseEntity<>(serviceResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 			} else {
 				writeAudit(requestObject, responseObject, auditEventData, MessageSeverity.INFO);
 			}
@@ -164,12 +165,16 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	 * @param auditEventData
 	 * @return
 	 */
-	private ResponseEntity<ServiceResponse> writeAuditError(AscentRuntimeException ascentRuntimeException, AuditEventData auditEventData) {
+	private ResponseEntity<ServiceResponse> writeAuditError(AscentRuntimeException ascentRuntimeException,
+			AuditEventData auditEventData) {
 		LOGGER.error("RestHttpResponseCodeAspect encountered uncaught exception in REST endpoint.",
 				ascentRuntimeException);
 		ServiceResponse serviceResponse = new ServiceResponse();
 		serviceResponse.addMessage(MessageSeverity.FATAL, "UNEXPECTED_ERROR", ascentRuntimeException.getMessage());
-		AuditLogger.error(auditEventData, ascentRuntimeException.getMessage());
+		StringBuilder sb = new StringBuilder();
+		sb.append("Error Message: ").append(ascentRuntimeException.getMessage()).append(" StackTrace: ")
+				.append(ascentRuntimeException.getStackTrace());
+		AuditLogger.error(auditEventData, sb.toString());
 		return new ResponseEntity<>(serviceResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
