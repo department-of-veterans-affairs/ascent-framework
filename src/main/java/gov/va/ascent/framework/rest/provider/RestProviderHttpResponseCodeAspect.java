@@ -173,8 +173,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 		ServiceResponse serviceResponse = new ServiceResponse();
 		serviceResponse.addMessage(MessageSeverity.FATAL, "UNEXPECTED_ERROR", ascentRuntimeException.getMessage());
 		StringBuilder sb = new StringBuilder();
-		sb.append("Error Message: ").append(ascentRuntimeException.getMessage()).append(" StackTrace: ")
-				.append(ascentRuntimeException.getStackTrace());
+		sb.append("Error Message: ").append(ascentRuntimeException);
 		AuditLogger.error(auditEventData, sb.toString());
 		return new ResponseEntity<>(serviceResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
