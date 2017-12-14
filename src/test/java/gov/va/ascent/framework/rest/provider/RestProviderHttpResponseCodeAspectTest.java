@@ -67,6 +67,7 @@ public class RestProviderHttpResponseCodeAspectTest {
 	@Before
 	public void setUp() throws Exception {
 		MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+		httpServletRequest.addHeader("TestHeader", "TestValue");
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest));
 		
 		try{
@@ -121,7 +122,7 @@ public class RestProviderHttpResponseCodeAspectTest {
 		}
 
 	}
-
+	
 	@Test
 	public void testAroundAdviceCatchAscentExceptionLogging()  {
 		
