@@ -1,9 +1,9 @@
 package gov.va.ascent.framework.service;
 
 import gov.va.ascent.framework.audit.AuditLogger;
-import gov.va.ascent.framework.audit.BaseAuditAspect;
 import gov.va.ascent.framework.messages.Message;
 import gov.va.ascent.framework.messages.MessageSeverity;
+import gov.va.ascent.framework.rest.provider.BaseRestProviderAspect;
 import gov.va.ascent.framework.validation.Validatable;
 import gov.va.ascent.framework.validation.ViolationMessageParts;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -69,7 +69,7 @@ public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 					serviceResponse = (ServiceResponse) methodSignature.getMethod().getReturnType().newInstance();
 					convertMapToMessages(serviceResponse, messages);
 					AuditLogger.error(
-							BaseAuditAspect.getDefaultAuditableInstance(methodSignature.getMethod()), 
+							BaseRestProviderAspect.getDefaultAuditableInstance(methodSignature.getMethod()), 
 							serviceResponse.getMessages().stream().map(Message::toString).reduce("", String::concat));
 				}
 			}

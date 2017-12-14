@@ -72,7 +72,6 @@ public class ServiceExceptionHandlerAspectTest {
 		}catch(Throwable throwable) {
 			Assert.assertTrue(throwable instanceof RuntimeException);
 			assertNotNull(throwable.getCause());
-			Assert.assertTrue(throwable.getMessage().contains("Unique ID: ["));			
 		}
 	}
 
@@ -88,7 +87,6 @@ public class ServiceExceptionHandlerAspectTest {
 		}catch(Throwable throwable) {
 			Assert.assertTrue(throwable instanceof RuntimeException);
 			assertNotNull(throwable.getCause());
-			Assert.assertTrue(throwable.getMessage().contains("Unique ID: ["));
 		}
 	}
 
