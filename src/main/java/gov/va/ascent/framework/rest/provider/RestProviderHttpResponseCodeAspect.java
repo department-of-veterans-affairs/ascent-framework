@@ -145,7 +145,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 			if (ruleStatus != null && (HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.SERVER_ERROR
 					|| HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.CLIENT_ERROR)) {
 				writeAudit(requestObject, responseObject, auditEventData, MessageSeverity.ERROR);
-				return new ResponseEntity<>(serviceResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity<>(serviceResponse, ruleStatus);
 			} else {
 				writeAudit(requestObject, responseObject, auditEventData, MessageSeverity.INFO);
 			}
