@@ -6,6 +6,8 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import gov.va.ascent.framework.messages.MessageSeverity;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
@@ -17,6 +19,8 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -64,6 +68,8 @@ public class RequestResponseLogSerializerTest {
 
         headers.put("Header1", "Header1Value");
         requestResponseAuditData.setHeaders(headers);
+        
+        mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
 
     }
 
@@ -79,8 +85,8 @@ public class RequestResponseLogSerializerTest {
         requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData, MessageSeverity.INFO);
         verify(mockAppender, times(1)).doAppend(captorLoggingEvent.capture());
         final List<LoggingEvent> loggingEvents = captorLoggingEvent.getAllValues();
-        assertEquals("{\"headers\":{\"Header1\":\"Header1Value\"},\"uri\":\"/\",\"method\":\"GET\",\"response\":\"Response\",\"request\":\"Request\"}",
-                loggingEvents.get(0).getMessage());
+        JSONAssert.assertEquals("{\"headers\":{\"Header1\":\"Header1Value\"},\"uri\":\"/\",\"method\":\"GET\",\"response\":\"Response\",\"request\":\"Request\"}",
+                loggingEvents.get(0).getMessage(), JSONCompareMode.STRICT);
         assertThat(loggingEvents.get(0).getLevel(), is(Level.INFO));
     }
 

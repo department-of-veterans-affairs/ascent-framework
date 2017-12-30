@@ -176,17 +176,4 @@ public class AuditLoggerTest {
 		// Check the message being logged is correct
 		assertThat(loggingEvent.getFormattedMessage(), is("Audit ERROR Activity Detail"));
 	}
-	
-	@Test
-	public void testSanitize() {
-		String str = "test string";
-		assertTrue(str.equals(AuditLogger.sanitize(str)));
-		
-		str = "test \nstring";
-		assertTrue("test _string".equals(AuditLogger.sanitize(str)));
-		
-		str = null;
-		assertNull(AuditLogger.sanitize(str));
-	}
-	
 }

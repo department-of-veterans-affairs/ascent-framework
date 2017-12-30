@@ -29,6 +29,7 @@ import gov.va.ascent.framework.audit.RequestResponseLogSerializer;
 import gov.va.ascent.framework.exception.AscentRuntimeException;
 import gov.va.ascent.framework.messages.MessageSeverity;
 import gov.va.ascent.framework.service.ServiceResponse;
+import gov.va.ascent.framework.util.SanitizationUtil;
 
 /**
  * The Class RestHttpResponseCodeAspect is an aspect to alter HTTP response codes from our REST endpoints.
@@ -204,17 +205,19 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 
 	}
 
-	private void getHttpRequestAuditData(HttpServletRequest httpServletRequest, RequestResponseAuditData requestResponseAuditData){
+	private void getHttpRequestAuditData(HttpServletRequest httpServletRequest, 
+			RequestResponseAuditData requestResponseAuditData) {
 	    final Map<String, String> headers = new HashMap<>();
 
         Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
 
-	    while(headerNames.hasMoreElements()){
-	        String headerName = headerNames.nextElement();
-	        headers.put(AuditLogger.sanitize(headerName), AuditLogger.sanitize(httpServletRequest.getHeader(headerName)));
+	    while(headerNames.hasMoreElements()) {
+	        String headerName = SanitizationUtil.stripXSS(headerNames.nextElement());
+	        String value = SanitizationUtil.stripXSS(httpServletRequest.getHeader(headerName));
+	        headers.put(headerName, value);
         }
-        requestResponseAuditData.setHeaders(headers);
-	    requestResponseAuditData.setUri(AuditLogger.sanitize(httpServletRequest.getRequestURI()));
-	    requestResponseAuditData.setMethod(AuditLogger.sanitize(httpServletRequest.getMethod()));
-    }	
+    	requestResponseAuditData.setHeaders(headers);
+	    requestResponseAuditData.setUri(SanitizationUtil.stripXSS(httpServletRequest.getRequestURI()));
+	    requestResponseAuditData.setMethod(SanitizationUtil.stripXSS(httpServletRequest.getMethod()));
+	}
 }

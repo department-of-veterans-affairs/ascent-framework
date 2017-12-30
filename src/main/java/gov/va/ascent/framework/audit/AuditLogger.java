@@ -37,7 +37,7 @@ public class AuditLogger {
      */
     public static void info(AuditEventData auditable, String activityDetail) {
         addMdcSecurityEntries(auditable);
-        LOGGER.info(sanitize(activityDetail));
+        LOGGER.info(activityDetail);
         MDC.clear();
 
     }
@@ -81,16 +81,4 @@ public class AuditLogger {
         MDC.put("user", auditable.getUser());
         MDC.put("tokenId", auditable.getTokenId());
     }
-
-    /**
-     * 
-     * @param message
-     * @return Sanitzed string.
-     */
-	public static String sanitize(String message) {
-		if (message != null) {
-			return message.replace('\n', '_').replace('\r', '_').replace('\t', '_');
-		}
-		return message;
-	}
 }
