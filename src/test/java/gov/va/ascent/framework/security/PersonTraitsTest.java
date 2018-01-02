@@ -5,9 +5,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.core.authority.AuthorityUtils;
 
+import gov.va.ascent.framework.security.PersonTraits.PATTERN_FORMAT;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -18,6 +20,8 @@ import static org.junit.Assert.assertTrue;
 public class PersonTraitsTest {
 
 	PersonTraits personTraitsDefault = new PersonTraits("NA","NA", AuthorityUtils.NO_AUTHORITIES);
+	SimpleDateFormat format1 = new SimpleDateFormat(PATTERN_FORMAT.BIRTHDATE_YYYYMMDD.getPattern());
+	
 	@Before
 	public void setUp() throws Exception {
 		personTraitsDefault.setDodedipnid("TestDodedipnid");
@@ -27,10 +31,11 @@ public class PersonTraitsTest {
 		personTraitsDefault.setPrefix("Dr.");
 		personTraitsDefault.setSuffix("Jr");
 		
-	    Date sysDate = new Date(System.currentTimeMillis());
-	    Date oneDayBefore = new Date(sysDate.getTime() - 10);  		
-		personTraitsDefault.setBirthDate(oneDayBefore);
-		personTraitsDefault.setAssuranceLevel("testvalidassurancelevel");
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -10);
+		 		
+		personTraitsDefault.setBirthDate(format1.format(cal.getTime()));
+		personTraitsDefault.setAssuranceLevel(2);
 		personTraitsDefault.setEmail("validemail@testdomain.com");
 		personTraitsDefault.setFileNumber("testValidFN");
 		personTraitsDefault.setGender("M");
@@ -66,7 +71,7 @@ public class PersonTraitsTest {
 		assertNotNull(personTraitsDefault.hashCode());
 		personTraitsDefault.setGender(null);
 		assertNotNull(personTraitsDefault.hashCode());
-		personTraitsDefault.setAssuranceLevel(null);
+		personTraitsDefault.setAssuranceLevel(0);
 		assertNotNull(personTraitsDefault.hashCode());
 		personTraitsDefault.setPid(null);
 		assertNotNull(personTraitsDefault.hashCode());
@@ -202,13 +207,13 @@ public class PersonTraitsTest {
 
 	@Test
 	public void testGetBirthDate() {
-		personTraitsDefault.setBirthDate((Calendar.getInstance().getTime()));
+		personTraitsDefault.setBirthDate(format1.format(Calendar.getInstance().getTime()));
 		assertNotNull(personTraitsDefault.getBirthDate());
 	}
 
 	@Test
 	public void testSetBirthDate() {
-		personTraitsDefault.setBirthDate((Calendar.getInstance().getTime()));
+		personTraitsDefault.setBirthDate(format1.format(Calendar.getInstance().getTime()));
 		assertNotNull(personTraitsDefault.getBirthDate());
 	}
 
@@ -227,14 +232,14 @@ public class PersonTraitsTest {
 
 	@Test
 	public void testGetAssuranceLevel() {
-		personTraitsDefault.setAssuranceLevel("TestAssuranceLevel");
+		personTraitsDefault.setAssuranceLevel(3);
 		assertNotNull(personTraitsDefault.getAssuranceLevel());
-		assertTrue("TestAssuranceLevel".equals(personTraitsDefault.getAssuranceLevel()));
+		assertTrue(03==(personTraitsDefault.getAssuranceLevel()));
 	}
 
 	@Test
 	public void testSetAssuranceLevel() {
-		personTraitsDefault.setAssuranceLevel("TestAssuranceLevel");
+		personTraitsDefault.setAssuranceLevel(2);
 		assertNotNull(personTraitsDefault.getAssuranceLevel());
 	}
 
@@ -361,9 +366,9 @@ public class PersonTraitsTest {
 		o.setMiddleName("mn");
 		o.setPrefix("Mr.");
 		o.setSuffix("Sr");
-		o.setBirthDate(Calendar.getInstance().getTime());
+		o.setBirthDate(format1.format(Calendar.getInstance().getTime()));
 		o.setDodedipnid("dummydodedipnid");
-		o.setAssuranceLevel("dummyassurancelevel");
+		o.setAssuranceLevel(3);
 		o.setEmail("testemail@testdomain.com");
 		o.setFileNumber("testFN");
 		o.setGender("m");
@@ -387,7 +392,7 @@ public class PersonTraitsTest {
 		assertFalse(personTraitsDefault.equals(o));
 		o.setGender("M");
 		assertFalse(personTraitsDefault.equals(o));
-		o.setAssuranceLevel("testvalidassurancelevel");
+		o.setAssuranceLevel(3);
 		assertFalse(personTraitsDefault.equals(o));
 		o.setEmail("validemail@testdomain.com");
 		assertFalse(personTraitsDefault.equals(o));
@@ -403,10 +408,8 @@ public class PersonTraitsTest {
 		o.setCorrelationIds(correlationIds);
 		assertFalse(personTraitsDefault.equals(o));	
 		o.setIcn("testValidIcn");
-		assertFalse(personTraitsDefault.equals(o));		
-	    Date sysDate = new Date(System.currentTimeMillis());
-	    Date oneDayBefore = new Date(sysDate.getTime() - 10);  		
-		o.setBirthDate(oneDayBefore);
+		assertFalse(personTraitsDefault.equals(o));		  		
+		o.setBirthDate(format1.format(Calendar.getInstance().getTime()));
 		assertFalse(personTraitsDefault.equals(o));
 	}	
 	

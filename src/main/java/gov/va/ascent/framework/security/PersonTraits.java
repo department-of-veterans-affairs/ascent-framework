@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.User;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,15 +17,30 @@ import java.util.List;
  */
 
 public class PersonTraits extends User {
+	
+	enum PATTERN_FORMAT {
+	    BIRTHDATE_YYYYMMDD     ("YYYY-MM-dd");
+		private String pattern;
 
-    private Date birthDate;
+	    public String getPattern() {
+	        return pattern;
+	    }
+
+	    private PATTERN_FORMAT(String pattern) {
+	        this.pattern = pattern;
+	    }
+
+	    public static PATTERN_FORMAT getDefault() { return BIRTHDATE_YYYYMMDD; }
+	}
+
+    private String birthDate;
     private String firstName;
     private String lastName;
     private String middleName;
     private String prefix;
     private String suffix;
     private String gender;
-    private String assuranceLevel;
+    private Integer assuranceLevel;
     private String email;
     private String dodedipnid;
     private String pnidType;
@@ -144,11 +158,11 @@ public class PersonTraits extends User {
         this.suffix = suffix;
     }
 
-    public Date getBirthDate() {
+    public String getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -160,11 +174,11 @@ public class PersonTraits extends User {
         this.gender = gender;
     }
 
-    public String getAssuranceLevel() {
+    public Integer getAssuranceLevel() {
         return assuranceLevel;
     }
 
-    public void setAssuranceLevel(String assuranceLevel) {
+    public void setAssuranceLevel(Integer assuranceLevel) {
         this.assuranceLevel = assuranceLevel;
     }
 
