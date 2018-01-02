@@ -29,7 +29,6 @@ import gov.va.ascent.framework.audit.RequestResponseLogSerializer;
 import gov.va.ascent.framework.exception.AscentRuntimeException;
 import gov.va.ascent.framework.messages.MessageSeverity;
 import gov.va.ascent.framework.service.ServiceResponse;
-import gov.va.ascent.framework.util.SanitizationUtil;
 
 /**
  * The Class RestHttpResponseCodeAspect is an aspect to alter HTTP response codes from our REST endpoints.
@@ -212,12 +211,12 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
         Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
 
 	    while(headerNames.hasMoreElements()) {
-	        String headerName = SanitizationUtil.stripXSS(headerNames.nextElement());
-	        String value = SanitizationUtil.stripXSS(httpServletRequest.getHeader(headerName));
+	        String headerName = headerNames.nextElement();
+	        String value = httpServletRequest.getHeader(headerName);
 	        headers.put(headerName, value);
         }
     	requestResponseAuditData.setHeaders(headers);
-	    requestResponseAuditData.setUri(SanitizationUtil.stripXSS(httpServletRequest.getRequestURI()));
-	    requestResponseAuditData.setMethod(SanitizationUtil.stripXSS(httpServletRequest.getMethod()));
+	    requestResponseAuditData.setUri(httpServletRequest.getRequestURI());
+	    requestResponseAuditData.setMethod(httpServletRequest.getMethod());
 	}
 }

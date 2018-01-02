@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import gov.va.ascent.framework.util.SanitizationUtil;
+
 /**
  * The Class AuditLogger.
  */
@@ -25,7 +27,7 @@ public class AuditLogger {
      */
     public static void debug(AuditEventData auditable, String activityDetail) {
         addMdcSecurityEntries(auditable);
-        LOGGER.debug(activityDetail);
+        LOGGER.debug(SanitizationUtil.stripXSS(activityDetail));
         MDC.clear();
     }
 
@@ -37,7 +39,7 @@ public class AuditLogger {
      */
     public static void info(AuditEventData auditable, String activityDetail) {
         addMdcSecurityEntries(auditable);
-        LOGGER.info(activityDetail);
+        LOGGER.info(SanitizationUtil.stripXSS(activityDetail));
         MDC.clear();
 
     }
@@ -50,7 +52,7 @@ public class AuditLogger {
      */
     public static void warn(AuditEventData auditable, String activityDetail) {
         addMdcSecurityEntries(auditable);
-        LOGGER.warn(activityDetail);
+        LOGGER.warn(SanitizationUtil.stripXSS(activityDetail));
         MDC.clear();
 
     }
@@ -63,7 +65,7 @@ public class AuditLogger {
      */
     public static void error(AuditEventData auditable, String activityDetail) {
         addMdcSecurityEntries(auditable);
-        LOGGER.error(activityDetail);
+        LOGGER.error(SanitizationUtil.stripXSS(activityDetail));
         MDC.clear();
 
     }
