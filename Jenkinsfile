@@ -1,10 +1,7 @@
 @Library('ascent@development') _
 
 mavenPipeline {
-    triggers = [
-        upstream(
-        threshold: 'SUCCESS',
-        upstreamProjects: '../ascent-libraries-parent/development'
-        )
-    ]
+    //Specify string of comma separated upstream projects that will
+    //trigger this build if successful
+    upstreamProjects = '../ascent-libraries-parent/development'
 }
