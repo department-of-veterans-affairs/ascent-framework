@@ -1,4 +1,4 @@
-@Library('ascent@development') _
+@Library('ascent') _
 
 mavenPipeline {
     //Specify string of comma separated upstream projects that will
