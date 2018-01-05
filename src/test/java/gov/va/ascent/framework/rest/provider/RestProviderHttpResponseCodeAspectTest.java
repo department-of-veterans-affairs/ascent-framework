@@ -100,6 +100,23 @@ public class RestProviderHttpResponseCodeAspectTest {
 	}
 
 	@Test
+	public void testServiceResponseReturnType() {
+		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
+		Object returnObject = null;
+		try {
+			when(proceedingJoinPoint.proceed()).thenReturn(serviceResponse);
+			when(proceedingJoinPoint.getSignature()).thenReturn(mockSignature);
+			when(mockSignature.getMethod()).thenReturn(myMethod());			
+			when(proceedingJoinPoint.getTarget()).thenReturn(new TestClass());
+			
+			returnObject = restProviderHttpResponseCodeAspect.aroundAdvice(proceedingJoinPoint);
+		} catch (Throwable throwable) {
+
+		}
+		assertNotNull(returnObject);
+	}
+	
+	@Test
 	public void testConstructorWithParam() {
 		MessagesToHttpStatusRulesEngine ruleEngine = new MessagesToHttpStatusRulesEngine();
 		ruleEngine.addRule(

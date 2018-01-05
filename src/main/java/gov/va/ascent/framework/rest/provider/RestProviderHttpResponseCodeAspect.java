@@ -138,11 +138,11 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 		try {
 			responseObject = joinPoint.proceed();
 			
-			if (responseObject instanceof ServiceResponse) {
+			if (responseObject != null && responseObject instanceof ServiceResponse) {
 				serviceResponse = (ServiceResponse)  responseObject;
 				serviceResponseReturnType = true;
 			} else {
-				serviceResponse = ((ResponseEntity<ServiceResponse>)responseObject).getBody();
+				serviceResponse = responseObject==null ? null : ((ResponseEntity<ServiceResponse>)responseObject).getBody();
 			}
 	
 			if (serviceResponse == null) {
@@ -162,15 +162,11 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 			}
 		} catch (AscentRuntimeException ascentRuntimeException) {
 			responseObject = writeAuditError(ascentRuntimeException, auditEventData);
-			if (serviceResponseReturnType) {
-				return ((ResponseEntity<ServiceResponse>)responseObject).getBody();
-			}
+			return getReturnResponse(serviceResponseReturnType, responseObject);
 		} catch (Throwable throwable) {
 			AscentRuntimeException ascentRuntimeException = new AscentRuntimeException(throwable);
 			responseObject = writeAuditError(ascentRuntimeException, auditEventData);
-			if (serviceResponseReturnType) {
-				return ((ResponseEntity<ServiceResponse>)responseObject).getBody();
-			}
+			return getReturnResponse(serviceResponseReturnType, responseObject);
 		} finally {
 			LOGGER.debug("RestHttpResponseCodeAspect after method was called.");
 		}
@@ -178,6 +174,20 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 		return responseObject;
 	}
 	
+	/**
+	 * 
+	 * @param serviceResponseReturnType
+	 * @param responseObject
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private Object getReturnResponse(boolean serviceResponseReturnType, Object responseObject) {
+		if (serviceResponseReturnType) {
+			return ((ResponseEntity<ServiceResponse>)responseObject).getBody();
+		} else {
+			return responseObject;
+		}
+	}
 	/**
 	 * Write into Audit when exceptions occur
 	 * @param ascentRuntimeException
