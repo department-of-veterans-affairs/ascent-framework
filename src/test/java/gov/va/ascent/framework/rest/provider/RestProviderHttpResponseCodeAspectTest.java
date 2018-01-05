@@ -128,7 +128,7 @@ public class RestProviderHttpResponseCodeAspectTest {
 		
 		restProviderLog.setLevel(Level.ERROR);
 		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
-		ResponseEntity<ServiceResponse> returnObject = null;
+		Object returnObject = null;
 		try {
 			when(proceedingJoinPoint.proceed()).thenThrow(new AscentRuntimeException());
 			when(proceedingJoinPoint.getSignature()).thenReturn(mockSignature);
@@ -139,7 +139,7 @@ public class RestProviderHttpResponseCodeAspectTest {
 		} catch (Throwable throwable) {
 
 		}
-		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, returnObject.getStatusCode());
+		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, ((ResponseEntity<ServiceResponse>)returnObject).getStatusCode());
 		assertEquals("RestHttpResponseCodeAspect encountered uncaught exception in REST endpoint.",
 				RestProviderHttpResponseCodeAspectLogAppender.events.get(0).getMessage());
 	}
@@ -148,7 +148,7 @@ public class RestProviderHttpResponseCodeAspectTest {
 	public void testAroundAdviceCatchExceptionLogging()  {
 		restProviderLog.setLevel(Level.ERROR);
 		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
-		ResponseEntity<ServiceResponse> returnObject = null;
+		Object returnObject = null;
 		try {
 			when(proceedingJoinPoint.proceed()).thenThrow(new Throwable("Unit Test Throwable converted to AscentRuntimException"));
 			when(proceedingJoinPoint.getSignature()).thenReturn(mockSignature);
@@ -158,7 +158,7 @@ public class RestProviderHttpResponseCodeAspectTest {
 		} catch (Throwable throwable) {
 
 		}
-		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, returnObject.getStatusCode());
+		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, ((ResponseEntity<ServiceResponse>)returnObject).getStatusCode());
 		assertEquals("RestHttpResponseCodeAspect encountered uncaught exception in REST endpoint.",
 				RestProviderHttpResponseCodeAspectLogAppender.events.get(0).getMessage());
 		assertEquals("gov.va.ascent.framework.exception.AscentRuntimeException", RestProviderHttpResponseCodeAspectLogAppender.events.get(0).getThrowableProxy().getClassName());

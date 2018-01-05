@@ -117,13 +117,14 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	 */
 	@SuppressWarnings("unchecked")
 	@Around("!@annotation(gov.va.ascent.framework.audit.Auditable) && restController() && publicServiceResponseRestMethod()")
-	public ResponseEntity<ServiceResponse> aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
+	public Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("RestHttpResponseCodeAspect executing around method:" + joinPoint.toLongString());
 		}
 
-		ResponseEntity<ServiceResponse> responseObject = null;
+		Object responseObject = null;
 		Object requestObject = null;
+		boolean serviceResponseReturnType = false;
 
 		if (joinPoint.getArgs().length > 0 && joinPoint.getArgs()[0] != null) {
 			requestObject = joinPoint.getArgs()[0];
@@ -133,10 +134,17 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 		AuditEventData auditEventData = new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(),
 				method.getDeclaringClass().getName());
 
+		ServiceResponse serviceResponse = null;
 		try {
-			responseObject = (ResponseEntity<ServiceResponse>) joinPoint.proceed();
-
-			ServiceResponse serviceResponse = responseObject.getBody();
+			responseObject = joinPoint.proceed();
+			
+			if (responseObject instanceof ServiceResponse) {
+				serviceResponse = (ServiceResponse)  responseObject;
+				serviceResponseReturnType = true;
+			} else {
+				serviceResponse = ((ResponseEntity<ServiceResponse>)responseObject).getBody();
+			}
+	
 			if (serviceResponse == null) {
 				serviceResponse = new ServiceResponse();
 			}
@@ -145,18 +153,28 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 			if (ruleStatus != null && (HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.SERVER_ERROR
 					|| HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.CLIENT_ERROR)) {
 				writeAudit(requestObject, responseObject, auditEventData, MessageSeverity.ERROR);
+				if (serviceResponseReturnType) {
+					return serviceResponse;
+				}
 				return new ResponseEntity<>(serviceResponse, ruleStatus);
 			} else {
 				writeAudit(requestObject, responseObject, auditEventData, MessageSeverity.INFO);
 			}
 		} catch (AscentRuntimeException ascentRuntimeException) {
 			responseObject = writeAuditError(ascentRuntimeException, auditEventData);
+			if (serviceResponseReturnType) {
+				return ((ResponseEntity<ServiceResponse>)responseObject).getBody();
+			}
 		} catch (Throwable throwable) {
 			AscentRuntimeException ascentRuntimeException = new AscentRuntimeException(throwable);
 			responseObject = writeAuditError(ascentRuntimeException, auditEventData);
+			if (serviceResponseReturnType) {
+				return ((ResponseEntity<ServiceResponse>)responseObject).getBody();
+			}
 		} finally {
 			LOGGER.debug("RestHttpResponseCodeAspect after method was called.");
 		}
+		
 		return responseObject;
 	}
 	
