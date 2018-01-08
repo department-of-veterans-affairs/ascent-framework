@@ -115,7 +115,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	 * @return the response entity
 	 * @throws Throwable the throwable
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked","squid:MethodCyclomaticComplexity"})
 	@Around("!@annotation(gov.va.ascent.framework.audit.Auditable) && restController() && publicServiceResponseRestMethod()")
 	public Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
 		if (LOGGER.isDebugEnabled()) {
@@ -124,13 +124,15 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 
 		Object responseObject = null;
 		Object requestObject = null;
-		boolean serviceResponseReturnType = false;
 
 		if (joinPoint.getArgs().length > 0 && joinPoint.getArgs()[0] != null) {
 			requestObject = joinPoint.getArgs()[0];
 		}
 
 		final Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
+
+		boolean serviceResponseReturnType = method.getReturnType().toString().contains("ResponseEntity") ? false : true;
+		
 		AuditEventData auditEventData = new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(),
 				method.getDeclaringClass().getName());
 
@@ -140,7 +142,6 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 			
 			if (responseObject != null && responseObject instanceof ServiceResponse) {
 				serviceResponse = (ServiceResponse)  responseObject;
-				serviceResponseReturnType = true;
 			} else {
 				serviceResponse = responseObject==null ? null : ((ResponseEntity<ServiceResponse>)responseObject).getBody();
 			}
