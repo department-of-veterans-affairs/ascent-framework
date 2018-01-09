@@ -98,4 +98,15 @@ public final class AuditEventData {
     public String getAuditClass() {
         return auditClass;
     }
+    
+    @Override
+    public String toString() {
+        return "AuditEventData{" +
+                "event=" + event +
+                ", activity='" + activity + '\'' +
+                ", auditClass='" + auditClass + '\'' +
+                ", tokenId=" + tokenId +
+                ", user=" + user +
+                '}';
+    }
 }

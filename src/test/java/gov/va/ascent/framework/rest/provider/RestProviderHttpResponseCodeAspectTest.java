@@ -157,7 +157,7 @@ public class RestProviderHttpResponseCodeAspectTest {
 
 		}
 		assertTrue(((ServiceResponse) returnObject).getMessages().size() > 0);
-		assertEquals("RestHttpResponseCodeAspect encountered uncaught exception in REST endpoint.",
+		assertEquals("RestProviderHttpResponseCodeAspect encountered uncaught exception in REST endpoint.",
 				RestProviderHttpResponseCodeAspectLogAppender.events.get(0).getMessage());
 	}
 	
@@ -177,7 +177,7 @@ public class RestProviderHttpResponseCodeAspectTest {
 		}
 		
 		assertTrue(((ServiceResponse) returnObject).getMessages().size() > 0);
-		assertEquals("RestHttpResponseCodeAspect encountered uncaught exception in REST endpoint.",
+		assertEquals("RestProviderHttpResponseCodeAspect encountered uncaught exception in REST endpoint.",
 				RestProviderHttpResponseCodeAspectLogAppender.events.get(0).getMessage());
 		assertEquals("gov.va.ascent.framework.exception.AscentRuntimeException", RestProviderHttpResponseCodeAspectLogAppender.events.get(0).getThrowableProxy().getClassName());
 	}
