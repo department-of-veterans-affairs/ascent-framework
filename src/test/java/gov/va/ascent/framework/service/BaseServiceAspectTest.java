@@ -9,5 +9,11 @@ public class BaseServiceAspectTest {
         BaseServiceAspect.publicStandardServiceMethod();
         //does nothing
     }
+    
+    @Test
+    public void testRestControllereMethod(){
+        BaseServiceAspect.restController();;
+        //does nothing
+    }
 
 }
