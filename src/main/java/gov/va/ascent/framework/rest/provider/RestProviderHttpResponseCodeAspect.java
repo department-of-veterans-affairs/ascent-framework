@@ -164,7 +164,6 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 			if (ruleStatus != null && (HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.SERVER_ERROR
 					|| HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.CLIENT_ERROR)) {
 				LOGGER.debug("HttpStatus {}", ruleStatus.value());
-				LOGGER.debug("Invoking Audit ERROR");
 				writeAudit(requestObject, responseObject, auditEventData, MessageSeverity.ERROR);
 				
 				if (returnTypeIsServiceResponse) {
@@ -173,7 +172,6 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 					return new ResponseEntity<>(serviceResponse, ruleStatus);
 				}
 			} else {
-				LOGGER.debug("Invoking Audit INFO");
 				writeAudit(requestObject, responseObject, auditEventData, MessageSeverity.INFO);
 			}
 		} catch (AscentRuntimeException ascentRuntimeException) {
