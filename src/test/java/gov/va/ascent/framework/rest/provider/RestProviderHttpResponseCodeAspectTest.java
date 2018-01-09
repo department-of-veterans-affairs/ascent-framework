@@ -118,6 +118,26 @@ public class RestProviderHttpResponseCodeAspectTest {
 		assertNotNull(returnObject);
 	}
 	
+	
+	@Test
+	public void testServiceResponseReturnTypes() {
+		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
+		Object returnObject = null;
+		try {
+			ServiceResponse serviceResp = new ServiceResponse();
+			serviceResp.addMessage(MessageSeverity.FATAL, "Test KEY", "Test Error");
+			when(proceedingJoinPoint.proceed()).thenReturn(serviceResp);
+			when(proceedingJoinPoint.getSignature()).thenReturn(mockSignature);
+			when(mockSignature.getMethod()).thenReturn(myMethod());			
+			when(proceedingJoinPoint.getTarget()).thenReturn(new TestClass());
+			
+			returnObject = restProviderHttpResponseCodeAspect.aroundAdvice(proceedingJoinPoint);
+		} catch (Throwable throwable) {
+
+		}
+		assertNotNull(returnObject);
+	}
+	
 	@Test
 	public void testConstructorWithParam() {
 		MessagesToHttpStatusRulesEngine ruleEngine = new MessagesToHttpStatusRulesEngine();

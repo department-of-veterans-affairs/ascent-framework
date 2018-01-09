@@ -243,8 +243,9 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
             requestResponseAuditData.setResponse(response);
         }
         LOGGER.debug("Invoking asyncLogRequestResponseAspectAuditData");
-        asyncLogging.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData, messageSeverity);
-
+        if (asyncLogging != null) {
+        		asyncLogging.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData, messageSeverity);
+        }
 	}
 
 	private void getHttpRequestAuditData(HttpServletRequest httpServletRequest, 
