@@ -14,6 +14,18 @@ public class BaseServiceAspect {
 	}
 	
 	/**
+	 * This aspect defines the pointcut of standard REST controller.  Those are controllers that...
+	 * 
+	 * (1) are annotated with org.springframework.web.bind.annotation.RestController
+	 * 
+	 * Ensure you follow that pattern to make use of this standard pointcut.
+	 */
+	@Pointcut("within(@org.springframework.web.bind.annotation.RestController *)")
+	protected static final void restController() {
+		 // Do nothing.
+	}
+	
+	/**
 	 * This pointcut reflects a public standard service method.
 	 * 
 	 * These are methods which are

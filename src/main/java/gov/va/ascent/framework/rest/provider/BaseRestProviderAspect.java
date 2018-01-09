@@ -42,11 +42,11 @@ public class BaseRestProviderAspect {
 	 * 
 	 * Ensure you follow that pattern to make use of this standard pointcut.
 	 */
-	@Pointcut("execution(public org.springframework.http.ResponseEntity<gov.va.ascent.framework.service.ServiceResponse+> *(..))")
+	@Pointcut("execution(public org.springframework.http.ResponseEntity<gov.va.ascent.framework.service.ServiceResponse+> *(..)) || execution(public gov.va.ascent.framework.service.ServiceResponse+ *(..))")
 	protected static final void publicServiceResponseRestMethod() {
 		 // Do nothing.
 	}
-	
+
 	
 	/**
 	 * This aspect defines the pointcut of methods that...

@@ -11,7 +11,7 @@ import gov.va.ascent.framework.aspect.PerformanceLoggingAspect;
 @Order(-9999)
 public class ServiceTimerAspect extends BaseServiceAspect {
 	
-	@Around("publicStandardServiceMethod()")
+	@Around("publicStandardServiceMethod() && !restController()")
 	public Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {	
 		return PerformanceLoggingAspect.aroundAdvice(joinPoint);
     }

@@ -100,6 +100,23 @@ public class RestProviderHttpResponseCodeAspectTest {
 	}
 
 	@Test
+	public void testServiceResponseReturnType() {
+		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
+		Object returnObject = null;
+		try {
+			when(proceedingJoinPoint.proceed()).thenReturn(serviceResponse);
+			when(proceedingJoinPoint.getSignature()).thenReturn(mockSignature);
+			when(mockSignature.getMethod()).thenReturn(myMethod());			
+			when(proceedingJoinPoint.getTarget()).thenReturn(new TestClass());
+			
+			returnObject = restProviderHttpResponseCodeAspect.aroundAdvice(proceedingJoinPoint);
+		} catch (Throwable throwable) {
+
+		}
+		assertNotNull(returnObject);
+	}
+	
+	@Test
 	public void testConstructorWithParam() {
 		MessagesToHttpStatusRulesEngine ruleEngine = new MessagesToHttpStatusRulesEngine();
 		ruleEngine.addRule(
@@ -128,7 +145,7 @@ public class RestProviderHttpResponseCodeAspectTest {
 		
 		restProviderLog.setLevel(Level.ERROR);
 		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
-		ResponseEntity<ServiceResponse> returnObject = null;
+		Object returnObject = null;
 		try {
 			when(proceedingJoinPoint.proceed()).thenThrow(new AscentRuntimeException());
 			when(proceedingJoinPoint.getSignature()).thenReturn(mockSignature);
@@ -139,8 +156,8 @@ public class RestProviderHttpResponseCodeAspectTest {
 		} catch (Throwable throwable) {
 
 		}
-		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, returnObject.getStatusCode());
-		assertEquals("RestHttpResponseCodeAspect encountered uncaught exception in REST endpoint.",
+		assertTrue(((ServiceResponse) returnObject).getMessages().size() > 0);
+		assertEquals("RestProviderHttpResponseCodeAspect encountered uncaught exception in REST endpoint.",
 				RestProviderHttpResponseCodeAspectLogAppender.events.get(0).getMessage());
 	}
 	
@@ -148,7 +165,7 @@ public class RestProviderHttpResponseCodeAspectTest {
 	public void testAroundAdviceCatchExceptionLogging()  {
 		restProviderLog.setLevel(Level.ERROR);
 		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
-		ResponseEntity<ServiceResponse> returnObject = null;
+		Object returnObject = null;
 		try {
 			when(proceedingJoinPoint.proceed()).thenThrow(new Throwable("Unit Test Throwable converted to AscentRuntimException"));
 			when(proceedingJoinPoint.getSignature()).thenReturn(mockSignature);
@@ -158,8 +175,9 @@ public class RestProviderHttpResponseCodeAspectTest {
 		} catch (Throwable throwable) {
 
 		}
-		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, returnObject.getStatusCode());
-		assertEquals("RestHttpResponseCodeAspect encountered uncaught exception in REST endpoint.",
+		
+		assertTrue(((ServiceResponse) returnObject).getMessages().size() > 0);
+		assertEquals("RestProviderHttpResponseCodeAspect encountered uncaught exception in REST endpoint.",
 				RestProviderHttpResponseCodeAspectLogAppender.events.get(0).getMessage());
 		assertEquals("gov.va.ascent.framework.exception.AscentRuntimeException", RestProviderHttpResponseCodeAspectLogAppender.events.get(0).getThrowableProxy().getClassName());
 	}
