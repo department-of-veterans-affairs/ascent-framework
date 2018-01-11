@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -130,6 +131,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 		}
 		
 		final Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
+		final HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
 		
 		boolean returnTypeIsServiceResponse = method.getReturnType().toString().contains("ResponseEntity") ? false : true;
 		
@@ -167,6 +169,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 				writeAudit(requestObject, responseObject, auditEventData, MessageSeverity.ERROR);
 				
 				if (returnTypeIsServiceResponse) {
+					response.setStatus(ruleStatus.value());
 					return serviceResponse;
 				} else {
 					return new ResponseEntity<>(serviceResponse, ruleStatus);
@@ -176,10 +179,16 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 			}
 		} catch (AscentRuntimeException ascentRuntimeException) {
 			responseObject = writeAuditError(ascentRuntimeException, auditEventData);
+			if (response !=null) {
+				response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			}
 			return getReturnResponse(returnTypeIsServiceResponse, responseObject);
 		} catch (Throwable throwable) {
 			AscentRuntimeException ascentRuntimeException = new AscentRuntimeException(throwable);
 			responseObject = writeAuditError(ascentRuntimeException, auditEventData);
+			if (response !=null) {
+				response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			}
 			return getReturnResponse(returnTypeIsServiceResponse, responseObject);
 		} finally {
 			LOGGER.debug("RestProviderHttpResponseCodeAspect after method was called.");
