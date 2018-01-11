@@ -10,6 +10,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import gov.va.ascent.framework.audit.AuditEvents;
@@ -27,6 +30,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -58,8 +62,6 @@ public class RestProviderHttpResponseCodeAspectTest {
 	@InjectMocks
 	private RestProviderHttpResponseCodeAspect requestResponseAspect = new RestProviderHttpResponseCodeAspect();
 
-	private AnnotationConfigWebApplicationContext context;
-
     private TestServiceRequest mockRequestObject = new TestServiceRequest();
     private Object[] mockArray = {mockRequestObject};
 
@@ -69,8 +71,9 @@ public class RestProviderHttpResponseCodeAspectTest {
 	@Before
 	public void setUp() throws Exception {
 		MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+		MockHttpServletResponse httpServletResponse = new MockHttpServletResponse();
 		httpServletRequest.addHeader("TestHeader", "TestValue");
-		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest));
+		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest, httpServletResponse));
 		
 		try{
 
