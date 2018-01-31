@@ -118,7 +118,14 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<scope>provided</scope>
-		</dependency>	
+		</dependency>
+		
+		<!-- -YamlDependency -->
+	    <dependency>
+       	   <groupId>org.yaml</groupId>
+           <artifactId>snakeyaml</artifactId>
+      </dependency>
+      
     </dependencies>
 <build>
     <plugins>
