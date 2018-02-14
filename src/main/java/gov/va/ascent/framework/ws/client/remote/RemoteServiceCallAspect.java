@@ -20,7 +20,7 @@ public class RemoteServiceCallAspect extends BaseRemoteServiceCallAspect {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RemoteServiceCallAspect.class);
 
-	private final static String SOAP_METHOD = "POST";
+	private static final String SOAP_METHOD = "POST";
 
 	/** NOTE: Do not reference this member directly. Use getRequestResponseLogSerializer() */
 	@Autowired
