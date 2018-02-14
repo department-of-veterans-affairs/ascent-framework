@@ -4,8 +4,8 @@ import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.util.WSSecurityUtil;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapMessage;
-import org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor;
-import org.springframework.ws.soap.security.wss4j.Wss4jSecuritySecurementException;
+import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
+import org.springframework.ws.soap.security.wss4j2.Wss4jSecuritySecurementException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
