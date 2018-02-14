@@ -126,6 +126,16 @@
            <artifactId>snakeyaml</artifactId>
       </dependency>
       
+		<!-- for WebServiceTemplate -->
+		<dependency>
+			<groupId>org.springframework.ws</groupId>
+			<artifactId>spring-ws-core</artifactId>
+		</dependency>
+		<!-- for MockWebServiceServer -->
+		<dependency>
+			<groupId>org.springframework.ws</groupId>
+			<artifactId>spring-ws-test</artifactId>
+		</dependency>
     </dependencies>
 <build>
     <plugins>
