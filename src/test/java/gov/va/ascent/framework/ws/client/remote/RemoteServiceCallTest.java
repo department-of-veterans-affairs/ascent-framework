@@ -9,7 +9,7 @@ import gov.va.ascent.framework.transfer.AbstractTransferObject;
 import gov.va.ascent.framework.ws.client.remote.test.mocks.TestAbstractRemoteServiceCallMockRequest;
 import gov.va.ascent.framework.ws.client.remote.test.mocks.TestAbstractRemoteServiceCallMockResponse;
 
-public class RemoteServiceCall_UnitTest {
+public class RemoteServiceCallTest {
 
 	@Test
 	public void testCallRemoteService() {

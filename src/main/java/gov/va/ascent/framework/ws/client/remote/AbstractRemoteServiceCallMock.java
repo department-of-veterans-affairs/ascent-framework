@@ -70,9 +70,21 @@ public abstract class AbstractRemoteServiceCallMock {
 	protected abstract String getKeyForMockResponse(AbstractTransferObject request);
 
 	/**
+	 * <p>
 	 * Execution of a mocked remote call to the web service identified by the
 	 * WebServiceTemplate. There is a bean of the same name for
 	 * PROFILE_REMOTE_CLIENT_IMPLS in the ClientConfig class.
+	 * </p>
+	 * <p>
+	 * TESTING NOTES:<br/>
+	 * Because this method uses mockito's MockWebServiceServer to mock the SOAP
+	 * call to the partner, request & response expectations are set before the call,
+	 * and then verified after the call.</p>
+	 * <p>For some reason, this causes issues when running any unit test on this method.<br/>
+	 * When executing test from "Run As Junit", the expectations set on the mock server disappear when
+	 * marshallSendAndreceive is run, causing the mock servers ".verify()" to fail.<br/>
+	 * Strangely, everything works fine when run under "mvn test".
+	 * </p>
 	 *
 	 * @param webserviceTemplate
 	 *            the template for the web service being called
@@ -147,8 +159,9 @@ public abstract class AbstractRemoteServiceCallMock {
 		try {
 			resource = new ResourceSource(new ClassPathResource(MessageFormat.format(MOCK_FILENAME_TEMPLATE, key)));
 		} catch (final IOException e) {
-			throw new AscentRuntimeException(("Could not read mock XML file '" + MessageFormat.format(MOCK_FILENAME_TEMPLATE, key)
-			+ "' using key '" + key + "'. Please make sure this response file exists in the main/resources directory."), e);
+			throw new AscentRuntimeException(("Could not read mock XML file '"
+					+ MessageFormat.format(MOCK_FILENAME_TEMPLATE, key) + "' using key '" + key
+					+ "'. Please make sure this response file exists in the main/resources directory."), e);
 		}
 		return resource;
 	}

@@ -15,7 +15,7 @@ import org.mockito.Mock;
 import gov.va.ascent.framework.transfer.AbstractTransferObject;
 import gov.va.ascent.framework.ws.client.remote.test.mocks.TestAbstractRemoteServiceCallMockResponse;
 
-public class BaseRemoteServiceCallAspect_UnitTest {
+public class BaseRemoteServiceCallAspectTest {
 
 	@Mock
 	private ProceedingJoinPoint proceedingJoinPoint;

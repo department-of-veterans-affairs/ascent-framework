@@ -32,7 +32,7 @@ import gov.va.ascent.framework.ws.client.remote.test.mocks.TestAbstractRemoteSer
 import gov.va.ascent.framework.ws.client.remote.test.mocks.TestAbstractRemoteServiceCallMockResponse;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RemoteServiceCallAspect_UnitTest {
+public class RemoteServiceCallAspectTest {
 
 	private static final String REQUEST_KEY_VALUE = "abstract-remote-service-call-mock-data";
 	private static final String RESPONSE_VALUE = "some-value";
