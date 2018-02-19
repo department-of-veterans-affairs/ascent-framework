@@ -16,4 +16,9 @@ public class BaseServiceAspectTest {
         //does nothing
     }
 
+    @Test
+    public void testServiceImplMethod(){
+        BaseServiceAspect.serviceImpl();
+        //does nothing
+    }
 }
