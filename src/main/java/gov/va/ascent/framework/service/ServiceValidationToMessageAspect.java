@@ -41,7 +41,7 @@ public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ServiceValidationToMessageAspect.class);
 	
-	@Around("publicStandardServiceMethod() && args(request)")
+	@Around("publicStandardServiceMethod() && serviceImpl() && args(request)")
 	public Object aroundAdvice(ProceedingJoinPoint joinPoint, Validatable request) throws Throwable {	
 		
 		if(LOGGER.isDebugEnabled()){
