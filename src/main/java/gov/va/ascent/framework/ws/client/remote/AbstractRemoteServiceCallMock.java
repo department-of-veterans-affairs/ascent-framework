@@ -32,10 +32,21 @@ import gov.va.ascent.framework.util.Defense;
  *
  * @author aburkholder
  */
-public abstract class AbstractRemoteServiceCallMock {
+public abstract class AbstractRemoteServiceCallMock implements RemoteServiceCall {
 
 	/** Constant for the filename template for mocked files */
 	public static final String MOCK_FILENAME_TEMPLATE = "test/mocks/{0}.xml";
+
+//	/**
+//	 * Execution of a real or mocked remote call to the web service identified by the WebServiceTemplate.
+//	 *
+//	 * @param webserviceTemplate the template for the web service being called
+//	 * @param request the request (a subclass of AbstractTransferObject)
+//	 * @param requestClass the actual Class of the request object
+//	 * @return AbstractTransferObject the response from the remote web service (cast it to the desired response type)
+//	 */
+//	protected abstract AbstractTransferObject callRemoteService(final WebServiceTemplate webserviceTemplate,
+//			final AbstractTransferObject request, final Class<? extends AbstractTransferObject> requestClass);
 
 	/**
 	 * <p>
@@ -79,8 +90,10 @@ public abstract class AbstractRemoteServiceCallMock {
 	 * TESTING NOTES:<br/>
 	 * Because this method uses mockito's MockWebServiceServer to mock the SOAP
 	 * call to the partner, request & response expectations are set before the call,
-	 * and then verified after the call.</p>
-	 * <p>For some reason, this causes issues when running any unit test on this method.<br/>
+	 * and then verified after the call.
+	 * </p>
+	 * <p>
+	 * For some reason, this causes issues when running any unit test on this method.<br/>
 	 * When executing test from "Run As Junit", the expectations set on the mock server disappear when
 	 * marshallSendAndreceive is run, causing the mock servers ".verify()" to fail.<br/>
 	 * Strangely, everything works fine when run under "mvn test".
@@ -95,24 +108,22 @@ public abstract class AbstractRemoteServiceCallMock {
 	 * @return AbstractTransferObject the response from the remote web service (cast
 	 *         it to the desired response type)
 	 */
-	protected AbstractTransferObject callMockService(final WebServiceTemplate webserviceTemplate,
-			final AbstractTransferObject request, final Class<? extends AbstractTransferObject> requestClass) {
+	protected AbstractTransferObject callMockService(final WebServiceTemplate webserviceTemplate, final AbstractTransferObject request,
+			final Class<? extends AbstractTransferObject> requestClass) {
 
 		Defense.notNull(webserviceTemplate, "To callMockService, the WebServiceTemplate cannot be null.");
 		Defense.notNull(request, "To callMockService, the transfer object 'request' cannot be null.");
-		Defense.notNull(requestClass,
-				"To callMockService, the 'requestClass' of the request transfer object cannot be null.");
+		Defense.notNull(requestClass, "To callMockService, the 'requestClass' of the request transfer object cannot be null.");
 
 		final MockWebServiceServer mockSoapServer = MockWebServiceServer.createServer(webserviceTemplate);
 
-		final Source requestPayload = marshalMockRequest((Jaxb2Marshaller) webserviceTemplate.getMarshaller(), request,
-				requestClass);
+		final Source requestPayload = marshalMockRequest((Jaxb2Marshaller) webserviceTemplate.getMarshaller(), request, requestClass);
 		final Source responsePayload = readMockResponseByKey(request);
 
 		mockSoapServer.expect(payload(requestPayload)).andRespond(withPayload(responsePayload));
 
-		final AbstractTransferObject response = (AbstractTransferObject) webserviceTemplate
-				.marshalSendAndReceive(requestClass.cast(request));
+		final AbstractTransferObject response =
+				(AbstractTransferObject) webserviceTemplate.marshalSendAndReceive(requestClass.cast(request));
 
 		mockSoapServer.verify();
 
@@ -159,9 +170,8 @@ public abstract class AbstractRemoteServiceCallMock {
 		try {
 			resource = new ResourceSource(new ClassPathResource(MessageFormat.format(MOCK_FILENAME_TEMPLATE, key)));
 		} catch (final IOException e) {
-			throw new AscentRuntimeException(("Could not read mock XML file '"
-					+ MessageFormat.format(MOCK_FILENAME_TEMPLATE, key) + "' using key '" + key
-					+ "'. Please make sure this response file exists in the main/resources directory."), e);
+			throw new AscentRuntimeException(("Could not read mock XML file '" + MessageFormat.format(MOCK_FILENAME_TEMPLATE, key)
+					+ "' using key '" + key + "'. Please make sure this response file exists in the main/resources directory."), e);
 		}
 		return resource;
 	}
