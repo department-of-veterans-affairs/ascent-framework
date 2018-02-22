@@ -10,14 +10,12 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import gov.va.ascent.framework.audit.AuditEvents;
 import gov.va.ascent.framework.audit.Auditable;
 import gov.va.ascent.framework.exception.AscentRuntimeException;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.junit.After;
@@ -31,9 +29,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockPart;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import gov.va.ascent.framework.messages.Message;
 import gov.va.ascent.framework.messages.MessageSeverity;
@@ -72,6 +70,10 @@ public class RestProviderHttpResponseCodeAspectTest {
 	public void setUp() throws Exception {
 		MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
 		MockHttpServletResponse httpServletResponse = new MockHttpServletResponse();
+	    
+	   	final MockPart userData = new MockPart("userData", "userData", "{\"name\":\"test aida\"}".getBytes());
+		httpServletRequest.addPart(userData);
+
 		httpServletRequest.addHeader("TestHeader", "TestValue");
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest, httpServletResponse));
 		
