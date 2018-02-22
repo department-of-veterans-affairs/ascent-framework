@@ -39,4 +39,17 @@ public class BaseServiceAspect {
 		//Do Nothing
 	}
 
+
+	/**
+	 * This aspect defines the pointcut of Service implementation.  Those are services that...
+	 * 
+	 * (1) are annotated with org.springframework.stereotype.Service
+	 * 
+	 * Ensure you follow that pattern to make use of this standard pointcut.
+	 */
+	@Pointcut("within(@org.springframework.stereotype.Service *)")
+	protected static final void serviceImpl() {
+		 // Do nothing.
+	}
+
 }

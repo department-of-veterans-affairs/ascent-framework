@@ -77,8 +77,8 @@ public class ServiceValidationToMessageAspectTest {
 	@Test
 	public void testAroundAdvice() {
 		try{
-			assertNotNull(mockServiceValidationToMessageAspect.aroundAdvice(proceedingJoinPoint, mockServiceRequest));
-			assertNull(((ServiceResponse)mockServiceValidationToMessageAspect.aroundAdvice(proceedingJoinPoint, mockServiceRequest)).getMessages());
+			assertNotNull(mockServiceValidationToMessageAspect.aroundAdvice(proceedingJoinPoint));
+			assertNull(((ServiceResponse)mockServiceValidationToMessageAspect.aroundAdvice(proceedingJoinPoint)).getMessages());
 			
 		}catch(Throwable throwable) {
 			
@@ -90,7 +90,7 @@ public class ServiceValidationToMessageAspectTest {
 		try{
 			value = new Object[1];
 			when(proceedingJoinPoint.getArgs()).thenReturn(value);			
-			assertNotNull(mockServiceValidationToMessageAspect.aroundAdvice(proceedingJoinPoint, mockServiceRequest));
+			assertNotNull(mockServiceValidationToMessageAspect.aroundAdvice(proceedingJoinPoint));
 
 			
 		}catch(Throwable throwable) {
@@ -102,7 +102,7 @@ public class ServiceValidationToMessageAspectTest {
 	public void testAroundAdviceForException() {
 		try{
 			when(proceedingJoinPoint.proceed()).thenReturn(new ServiceRequest());
-			assertNotNull(mockServiceValidationToMessageAspect.aroundAdvice(proceedingJoinPoint, mockServiceRequest));
+			assertNotNull(mockServiceValidationToMessageAspect.aroundAdvice(proceedingJoinPoint));
 
 			
 		}catch(Throwable throwable) {
