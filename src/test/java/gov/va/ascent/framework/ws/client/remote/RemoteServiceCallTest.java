@@ -1,5 +1,7 @@
 package gov.va.ascent.framework.ws.client.remote;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
@@ -16,9 +18,12 @@ public class RemoteServiceCallTest {
 
 		try {
 			TestClassSimple test = new TestClassSimple();
-			test.callRemoteService(new WebServiceTemplate(), new TestAbstractRemoteServiceCallMockRequest(),
-					TestAbstractRemoteServiceCallMockRequest.class);
-			assert(RemoteServiceCall.BEAN_NAME.equals(TestClassSimple.BEAN_NAME));
+			assertNotNull(test);
+
+			AbstractTransferObject testResponse = test.callRemoteService(new WebServiceTemplate(),
+					new TestAbstractRemoteServiceCallMockRequest(), TestAbstractRemoteServiceCallMockRequest.class);
+			assertNotNull(testResponse);
+			assertTrue(TestAbstractRemoteServiceCallMockResponse.class.isAssignableFrom(testResponse.getClass()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail("Could not instantiate an implementation of RemoteServiceCall interface");
@@ -43,9 +48,11 @@ public class RemoteServiceCallTest {
 
 	class TestClassSimple implements RemoteServiceCall {
 
+		public final static String TEST_BEAN_NAME = "test.RemoteServiceCallTest.RemoteServiceCall";
+
 		@Override
-		public AbstractTransferObject callRemoteService(WebServiceTemplate webserviceTemplate,
-				AbstractTransferObject request, Class<? extends AbstractTransferObject> requestClass) {
+		public AbstractTransferObject callRemoteService(WebServiceTemplate webserviceTemplate, AbstractTransferObject request,
+				Class<? extends AbstractTransferObject> requestClass) {
 			return new TestAbstractRemoteServiceCallMockResponse();
 		}
 
@@ -54,8 +61,8 @@ public class RemoteServiceCallTest {
 	class TestClassException implements RemoteServiceCall {
 
 		@Override
-		public AbstractTransferObject callRemoteService(WebServiceTemplate webserviceTemplate,
-				AbstractTransferObject request, Class<? extends AbstractTransferObject> requestClass) {
+		public AbstractTransferObject callRemoteService(WebServiceTemplate webserviceTemplate, AbstractTransferObject request,
+				Class<? extends AbstractTransferObject> requestClass) {
 			throw new ArithmeticException();
 		}
 
