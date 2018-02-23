@@ -1,7 +1,7 @@
 package gov.va.ascent.framework.audit;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,7 +27,7 @@ public class RequestResponseAuditData implements Serializable{
     /* The request. */
     private transient Object request;
     
-    ArrayList<String> attachmentTextList;
+    private List<String> attachmentTextList;
 
 	/**
      * Gets the response.
@@ -113,7 +113,7 @@ public class RequestResponseAuditData implements Serializable{
      * gets the attachmentTextList.
      * @return
      */
-	public ArrayList<String> getAttachmentTextList() {
+	public List<String> getAttachmentTextList() {
 		return attachmentTextList;
 	}
 
@@ -121,7 +121,7 @@ public class RequestResponseAuditData implements Serializable{
 	 * sets the attachmentTextList.
 	 * @param attachmentTextList
 	 */
-	public void setAttachmentTextList(ArrayList<String> attachmentTextList) {
+	public void setAttachmentTextList(List<String> attachmentTextList) {
 		this.attachmentTextList = attachmentTextList;
 	}
 	
