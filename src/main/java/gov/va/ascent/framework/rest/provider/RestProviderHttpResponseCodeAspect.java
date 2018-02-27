@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -276,7 +277,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 		requestResponseAuditData.setHeaders(headers);
 		requestResponseAuditData.setUri(httpServletRequest.getRequestURI());
 		requestResponseAuditData.setMethod(httpServletRequest.getMethod());
-		ArrayList<String> attachmentTextList = new ArrayList<>();
+		List<String> attachmentTextList = new ArrayList<>();
 		try {
 			for (Part part : httpServletRequest.getParts()) {
 				InputStream	inputstream = part.getInputStream();
