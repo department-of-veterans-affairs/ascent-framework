@@ -24,6 +24,8 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +66,8 @@ public class RequestResponseLogSerializerTest {
         requestResponseAuditData.setResponse("Response");
         requestResponseAuditData.setMethod("GET");
         requestResponseAuditData.setUri("/");
+        requestResponseAuditData.setAttachmentTextList(new ArrayList<String>(
+        	    Arrays.asList("attachment1", "attachment2")));
         Map<String,String> headers = new HashMap<>();
 
         headers.put("Header1", "Header1Value");
@@ -85,7 +89,7 @@ public class RequestResponseLogSerializerTest {
         requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData, MessageSeverity.INFO);
         verify(mockAppender, times(1)).doAppend(captorLoggingEvent.capture());
         final List<LoggingEvent> loggingEvents = captorLoggingEvent.getAllValues();
-        JSONAssert.assertEquals("{\"headers\":{\"Header1\":\"Header1Value\"},\"uri\":\"/\",\"method\":\"GET\",\"response\":\"Response\",\"request\":\"Request\"}",
+        JSONAssert.assertEquals("{\"headers\":{\"Header1\":\"Header1Value\"},\"uri\":\"/\",\"method\":\"GET\",\"response\":\"Response\",\"request\":\"Request\",\"attachmentTextList\":[\"attachment1\",\"attachment2\"]}",
                 loggingEvents.get(0).getMessage(), JSONCompareMode.STRICT);
         assertThat(loggingEvents.get(0).getLevel(), is(Level.INFO));
     }

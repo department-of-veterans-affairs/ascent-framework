@@ -1,12 +1,17 @@
 package gov.va.ascent.framework.rest.provider;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -17,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -47,6 +53,8 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(RestProviderHttpResponseCodeAspect.class);
+	
+	private static final int NUMBER_OF_BYTES = 1024;
 	
 	/** The rules engine. */
 	private MessagesToHttpStatusRulesEngine rulesEngine;
@@ -122,7 +130,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("RestProviderHttpResponseCodeAspect executing around method:" + joinPoint.toLongString());
 		}
-
+		
 		Object responseObject = null;
 		Object requestObject = null;
 
@@ -257,19 +265,56 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
         }
 	}
 
-	private void getHttpRequestAuditData(HttpServletRequest httpServletRequest, 
+	private void getHttpRequestAuditData(HttpServletRequest httpServletRequest,
 			RequestResponseAuditData requestResponseAuditData) {
-	    final Map<String, String> headers = new HashMap<>();
+		final Map<String, String> headers = new HashMap<>();
+		Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
 
-        Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
+		while (headerNames.hasMoreElements()) {
+			String headerName = headerNames.nextElement();
+			String value = httpServletRequest.getHeader(headerName);
+			headers.put(headerName, value);
+		}
+		requestResponseAuditData.setHeaders(headers);
+		requestResponseAuditData.setUri(httpServletRequest.getRequestURI());
+		requestResponseAuditData.setMethod(httpServletRequest.getMethod());
+		
+		final String contentType = httpServletRequest.getContentType();
+		
+		if (contentType != null
+				&& (contentType.toLowerCase().startsWith(MediaType.MULTIPART_FORM_DATA_VALUE)
+						|| contentType.toLowerCase().startsWith("multipart/mixed"))) {
+			List<String> attachmentTextList = new ArrayList<>();
+			try {
+				for (Part part : httpServletRequest.getParts()) {
+					InputStream inputstream = part.getInputStream();
+					attachmentTextList.add(convertBytesToString(inputstream));
+					inputstream.close();
+				}
+			} catch (Exception ex) {
+				LOGGER.error("Error occurred while reading the upload file. {}", ex);
+			}
+			requestResponseAuditData.setAttachmentTextList(attachmentTextList);
+		}
 
-	    while(headerNames.hasMoreElements()) {
-	        String headerName = headerNames.nextElement();
-	        String value = httpServletRequest.getHeader(headerName);
-	        headers.put(headerName, value);
-        }
-    	requestResponseAuditData.setHeaders(headers);
-	    requestResponseAuditData.setUri(httpServletRequest.getRequestURI());
-	    requestResponseAuditData.setMethod(httpServletRequest.getMethod());
+	}
+
+	/**
+	 * Read the first 1024 bytes and convert that into a string.
+	 * @param in
+	 * @return
+	 * @throws IOException
+	 */
+	public static String convertBytesToString(InputStream in) throws IOException {
+		int offset = 0;
+		int bytesRead = 0;
+		byte[] data = new byte[NUMBER_OF_BYTES];
+		while ((bytesRead = in.read(data, offset, data.length - offset)) != -1) {
+			offset += bytesRead;
+			if (offset >= data.length) {
+				break;
+			}
+		}
+		return new String(data, 0, offset, "UTF-8");
 	}
 }

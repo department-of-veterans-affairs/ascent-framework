@@ -10,14 +10,12 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import gov.va.ascent.framework.audit.AuditEvents;
 import gov.va.ascent.framework.audit.Auditable;
 import gov.va.ascent.framework.exception.AscentRuntimeException;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.junit.After;
@@ -31,9 +29,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockPart;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import gov.va.ascent.framework.messages.Message;
 import gov.va.ascent.framework.messages.MessageSeverity;
@@ -72,6 +70,11 @@ public class RestProviderHttpResponseCodeAspectTest {
 	public void setUp() throws Exception {
 		MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
 		MockHttpServletResponse httpServletResponse = new MockHttpServletResponse();
+	    
+		httpServletRequest.setContentType("multipart/form-data");
+	   	final MockPart userData = new MockPart("userData", "userData", "{\"name\":\"test aida\"}".getBytes());
+		httpServletRequest.addPart(userData);
+
 		httpServletRequest.addHeader("TestHeader", "TestValue");
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest, httpServletResponse));
 		
@@ -103,7 +106,60 @@ public class RestProviderHttpResponseCodeAspectTest {
 		RestProviderHttpResponseCodeAspectLogAppender.events.clear();
 		restProviderLog.setLevel(Level.DEBUG);
 	}
+	
+	@Test
+	public void testMultipartFormData() {
+		
+		MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+		MockHttpServletResponse httpServletResponse = new MockHttpServletResponse();
+	    
+		httpServletRequest.setContentType("multipart/form-data");
+	   	final MockPart userData = new MockPart("userData", "userData", "{\"name\":\"test aida\"}".getBytes());
+		httpServletRequest.addPart(userData);
+		httpServletRequest.addHeader("TestHeader", "TestValue");
+		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest, httpServletResponse));
+		
+		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
+		Object returnObject = null;
+		try {
+			when(proceedingJoinPoint.proceed()).thenReturn(serviceResponse);
+			when(proceedingJoinPoint.getSignature()).thenReturn(mockSignature);
+			when(mockSignature.getMethod()).thenReturn(myMethod());			
+			when(proceedingJoinPoint.getTarget()).thenReturn(new TestClass());
+			
+			returnObject = restProviderHttpResponseCodeAspect.aroundAdvice(proceedingJoinPoint);
+		} catch (Throwable throwable) {
 
+		}
+		assertNotNull(returnObject);
+	}
+
+	@Test
+	public void testMultipartmixed() {
+		
+		MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+		MockHttpServletResponse httpServletResponse = new MockHttpServletResponse();
+	    
+		httpServletRequest.setContentType("multipart/mixed");
+	   	final MockPart userData = new MockPart("userData", "userData", "{\"name\":\"test aida\"}".getBytes());
+		httpServletRequest.addPart(userData);
+		httpServletRequest.addHeader("TestHeader", "TestValue");
+		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest, httpServletResponse));
+		
+		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
+		Object returnObject = null;
+		try {
+			when(proceedingJoinPoint.proceed()).thenReturn(serviceResponse);
+			when(proceedingJoinPoint.getSignature()).thenReturn(mockSignature);
+			when(mockSignature.getMethod()).thenReturn(myMethod());			
+			when(proceedingJoinPoint.getTarget()).thenReturn(new TestClass());
+			
+			returnObject = restProviderHttpResponseCodeAspect.aroundAdvice(proceedingJoinPoint);
+		} catch (Throwable throwable) {
+
+		}
+		assertNotNull(returnObject);
+	}
 	@Test
 	public void testServiceResponseReturnType() {
 		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();

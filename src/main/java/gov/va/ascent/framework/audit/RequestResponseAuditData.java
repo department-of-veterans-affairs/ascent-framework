@@ -1,12 +1,17 @@
 package gov.va.ascent.framework.audit;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * @author npaulus
  * The purpose of this class is to collect the audit data for a request and response before serializing it to the logs.
  */
+@JsonInclude(Include.NON_NULL)
 public class RequestResponseAuditData implements Serializable{
 
     private static final long serialVersionUID = -4623810801622309487L;
@@ -25,8 +30,10 @@ public class RequestResponseAuditData implements Serializable{
 
     /* The request. */
     private transient Object request;
+    
+    private List<String> attachmentTextList;
 
-    /**
+	/**
      * Gets the response.
      * @return
      */
@@ -105,7 +112,23 @@ public class RequestResponseAuditData implements Serializable{
     public void setRequest(Object request) {
         this.request = request;
     }
+    
+    /**
+     * gets the attachmentTextList.
+     * @return
+     */
+	public List<String> getAttachmentTextList() {
+		return attachmentTextList;
+	}
 
+	/**
+	 * sets the attachmentTextList.
+	 * @param attachmentTextList
+	 */
+	public void setAttachmentTextList(List<String> attachmentTextList) {
+		this.attachmentTextList = attachmentTextList;
+	}
+	
     @Override
     public String toString() {
         return "RequestResponseAuditData{" +
