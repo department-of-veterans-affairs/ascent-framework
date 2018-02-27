@@ -4,10 +4,14 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 /**
  * @author npaulus
  * The purpose of this class is to collect the audit data for a request and response before serializing it to the logs.
  */
+@JsonInclude(Include.NON_NULL)
 public class RequestResponseAuditData implements Serializable{
 
     private static final long serialVersionUID = -4623810801622309487L;
