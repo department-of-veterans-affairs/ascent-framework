@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -278,9 +279,11 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 		requestResponseAuditData.setUri(httpServletRequest.getRequestURI());
 		requestResponseAuditData.setMethod(httpServletRequest.getMethod());
 		
-		if ((httpServletRequest.getContentType() != null)
-				&& (httpServletRequest.getContentType().startsWith("multipart/form-data")
-						|| httpServletRequest.getContentType().startsWith("multipart/mixed"))) {
+		final String contentType = httpServletRequest.getContentType();
+		
+		if (contentType != null
+				&& (contentType.toLowerCase().startsWith(MediaType.MULTIPART_FORM_DATA_VALUE)
+						|| contentType.toLowerCase().startsWith("multipart/mixed"))) {
 			List<String> attachmentTextList = new ArrayList<>();
 			try {
 				for (Part part : httpServletRequest.getParts()) {
