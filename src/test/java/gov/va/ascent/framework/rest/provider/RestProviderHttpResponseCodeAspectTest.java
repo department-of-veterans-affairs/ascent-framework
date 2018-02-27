@@ -71,6 +71,7 @@ public class RestProviderHttpResponseCodeAspectTest {
 		MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
 		MockHttpServletResponse httpServletResponse = new MockHttpServletResponse();
 	    
+		httpServletRequest.setContentType("multipart/form-data");
 	   	final MockPart userData = new MockPart("userData", "userData", "{\"name\":\"test aida\"}".getBytes());
 		httpServletRequest.addPart(userData);
 
@@ -105,7 +106,60 @@ public class RestProviderHttpResponseCodeAspectTest {
 		RestProviderHttpResponseCodeAspectLogAppender.events.clear();
 		restProviderLog.setLevel(Level.DEBUG);
 	}
+	
+	@Test
+	public void testMultipartFormData() {
+		
+		MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+		MockHttpServletResponse httpServletResponse = new MockHttpServletResponse();
+	    
+		httpServletRequest.setContentType("multipart/form-data");
+	   	final MockPart userData = new MockPart("userData", "userData", "{\"name\":\"test aida\"}".getBytes());
+		httpServletRequest.addPart(userData);
+		httpServletRequest.addHeader("TestHeader", "TestValue");
+		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest, httpServletResponse));
+		
+		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
+		Object returnObject = null;
+		try {
+			when(proceedingJoinPoint.proceed()).thenReturn(serviceResponse);
+			when(proceedingJoinPoint.getSignature()).thenReturn(mockSignature);
+			when(mockSignature.getMethod()).thenReturn(myMethod());			
+			when(proceedingJoinPoint.getTarget()).thenReturn(new TestClass());
+			
+			returnObject = restProviderHttpResponseCodeAspect.aroundAdvice(proceedingJoinPoint);
+		} catch (Throwable throwable) {
 
+		}
+		assertNotNull(returnObject);
+	}
+
+	@Test
+	public void testMultipartmixed() {
+		
+		MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+		MockHttpServletResponse httpServletResponse = new MockHttpServletResponse();
+	    
+		httpServletRequest.setContentType("multipart/mixed");
+	   	final MockPart userData = new MockPart("userData", "userData", "{\"name\":\"test aida\"}".getBytes());
+		httpServletRequest.addPart(userData);
+		httpServletRequest.addHeader("TestHeader", "TestValue");
+		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest, httpServletResponse));
+		
+		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
+		Object returnObject = null;
+		try {
+			when(proceedingJoinPoint.proceed()).thenReturn(serviceResponse);
+			when(proceedingJoinPoint.getSignature()).thenReturn(mockSignature);
+			when(mockSignature.getMethod()).thenReturn(myMethod());			
+			when(proceedingJoinPoint.getTarget()).thenReturn(new TestClass());
+			
+			returnObject = restProviderHttpResponseCodeAspect.aroundAdvice(proceedingJoinPoint);
+		} catch (Throwable throwable) {
+
+		}
+		assertNotNull(returnObject);
+	}
 	@Test
 	public void testServiceResponseReturnType() {
 		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();

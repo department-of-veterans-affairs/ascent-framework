@@ -277,19 +277,24 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 		requestResponseAuditData.setHeaders(headers);
 		requestResponseAuditData.setUri(httpServletRequest.getRequestURI());
 		requestResponseAuditData.setMethod(httpServletRequest.getMethod());
-		List<String> attachmentTextList = new ArrayList<>();
-		try {
-			for (Part part : httpServletRequest.getParts()) {
-				InputStream	inputstream = part.getInputStream();
-				attachmentTextList.add(convertBytesToString(inputstream));
-				inputstream.close();
+		
+		if ((httpServletRequest.getContentType() != null)
+				&& (httpServletRequest.getContentType().startsWith("multipart/form-data")
+						|| httpServletRequest.getContentType().startsWith("multipart/mixed"))) {
+			List<String> attachmentTextList = new ArrayList<>();
+			try {
+				for (Part part : httpServletRequest.getParts()) {
+					InputStream inputstream = part.getInputStream();
+					attachmentTextList.add(convertBytesToString(inputstream));
+					inputstream.close();
+				}
+			} catch (Exception ex) {
+				LOGGER.error("Error occurred while reading the upload file. {}", ex);
 			}
-		} catch (Exception ex) {
-			LOGGER.error("Error occurred while reading the upload file. {}", ex);
-		} 
-		requestResponseAuditData.setAttachmentTextList(attachmentTextList);
+			requestResponseAuditData.setAttachmentTextList(attachmentTextList);
+		}
+
 	}
-	
 
 	/**
 	 * Read the first 1024 bytes and convert that into a string.
