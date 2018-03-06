@@ -80,6 +80,12 @@
 			<artifactId>axiom-impl</artifactId>
 			 <version>1.2.20</version>
 		</dependency>
+		
+		<!-- for ascii art enhanced logging -->
+		<dependency>
+		    <groupId>com.github.lalyos</groupId>
+		    <artifactId>jfiglet</artifactId>
+		</dependency>
 	        
         <!-- Provided Dependencies -->
 		<!-- Required during compile but not at runtime due to findbugs annotations 
