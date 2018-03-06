@@ -1,5 +1,7 @@
 package gov.va.ascent.framework.log;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 
 import org.junit.After;
@@ -40,7 +42,7 @@ public class LogUtil_UnitTest {
         assertConsole(Level.DEBUG, unitTestBanner, unitTestMessage);
     }
 
-    /**
+     /**
      * Test info.
      *
      * @throws IOException Signals that an I/O exception has occurred.
@@ -79,7 +81,21 @@ public class LogUtil_UnitTest {
         assertConsole(Level.ERROR, unitTestBanner, unitTestMessage);
     }
 
+
     /**
+     * Test error.
+     *
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
+    @Test
+    public void testCreateBannerString()  throws IOException {
+        final String unitTestBanner = null;
+        final String unitTestMessage = "error message";
+        LogUtil.logErrorWithBanner(LOGGER, unitTestBanner, unitTestMessage);
+        assertConsole(Level.ERROR, "", unitTestMessage);
+    }
+    
+    /** 
      * Assert console.
      *
      * @param level the level
@@ -95,4 +111,35 @@ public class LogUtil_UnitTest {
         Assert.assertTrue(outString.contains(message));
     }
 
+    /**
+     * Test debug is disabled.
+     *
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
+    @Test
+    public void testDebugDisabled() throws IOException {
+        final String unitTestBanner = "debug banner";
+        final String unitTestMessage = "debug message";
+        LOGGER.setLevel(ch.qos.logback.classic.Level.OFF);
+        LogUtil.logDebugWithBanner(LOGGER, unitTestBanner, unitTestMessage);
+        assertTrue(outputCapture.toString().equals(""));
+        LOGGER.setLevel(ch.qos.logback.classic.Level.ALL);
+    }
+   
+    /**
+     * Test debug is disabled.
+     *
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
+    @Test
+    public void testInfoDisabled() throws IOException {
+        final String unitTestBanner = "debug banner";
+        final String unitTestMessage = "debug message";
+        LOGGER.setLevel(ch.qos.logback.classic.Level.OFF);
+        LogUtil.logInfoWithBanner(LOGGER, unitTestBanner, unitTestMessage);
+        assertTrue(outputCapture.toString().equals(""));
+        LOGGER.setLevel(ch.qos.logback.classic.Level.ALL);
+    }
+    
+   
 }
