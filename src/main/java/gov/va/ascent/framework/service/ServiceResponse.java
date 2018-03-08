@@ -3,6 +3,8 @@ package gov.va.ascent.framework.service;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import gov.va.ascent.framework.messages.Message;
 import gov.va.ascent.framework.messages.MessageSeverity;
 import gov.va.ascent.framework.transfer.AbstractTransferObject;
@@ -11,16 +13,20 @@ import gov.va.ascent.framework.transfer.AbstractTransferObject;
  * A base Response object capable of representing the payload of a service response.
  *
  * @see gov.va.ascent.framework.transfer.AbstractTransferObject
- * @author jshrader
  */
 public class ServiceResponse extends AbstractTransferObject {
 
 	private static final long serialVersionUID = -3937937807439785385L;
-	
+
 	/** The messages. */
 	private List<Message> messages;
 
-	/** 	cacheResponse */
+	/*
+	 * cacheResponse
+	 * 
+	 * Must be ignored in the serialization and de-serialization 
+	 */
+	@JsonIgnore
 	private boolean doNotCacheResponse = false;
 
 
@@ -30,7 +36,7 @@ public class ServiceResponse extends AbstractTransferObject {
 	public ServiceResponse() {
 		super();
 	}
-	
+
 	/**
 	 * Adds the message.
 	 *
@@ -48,7 +54,7 @@ public class ServiceResponse extends AbstractTransferObject {
 		message.setText(text);
 		messages.add(message);
 	}
-	
+
 	/**
 	 * Adds all messages.
 	 *
@@ -60,7 +66,7 @@ public class ServiceResponse extends AbstractTransferObject {
 		}
 		messages.addAll(newMessages);
 	}
-	
+
 	/**
 	 * Gets the messages.
 	 * 
@@ -81,7 +87,7 @@ public class ServiceResponse extends AbstractTransferObject {
 	public final void setMessages(final List<Message> messages) {
 		this.messages = messages;
 	}
-	
+
 	/**
 	 * Checks for messages of type.
 	 *
@@ -96,7 +102,7 @@ public class ServiceResponse extends AbstractTransferObject {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Checks for fatals.
 	 *
@@ -105,7 +111,7 @@ public class ServiceResponse extends AbstractTransferObject {
 	public final boolean hasFatals(){
 		return hasMessagesOfType(MessageSeverity.FATAL);
 	}
-	
+
 	/**
 	 * Checks for errors.
 	 *
@@ -114,7 +120,7 @@ public class ServiceResponse extends AbstractTransferObject {
 	public final boolean hasErrors() {
 		return hasMessagesOfType(MessageSeverity.ERROR);
 	}
-	
+
 	/**
 	 * Checks for warnings.
 	 *
@@ -123,7 +129,7 @@ public class ServiceResponse extends AbstractTransferObject {
 	public final boolean hasWarnings(){
 		return hasMessagesOfType(MessageSeverity.WARN);
 	}
-	
+
 	/**
 	 * Checks for infos.
 	 *
@@ -132,7 +138,6 @@ public class ServiceResponse extends AbstractTransferObject {
 	public final boolean hasInfos(){
 		return hasMessagesOfType(MessageSeverity.INFO);
 	}
-	
 
 	/**
 	 * 
