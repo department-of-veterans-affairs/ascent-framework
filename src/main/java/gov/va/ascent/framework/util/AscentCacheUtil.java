@@ -76,7 +76,7 @@ public final class AscentCacheUtil {
 	 * @return the string
 	 */
 	public static final String createKey(final Object... keyValues) {
-		final StringBuffer cacheKey = new StringBuffer();
+		final StringBuilder cacheKey = new StringBuilder();
 		for (Object key : keyValues) {
 			if (cacheKey.length() > 0) {
 				cacheKey.append(SEPARATOR);
