@@ -20,6 +20,10 @@ public class ServiceResponse extends AbstractTransferObject {
 	/** The messages. */
 	private List<Message> messages;
 
+	/** 	cacheResponse */
+	private boolean doNotCacheResponse = false;
+
+
 	/**
 	 * Instantiates a new rest response.
 	 */
@@ -129,4 +133,21 @@ public class ServiceResponse extends AbstractTransferObject {
 		return hasMessagesOfType(MessageSeverity.INFO);
 	}
 	
+
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isDoNotCacheResponse() {
+		return doNotCacheResponse;
+	}
+
+	/**
+	 * 
+	 * @param doNotcacheResponse
+	 */
+	public void setDoNotCacheResponse(boolean doNotCacheResponse) {
+		this.doNotCacheResponse = doNotCacheResponse;
+	}
+
 }
