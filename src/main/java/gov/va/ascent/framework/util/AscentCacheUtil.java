@@ -28,7 +28,7 @@ public final class AscentCacheUtil {
 
 	public static boolean checkResultConditions(ServiceResponse serviceResponse) {
 		return serviceResponse == null || serviceResponse.hasErrors() || serviceResponse.hasFatals()
-				|| serviceResponse.isDoNotcacheResponse();
+				|| serviceResponse.isDoNotCacheResponse();
 	}
 
 	/**

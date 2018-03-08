@@ -1,9 +1,7 @@
 package gov.va.ascent.framework.util;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-
 
 import org.junit.Test;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,7 +10,6 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import gov.va.ascent.framework.security.PersonTraits;
-import gov.va.ascent.framework.security.SecurityUtils;
 import gov.va.ascent.framework.service.ServiceResponse;
 
 public class AscentCacheUtilTest {
@@ -20,10 +17,10 @@ public class AscentCacheUtilTest {
 	@Test
 	public void testCheckResultConditions() {
 		ServiceResponse serviceResponse = new ServiceResponse();
-		serviceResponse.setDoNotcacheResponse(true);
+		serviceResponse.setDoNotCacheResponse(true);
 		boolean result = AscentCacheUtil.checkResultConditions(serviceResponse);
 		assertTrue(result);
-		serviceResponse.setDoNotcacheResponse(false);
+		serviceResponse.setDoNotCacheResponse(false);
 		result = AscentCacheUtil.checkResultConditions(serviceResponse);
 		assertFalse(result);
 	}

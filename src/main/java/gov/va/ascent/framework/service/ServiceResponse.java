@@ -21,7 +21,7 @@ public class ServiceResponse extends AbstractTransferObject {
 	private List<Message> messages;
 
 	/** 	cacheResponse */
-	private boolean doNotcacheResponse = false;
+	private boolean doNotCacheResponse = false;
 
 
 	/**
@@ -138,16 +138,16 @@ public class ServiceResponse extends AbstractTransferObject {
 	 * 
 	 * @return
 	 */
-	public boolean isDoNotcacheResponse() {
-		return doNotcacheResponse;
+	public boolean isDoNotCacheResponse() {
+		return doNotCacheResponse;
 	}
 
 	/**
 	 * 
 	 * @param doNotcacheResponse
 	 */
-	public void setDoNotcacheResponse(boolean doNotcacheResponse) {
-		this.doNotcacheResponse = doNotcacheResponse;
+	public void setDoNotCacheResponse(boolean doNotCacheResponse) {
+		this.doNotCacheResponse = doNotCacheResponse;
 	}
 
 }
