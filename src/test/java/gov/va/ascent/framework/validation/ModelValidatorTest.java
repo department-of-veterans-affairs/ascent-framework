@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import gov.va.ascent.framework.service.ServiceRequest;
+import gov.va.ascent.framework.validation.ModelValidator.Modes;
 
 public class ModelValidatorTest {
 
@@ -60,6 +61,24 @@ public class ModelValidatorTest {
 		Map<String, List<ViolationMessageParts>> messages = new LinkedHashMap<>();
 		assertTrue(modelTest.validateModelProperties(tr, messages, (Class[]) null));
 	}
+	
+	@Test
+	public void testValidateModelPropertiesForNonEmptyMessages() {
+		ModelValidator modelTest = new ModelValidator();
+		TestRequest tr = new TestRequest();
+		Map<String, List<ViolationMessageParts>> messages = new LinkedHashMap<>();
+		
+		ViolationMessageParts violationMessageParts = new ViolationMessageParts();
+		violationMessageParts.setOriginalKey("UnitTestKey");
+		violationMessageParts.setNewKey("UpdatedUnitTestKey");
+		List<ViolationMessageParts> msgList = new ArrayList<>();
+		msgList.add(violationMessageParts);
+		messages.put("TestKey", msgList);
+		Class<?>[] classes = new Class[1];
+		classes[0] = Default.class;	
+		
+		assertTrue(modelTest.validateModelProperties(tr, messages, classes));
+	}
 
 	@Test
 	public void testConvertKeyToNodepathStyle() {
@@ -84,6 +103,11 @@ public class ModelValidatorTest {
 		assertNotNull(modelTest.doValidateProperty(tr, "TestKey", classes));
 	}
 
+	@Test
+	public void testModes() {
+		assertNotNull(Modes.MODEL);
+		assertNotNull(Modes.PROPERTIES);
+	}
 }
 class TestRequest extends ServiceRequest {
 	

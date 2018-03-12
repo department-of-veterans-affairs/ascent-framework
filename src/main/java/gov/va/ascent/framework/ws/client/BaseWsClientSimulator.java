@@ -60,7 +60,7 @@ public class BaseWsClientSimulator {
 		try {
 			inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
 		} catch (final Exception ioe) {
-			LOGGER.error("Failed to read from simulator response file at resource.");
+			LOGGER.error("Failed to read from simulator response file at resource.", ioe);
 		}
 		return inputStream;
 	}

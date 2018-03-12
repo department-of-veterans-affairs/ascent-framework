@@ -174,6 +174,24 @@ public class Db4oDatabaseTest {
                 Db4oTestLogAppender.events.get(1).getMessage());
         assertEquals("database client instantiated.",Db4oTestLogAppender.events.get(3).getMessage());
     }
+    
+    /**
+     * Test of preDestroy method, of class Db4oDatabase.
+     */
+    @Test
+    public void testPreDestroyServerDisabled() {
+        db4oLogger.setLevel(Level.INFO);
+        System.out.println("preDestroy");
+        instance.preDestroy();
+        Db4oTestLogAppender.events.clear();
+        Db4oDatabase db = new Db4oDatabase();
+        db.setClientServerMode(false);
+        db.setDb4oFile("singleClientModeTest");
+        db.setEnabled(false);
+        db.postConstruct();
+        assertEquals("Db4oDatabase not enabled, not going to start the database",
+                Db4oTestLogAppender.events.get(0).getMessage());
+    }
 
     /**
      * Test of toString method, of class Db4oDatabase.

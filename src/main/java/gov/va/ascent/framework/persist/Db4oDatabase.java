@@ -306,7 +306,7 @@ public class Db4oDatabase {
 			try {
 				openServerForClientServerMode();
 			} catch (final Exception e) {
-				LOGGER.warn("db4o server startup failed, assuming server started/cleaned on other server.");
+				LOGGER.warn("db4o server startup failed, assuming server started/cleaned on other server.", e);
 				try {
 					// pause, wait for server to start if its starting on another node in the cluster.
 					synchronized(this) {

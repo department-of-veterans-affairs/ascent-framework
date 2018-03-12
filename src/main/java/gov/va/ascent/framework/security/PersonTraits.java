@@ -22,12 +22,12 @@ public class PersonTraits extends User {
 	    BIRTHDATE_YYYYMMDD     ("YYYY-MM-dd");
 		private String pattern;
 
-	    public String getPattern() {
-	        return pattern;
-	    }
-
 	    private PATTERN_FORMAT(String pattern) {
 	        this.pattern = pattern;
+	    }
+	    
+	    public String getPattern() {
+	        return pattern;
 	    }
 
 	    public static PATTERN_FORMAT getDefault() { return BIRTHDATE_YYYYMMDD; }
