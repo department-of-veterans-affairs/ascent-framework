@@ -1,6 +1,7 @@
 package gov.va.ascent.framework.ws.client;
 
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -222,12 +223,16 @@ public class WsClientSimulatorMarshallingInterceptor implements
 
 		marshaller.marshal(objectToMarshal, result);
 		String ret = null;
+		OutputStream outputStream = null;
 		try {
-			ret = result.getOutputStream().toString();
+			outputStream = result.getOutputStream();
+			if (outputStream != null) {
+				ret = outputStream.toString();
+			}
 		} catch (Exception ex) {
 			LOGGER.info(ex.getMessage(), ex);
 		} finally  {
-			IOUtils.closeQuietly(result.getOutputStream());
+			IOUtils.closeQuietly(outputStream);
 		}
 		return ret;
 	}
