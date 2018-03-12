@@ -1,6 +1,7 @@
 package gov.va.ascent.framework.validation;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -85,6 +86,12 @@ public class ModelValidatorTest {
 		String retVal = (ModelValidator.convertKeyToNodepathStyle("TestKey", "message value1.message value2"));
 		assertTrue(retVal.contains("."));
 		assertTrue("TestKey.message value1".equals(retVal));
+		
+		retVal = (ModelValidator.convertKeyToNodepathStyle("TestKey", "value1"));
+		assertTrue("value1".equals(retVal));
+		
+		retVal = (ModelValidator.convertKeyToNodepathStyle("TestKey", null));
+		assertNull(retVal);
 	}
 
 	@Test
