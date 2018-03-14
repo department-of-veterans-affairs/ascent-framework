@@ -58,10 +58,11 @@ public class SecurityUtils {
 	 * 
 	 * @return roles
 	 */
-	public static final Collection<? extends GrantedAuthority> getAuthorities() {
+	@SuppressWarnings("unchecked")
+	public static final Collection<GrantedAuthority> getAuthorities() {
 		if (SecurityContextHolder.getContext() != null
 				&& SecurityContextHolder.getContext().getAuthentication() != null) {
-			return SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+			return (Collection<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
 		} else {
 			return Collections.unmodifiableList(new ArrayList<GrantedAuthority>());
 		}

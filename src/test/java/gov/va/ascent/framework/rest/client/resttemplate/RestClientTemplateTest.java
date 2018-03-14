@@ -13,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 public class RestClientTemplateTest {
 	
-	private static final String DUMMY_ENDPOINT = "http://dummy.service/dummy/endpoint";
+	private static final String DUMMY_ENDPOINT = "https://jsonplaceholder.typicode.com/posts/1";
 	private ParameterizedTypeReference<ServiceResponse> responseType = new ParameterizedTypeReference<ServiceResponse>() {};
 	private ResponseEntity<ServiceResponse> responseEntity;
 	private RestClientTemplate restClientTemplate;

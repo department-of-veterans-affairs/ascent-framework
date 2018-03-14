@@ -36,4 +36,9 @@ public class JaxbLogAndEatValidationEventHandlerTest {
 		assertTrue(test.handleEvent(mockEvent));
 	}
 
+	@Test
+	public void testHandleEventFalse() {
+		JaxbLogAndEatValidationEventHandler test = new JaxbLogAndEatValidationEventHandler(false);
+		assertTrue(test.handleEvent(mockEvent));
+	}
 }

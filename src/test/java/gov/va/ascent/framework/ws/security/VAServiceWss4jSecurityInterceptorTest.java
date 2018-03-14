@@ -115,5 +115,5 @@ public class VAServiceWss4jSecurityInterceptorTest {
 
 }
 class TestVAServiceSecurityInterceptorTest extends VAServiceWss4jSecurityInterceptor {
-	
+
 }

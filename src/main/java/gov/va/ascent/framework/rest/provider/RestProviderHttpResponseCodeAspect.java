@@ -7,12 +7,14 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import org.apache.commons.io.IOUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -282,17 +284,20 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 		final String contentType = httpServletRequest.getContentType();
 		
 		if (contentType != null
-				&& (contentType.toLowerCase().startsWith(MediaType.MULTIPART_FORM_DATA_VALUE)
-						|| contentType.toLowerCase().startsWith("multipart/mixed"))) {
+				&& (contentType.toLowerCase(Locale.ENGLISH).startsWith(MediaType.MULTIPART_FORM_DATA_VALUE)
+						|| contentType.toLowerCase(Locale.ENGLISH).startsWith("multipart/mixed"))) {
 			List<String> attachmentTextList = new ArrayList<>();
+			InputStream inputstream = null;
 			try {
 				for (Part part : httpServletRequest.getParts()) {
-					InputStream inputstream = part.getInputStream();
+					inputstream = part.getInputStream();
 					attachmentTextList.add(convertBytesToString(inputstream));
 					inputstream.close();
 				}
 			} catch (Exception ex) {
 				LOGGER.error("Error occurred while reading the upload file. {}", ex);
+			} finally {
+				IOUtils.closeQuietly(inputstream);
 			}
 			requestResponseAuditData.setAttachmentTextList(attachmentTextList);
 		}
