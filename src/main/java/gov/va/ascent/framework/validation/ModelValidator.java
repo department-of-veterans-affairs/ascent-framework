@@ -152,10 +152,17 @@ public final class ModelValidator implements Serializable {
 			//construct the message parts object
 			//(used to contain all aspects of the violation message)
 			final ViolationMessageParts violationMessageParts = new ViolationMessageParts();
-			violationMessageParts.setOriginalKey(violation.getMessageTemplate());
-			violationMessageParts.setNewKey(convertKeyToNodepathStyle(propertyPathKey, violation.getMessageTemplate()));
-			violationMessageParts.setText(violation.getMessage());
+			String replacement = violation.getMessageTemplate();
+			replacement = StringUtils.replaceFirst(replacement, "\\{", "");
+			replacement = StringUtils.replaceAll(replacement, "\\}", "");
+			violationMessageParts.setOriginalKey(replacement);
 			
+			replacement = convertKeyToNodepathStyle(propertyPathKey, violation.getMessageTemplate());
+			replacement = StringUtils.replaceFirst(replacement, "\\{", "");
+			replacement = StringUtils.replaceAll(replacement, "\\}", "");
+			violationMessageParts.setNewKey(replacement);
+			violationMessageParts.setText(violation.getMessage());
+		
 			//associate the violation and it's message parts with the property path
 			List<ViolationMessageParts> messagePartsForPropertyPath;
 			if(messages.containsKey(propertyPathKey)){
