@@ -37,17 +37,6 @@ public abstract class AbstractRemoteServiceCallMock implements RemoteServiceCall
 	/** Constant for the filename template for mocked files */
 	public static final String MOCK_FILENAME_TEMPLATE = "test/mocks/{0}.xml";
 
-//	/**
-//	 * Execution of a real or mocked remote call to the web service identified by the WebServiceTemplate.
-//	 *
-//	 * @param webserviceTemplate the template for the web service being called
-//	 * @param request the request (a subclass of AbstractTransferObject)
-//	 * @param requestClass the actual Class of the request object
-//	 * @return AbstractTransferObject the response from the remote web service (cast it to the desired response type)
-//	 */
-//	protected abstract AbstractTransferObject callRemoteService(final WebServiceTemplate webserviceTemplate,
-//			final AbstractTransferObject request, final Class<? extends AbstractTransferObject> requestClass);
-
 	/**
 	 * <p>
 	 * Implements the logic to extract a key value from the request object, that is

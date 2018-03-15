@@ -1,61 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="false" debug="false">
-    <include resource="org/springframework/boot/logging/logback/base.xml" />
+	<include resource="org/springframework/boot/logging/logback/base.xml" />
 
-    <appender name="ExceptionTestAppender" class="gov.va.ascent.framework.exception.ExceptionTestAppender">
+	<appender name="TestAppender" class="gov.va.ascent.framework.TestAppender">
+	</appender>
 
-    </appender>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) %logger{36}.%M - %msg%n</pattern>
+		</encoder>
+	</appender>
 
-    <appender name="LogTestAppender" class="gov.va.ascent.framework.log.LogTestAppender">
+	<logger name="gov.va.ascent.framework" level="DEBUG">
+		<appender-ref ref="TestAppender" />
+	</logger>
 
-    </appender>
-
-    <appender name="AspectLoggingTestAppender" class="gov.va.ascent.framework.aspect.AspectLoggingTestAppender">
-
-    </appender>
-
-    <appender name="DateAdapterLoggingTestAppender"
-              class="gov.va.ascent.framework.transfer.jaxb.adapters.DateAdapterLoggingTestAppender">
-
-    </appender>
-
-    <appender name="RestProviderHttpResponseCodeAspectLogAppender"
-              class="gov.va.ascent.framework.rest.provider.RestProviderHttpResponseCodeAspectLogAppender">
-
-    </appender>
-
-    <appender name="Db4oTestLogAppender"
-              class="gov.va.ascent.framework.persist.Db4oTestLogAppender">
-
-    </appender>
-
-
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-
-    </appender>
-
-    <logger name="gov.va.ascent.framework.aspect" level="DEBUG">
-        <appender-ref ref="AspectLoggingTestAppender"/>
-    </logger>
-    <logger name="gov.va.ascent.framework.exception" level="DEBUG">
-        <appender-ref ref="ExceptionTestAppender"/>
-    </logger>
-    <logger name="gov.va.ascent.framework.log" level="DEBUG">
-        <appender-ref ref="LogTestAppender"/>
-    </logger>
-    <logger name="gov.va.ascent.framework.transfer.jaxb.adapters" level="DEBUG">
-        <appender-ref ref="DateAdapterLoggingTestAppender"/>
-    </logger>
-    <logger name="gov.va.ascent.framework.rest.provider" level="DEBUG">
-        <appender-ref ref="RestProviderHttpResponseCodeAspectLogAppender"/>
-    </logger>
-    <logger name="gov.va.ascent.framework.persist" level="DEBUG">
-        <appender-ref ref="Db4oTestLogAppender"/>
-    </logger>
-
-    <root level="DEBUG">
-        <appender-ref ref="STDOUT"/>
-    </root>
-
+	<root level="ERROR">
+		<appender-ref ref="STDOUT" />
+	</root>
 
 </configuration>

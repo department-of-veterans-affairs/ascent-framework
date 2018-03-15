@@ -142,7 +142,7 @@ public class AbstractRemoteServiceCallMockTest {
 		@Override
 		public AbstractTransferObject callRemoteService(WebServiceTemplate webserviceTemplate, AbstractTransferObject request,
 				Class<? extends AbstractTransferObject> requestClass) {
-			return new TestAbstractRemoteServiceCallMockResponse();
+			return super.callMockService(webserviceTemplate, request, requestClass);
 		}
 	}
 }
