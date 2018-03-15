@@ -13,6 +13,10 @@ import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gov.va.ascent.framework.util.Defense;
 
 /**
@@ -27,6 +31,8 @@ public final class ModelValidator implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -6019704406389010935L;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ModelValidator.class);
 	
 	/** The factory. */
 	private transient ValidatorFactory factory = Validation
@@ -153,15 +159,17 @@ public final class ModelValidator implements Serializable {
 			//(used to contain all aspects of the violation message)
 			final ViolationMessageParts violationMessageParts = new ViolationMessageParts();
 			String replacement = violation.getMessageTemplate();
-			replacement = StringUtils.replaceFirst(replacement, "\\{", "");
+			replacement = StringUtils.replaceAll(replacement, "\\{", "");
 			replacement = StringUtils.replaceAll(replacement, "\\}", "");
 			violationMessageParts.setOriginalKey(replacement);
 			
 			replacement = convertKeyToNodepathStyle(propertyPathKey, violation.getMessageTemplate());
-			replacement = StringUtils.replaceFirst(replacement, "\\{", "");
+			replacement = StringUtils.replaceAll(replacement, "\\{", "");
 			replacement = StringUtils.replaceAll(replacement, "\\}", "");
 			violationMessageParts.setNewKey(replacement);
 			violationMessageParts.setText(violation.getMessage());
+			
+			LOGGER.debug("ViolationMessageParts: {}", ReflectionToStringBuilder.toString(violationMessageParts));
 		
 			//associate the violation and it's message parts with the property path
 			List<ViolationMessageParts> messagePartsForPropertyPath;
