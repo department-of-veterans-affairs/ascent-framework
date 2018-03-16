@@ -1,19 +1,26 @@
 package gov.va.ascent.framework.validation;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.groups.Default;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import gov.va.ascent.framework.service.ServiceRequest;
 import gov.va.ascent.framework.validation.ModelValidator.Modes;
@@ -27,7 +34,32 @@ public class ModelValidatorTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-
+	
+	@Test
+	public void testValidateModelPropertiesWithMock() {
+		
+		gov.va.ascent.framework.validation.ModelValidator modelValidator = mock(gov.va.ascent.framework.validation.ModelValidator.class);
+		TestRequest tr = new TestRequest();
+		Class<?>[] classes = new Class[1];
+		classes[0] = Default.class;		
+		Object o =  Mockito.mock(ConstraintViolation.class);
+		Set<ConstraintViolation<TestRequest>> hashSet = new HashSet<ConstraintViolation<TestRequest>>();
+		hashSet.add((ConstraintViolation<TestRequest>) o);
+		when(modelValidator.doValidateProperty(tr,"TestKey", classes)).thenReturn(hashSet);
+		
+		Map<String, List<ViolationMessageParts>> messages = new LinkedHashMap<>();
+		
+		ViolationMessageParts violationMessageParts = new ViolationMessageParts();
+		violationMessageParts.setOriginalKey("UnitTestKey");
+		violationMessageParts.setNewKey("UpdatedUnitTestKey");
+		List<ViolationMessageParts> msgList = new ArrayList<>();
+		msgList.add(violationMessageParts);
+		messages.put("TestKey", msgList);
+		when(modelValidator.validateModelProperties(tr, messages, classes)).thenCallRealMethod();
+		
+		assertFalse(modelValidator.validateModelProperties(tr, messages, classes));
+	}
+	
 	@Test
 	public void testValidateModelForEmptyMessages() {
 		ModelValidator modelTest = new ModelValidator();
