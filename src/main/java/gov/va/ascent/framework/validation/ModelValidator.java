@@ -27,7 +27,7 @@ import gov.va.ascent.framework.util.Defense;
  * @version 2.0
  */
 
-public final class ModelValidator implements Serializable {
+public class ModelValidator implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -6019704406389010935L;
@@ -46,7 +46,7 @@ public final class ModelValidator implements Serializable {
 	 * 
 	 * @return this, but with the transient state restored.
 	 */
-	private Object readResolve() {
+	public Object readResolve() {
 		factory = Validation.buildDefaultValidatorFactory();
 		validator = factory.getValidator();
 		return this;
@@ -127,6 +127,8 @@ public final class ModelValidator implements Serializable {
 
 		return isValid;
 	}
+	
+	
 
 	/**
 	 * Convert constraint violations to messages.
