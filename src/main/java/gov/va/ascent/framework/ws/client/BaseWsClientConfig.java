@@ -7,7 +7,8 @@ import gov.va.ascent.framework.util.Defense;
 import gov.va.ascent.framework.ws.security.VAServiceWss4jSecurityInterceptor;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponseInterceptor;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
@@ -56,7 +57,7 @@ public class BaseWsClientConfig {
 	/**
 	 * The Constant PACKAGE_WSS_FOUNDATION_EXCEPTION.
 	 */
-	public static final String PACKAGE_WSS_FOUNDATION_EXCEPTION = "gov.va.wss.foundation.exception";
+	public static final String PACKAGE_ASCENT_FRAMEWORK_EXCEPTION = "gov.va.ascent.framework.exception";
 
 
 	/**
@@ -201,24 +202,22 @@ public class BaseWsClientConfig {
 		messageSender.setReadTimeout(readTimeout);
 		messageSender.setConnectionTimeout(connectionTimeout);
 
-		// add http request and response interceptors
-		if (messageSender.getHttpClient() instanceof DefaultHttpClient) {
-			final DefaultHttpClient httpClient = (DefaultHttpClient) messageSender.getHttpClient();
-			LOGGER.info("HttpClient Object : %s%" , httpClient);
-			if (httpRequestInterceptors != null) {
-				for (final HttpRequestInterceptor httpRequestInterceptor : httpRequestInterceptors) {
-					httpClient.addRequestInterceptor(httpRequestInterceptor);
-				}
+		final HttpClientBuilder httpClient = HttpClients.custom();
+
+		LOGGER.info("HttpClient Object : %s%" , httpClient);
+		if (httpRequestInterceptors != null) {
+			for (final HttpRequestInterceptor httpRequestInterceptor : httpRequestInterceptors) {
+				httpClient.addInterceptorFirst(httpRequestInterceptor);
 			}
-			if (httpResponseInterceptors != null) {
-				for (final HttpResponseInterceptor httpResponseInterceptor : httpResponseInterceptors) {
-					httpClient.addResponseInterceptor(httpResponseInterceptor);
-				}
+		}
+		if (httpResponseInterceptors != null) {
+			for (final HttpResponseInterceptor httpResponseInterceptor : httpResponseInterceptors) {
+				httpClient.addInterceptorLast(httpResponseInterceptor);
 			}
-		} else {
-			LOGGER.warn("Not adding http interceptors, messageSender client isn't of the type DefaultHttpClient!");
 		}
 		
+		messageSender.setHttpClient(httpClient.build());
+
 		LOGGER.info("Default Uri : %s%" , endpoint);
 
 		// set the message factory & configure and return the template
@@ -271,7 +270,7 @@ public class BaseWsClientConfig {
 		// define packages that contain "our exceptions" that we want to propagate through
 		// without again logging and/or wrapping
 		final Set<String> exclusionSet = new HashSet<>();
-		exclusionSet.add(PACKAGE_WSS_FOUNDATION_EXCEPTION);
+		exclusionSet.add(PACKAGE_ASCENT_FRAMEWORK_EXCEPTION);
 		interceptingExceptionTranslator.setExclusionSet(exclusionSet);
 
 		return interceptingExceptionTranslator;
