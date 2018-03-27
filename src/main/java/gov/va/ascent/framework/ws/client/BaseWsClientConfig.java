@@ -5,6 +5,8 @@ import gov.va.ascent.framework.exception.InterceptingExceptionTranslator;
 import gov.va.ascent.framework.log.PerformanceLogMethodInterceptor;
 import gov.va.ascent.framework.util.Defense;
 import gov.va.ascent.framework.ws.security.VAServiceWss4jSecurityInterceptor;
+
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -55,7 +57,7 @@ public class BaseWsClientConfig {
 	protected static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
 
 	/**
-	 * The Constant PACKAGE_WSS_FOUNDATION_EXCEPTION.
+	 * The Constant PACKAGE_ASCENT_FOUNDATION_EXCEPTION.
 	 */
 	public static final String PACKAGE_ASCENT_FRAMEWORK_EXCEPTION = "gov.va.ascent.framework.exception";
 
@@ -203,8 +205,7 @@ public class BaseWsClientConfig {
 		messageSender.setConnectionTimeout(connectionTimeout);
 
 		final HttpClientBuilder httpClient = HttpClients.custom();
-
-		LOGGER.info("HttpClient Object : %s%" , httpClient);
+		
 		if (httpRequestInterceptors != null) {
 			for (final HttpRequestInterceptor httpRequestInterceptor : httpRequestInterceptors) {
 				httpClient.addInterceptorFirst(httpRequestInterceptor);
@@ -216,9 +217,10 @@ public class BaseWsClientConfig {
 			}
 		}
 		
+		LOGGER.debug("HttpClient Object : %s% {}" , ReflectionToStringBuilder.toString(httpClient));
+		LOGGER.debug("Default Uri : %s% {}" , endpoint);
+		
 		messageSender.setHttpClient(httpClient.build());
-
-		LOGGER.info("Default Uri : %s%" , endpoint);
 
 		// set the message factory & configure and return the template
 		final WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
