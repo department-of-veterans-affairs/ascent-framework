@@ -3,6 +3,8 @@
  */
 package gov.va.ascent.framework.util;
 
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,8 +54,19 @@ public final class AscentCacheUtil {
 	 */
 	public static String getUserBasedKey() {
 		if (SecurityUtils.getPersonTraits() != null) {
-				String key = createKey(SecurityUtils.getPersonTraits().getUsername(),
-					SecurityUtils.getPersonTraits().getFirstName(), SecurityUtils.getPersonTraits().getLastName());
+			String prefix;
+
+			if (SecurityUtils.getPersonTraits().getPid() != null
+					&& SecurityUtils.getPersonTraits().getPid().length() > 0) {
+				prefix = SecurityUtils.getPersonTraits().getPid();
+			} else if (SecurityUtils.getPersonTraits().getFileNumber() != null
+					&& SecurityUtils.getPersonTraits().getFileNumber().length() > 0) {
+				prefix = SecurityUtils.getPersonTraits().getFileNumber();
+			} else {
+				prefix = UUID.randomUUID().toString();
+			}
+			String key = createKey(prefix, SecurityUtils.getPersonTraits().getFirstName(),
+					SecurityUtils.getPersonTraits().getLastName());
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Generating cache key with value of " + key);
 			}
@@ -78,10 +91,12 @@ public final class AscentCacheUtil {
 	public static final String createKey(final Object... keyValues) {
 		final StringBuilder cacheKey = new StringBuilder();
 		for (Object key : keyValues) {
-			if (cacheKey.length() > 0) {
-				cacheKey.append(SEPARATOR);
+			if (key != null) {
+				if (cacheKey.length() > 0) {
+					cacheKey.append(SEPARATOR);
+				}
+				cacheKey.append(key.hashCode());
 			}
-			cacheKey.append(key.hashCode());
 		}
 		return cacheKey.toString();
 	}
