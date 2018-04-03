@@ -12,6 +12,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -234,7 +235,7 @@ public class RemoteServiceCallAspectTest {
 	@Test
 	public void testWriteAudit() throws NoSuchMethodException {
 		RequestResponseAuditData auditDataObject = new RequestResponseAuditData();
-		auditDataObject.setRequest(request);
+		auditDataObject.setRequest(Arrays.asList(request));
 		auditDataObject.setResponse(response);
 
 		doCallRealMethod().when(mockRemoteServiceCallAspect).writeAudit(isA(MessageSeverity.class), isA(Method.class), isA(RequestResponseAuditData.class));

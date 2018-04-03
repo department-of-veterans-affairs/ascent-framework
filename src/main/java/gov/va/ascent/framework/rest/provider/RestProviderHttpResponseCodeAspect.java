@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -99,10 +100,10 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	@Around("auditableExecution()")
 	public Object logAnnotatedMethodRequestResponse(final ProceedingJoinPoint joinPoint) throws Throwable {
 		Object response = null;
-		Object request = null;
+		List<Object> request = null;
 
-		if (joinPoint.getArgs().length > 0 && joinPoint.getArgs()[0] != null) {
-			request = joinPoint.getArgs()[0];
+		if (joinPoint.getArgs().length > 0 && joinPoint.getArgs() != null) {
+			request = Arrays.asList(joinPoint.getArgs());
 		}
 
 		response = joinPoint.proceed();
@@ -134,10 +135,10 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 		}
 		
 		Object responseObject = null;
-		Object requestObject = null;
+		List<Object> requestObject = null;
 
-		if (joinPoint.getArgs().length > 0 && joinPoint.getArgs()[0] != null) {
-			requestObject = joinPoint.getArgs()[0];
+		if (joinPoint.getArgs().length > 0 && joinPoint.getArgs() != null) {
+			requestObject = Arrays.asList(joinPoint.getArgs());
 		}
 		
 		final Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
@@ -246,7 +247,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
      * @param response the response
 	 * @param auditEventData the auditable annotation
 	 */
-	private void writeAudit(Object request, Object response,
+	private void writeAudit(List<Object> request, Object response,
 			AuditEventData auditEventData, MessageSeverity messageSeverity) {
 		RequestResponseAuditData requestResponseAuditData = new RequestResponseAuditData();
 

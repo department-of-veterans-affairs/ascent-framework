@@ -1,6 +1,7 @@
 package gov.va.ascent.framework.ws.client.remote;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -53,13 +54,13 @@ public class RemoteServiceCallAspect extends BaseRemoteServiceCallAspect {
 		AbstractTransferObject adviceRequest = null;
 		Class<? extends AbstractTransferObject> adviceRequestClass = null;
 
-		if ((joinPoint.getArgs().length >= 0) && (joinPoint.getArgs()[0] != null)) {
+		if (joinPoint.getArgs() != null && joinPoint.getArgs().length >= 0 && joinPoint.getArgs()[0] != null) {
 			adviceWebserviceTemplate = (WebServiceTemplate) joinPoint.getArgs()[0];
 		}
-		if ((joinPoint.getArgs().length >= 1) && (joinPoint.getArgs()[1] != null)) {
+		if (joinPoint.getArgs() != null && joinPoint.getArgs().length >= 1 && joinPoint.getArgs()[1] != null) {
 			adviceRequest = (AbstractTransferObject) joinPoint.getArgs()[1];
 		}
-		if ((joinPoint.getArgs().length >= 2) && (joinPoint.getArgs()[2] != null)) {
+		if (joinPoint.getArgs() != null && joinPoint.getArgs().length >= 2 && joinPoint.getArgs()[2] != null) {
 			adviceRequestClass = (Class<? extends AbstractTransferObject>) joinPoint.getArgs()[2];
 		}
 
@@ -74,7 +75,7 @@ public class RemoteServiceCallAspect extends BaseRemoteServiceCallAspect {
 		requestResponseAuditData.setMethod(SOAP_METHOD);
 
 		// accumulate the request
-		requestResponseAuditData.setRequest(adviceRequest);
+		requestResponseAuditData.setRequest(Arrays.asList(adviceRequest));
 
 		// invoke the RemoteServiceCall.callRemoteService(...) method as the calling IMPL intended
 		AbstractTransferObject adviceResponse = null;
