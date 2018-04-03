@@ -102,7 +102,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 		Object response = null;
 		List<Object> request = null;
 
-		if (joinPoint.getArgs().length > 0 && joinPoint.getArgs() != null) {
+		if (joinPoint.getArgs().length > 0) {
 			request = Arrays.asList(joinPoint.getArgs());
 		}
 
@@ -137,7 +137,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 		Object responseObject = null;
 		List<Object> requestObject = null;
 
-		if (joinPoint.getArgs().length > 0 && joinPoint.getArgs() != null) {
+		if (joinPoint.getArgs().length > 0) {
 			requestObject = Arrays.asList(joinPoint.getArgs());
 		}
 		
