@@ -29,7 +29,7 @@ public class RequestResponseAuditData implements Serializable{
     private transient Object response;
 
     /* The request. */
-    private transient Object request;
+    private transient List<Object> request;
     
     private List<String> attachmentTextList;
 
@@ -101,7 +101,7 @@ public class RequestResponseAuditData implements Serializable{
      * Gets the request.
      * @return
      */
-    public Object getRequest() {
+    public List<Object> getRequest() {
         return request;
     }
 
@@ -109,7 +109,7 @@ public class RequestResponseAuditData implements Serializable{
      * Sets the request.
      * @param request
      */
-    public void setRequest(Object request) {
+    public void setRequest(List<Object> request) {
         this.request = request;
     }
     
