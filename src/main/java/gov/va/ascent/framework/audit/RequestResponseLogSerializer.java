@@ -10,8 +10,10 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import gov.va.ascent.framework.messages.MessageSeverity;
+import gov.va.ascent.framework.transfer.jaxb.adapters.DateAdapter;
 
 /**
  * @author npaulus
@@ -37,6 +39,8 @@ public class RequestResponseLogSerializer {
         String auditDetails;
         try{
         	mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
+        	mapper.setDateFormat(DateAdapter.getDateFormat());
+        	mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
             auditDetails = mapper.writeValueAsString(requestResponseAuditData);
         } catch (JsonProcessingException ex){
             LOGGER.error("Error occurred on JSON processing, calling toString", ex);

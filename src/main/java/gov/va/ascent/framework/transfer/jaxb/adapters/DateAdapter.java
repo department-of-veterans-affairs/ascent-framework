@@ -82,4 +82,15 @@ public final class DateAdapter {
 		final String timezone = tzFormatter.format(dateTime);
 		return formatter.format(dateTime) + timezone.substring(0, 3) + ":" + timezone.substring(3);
 	}
+	
+	/**
+	 * Gets the DateFormat.
+	 *
+	 * @param none
+	 * @return the date format object
+	 */
+	public static DateFormat getDateFormat() {
+		final DateFormat formatter = new SimpleDateFormat(DATE_TIME_FORMAT, Locale.getDefault());
+		return formatter;
+	}
 }

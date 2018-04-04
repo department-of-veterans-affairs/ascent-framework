@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -61,6 +62,12 @@ public class DateAdapterTest extends AbstractBaseLogTester {
 		Date dt = DateAdapter.parseDateTime("1970-0101T00:00:00");
 		assertEquals("Error parsing date, returning null:1970-0101T00:00:00", super.getAppender().get(0).getMessage());
 		assertEquals(null, dt);
+	}
+	
+	@Test
+	public void testGetDateFormat() {
+		DateFormat dateFormat = DateAdapter.getDateFormat();
+		assertNotNull(dateFormat);
 	}
 
 }
