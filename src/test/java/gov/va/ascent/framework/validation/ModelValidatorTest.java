@@ -17,8 +17,6 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.groups.Default;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -27,12 +25,10 @@ import gov.va.ascent.framework.validation.ModelValidator.Modes;
 
 public class ModelValidatorTest {
 
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
+	@Test 
+	public void testreadResolve() {
+		ModelValidator modelValidator = new ModelValidator();
+		assertNotNull(modelValidator.readResolve());
 	}
 	
 	@Test

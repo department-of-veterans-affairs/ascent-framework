@@ -142,6 +142,15 @@ public class ModelValidator implements Serializable {
 	private <T extends Serializable> void convertConstraintViolationsToMessages(
 			final Class modelClass, final String specifiedPropertyPathKey,
 			final Map<String, List<ViolationMessageParts>> messages, final Set<ConstraintViolation<T>> constraintViolations) {
+		
+		ConstraintViolation<T> blankViolation = null;
+		for (ConstraintViolation<T> violation : constraintViolations) {
+			if (violation.getMessageTemplate() == null || violation.getMessageTemplate().length()  == 0) {
+				blankViolation = violation;
+			}
+		}
+		constraintViolations.remove(blankViolation);
+
 		for (ConstraintViolation<T> violation : constraintViolations) {
 				
 			//construct the key we will use for the property path 
@@ -183,6 +192,7 @@ public class ModelValidator implements Serializable {
 			}
 			messagePartsForPropertyPath.add(violationMessageParts);
 		}
+		
 	}
 
 	/**
