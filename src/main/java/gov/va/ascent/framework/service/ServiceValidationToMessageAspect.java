@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -38,49 +39,45 @@ import java.util.Map.Entry;
 @Aspect
 @Order(-9998)
 public class ServiceValidationToMessageAspect extends BaseServiceAspect {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ServiceValidationToMessageAspect.class);
-	
+
 	@Around("publicStandardServiceMethod() && serviceImpl()")
 	public Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {	
-		
+
 		if(LOGGER.isDebugEnabled()){
 			LOGGER.debug("ServiceValidationToMessageAspect executing around method:" + joinPoint.toLongString());			
 		}
-		
+
 		// fetch the request
-		Validatable serviceRequest = null;
-		if (joinPoint.getArgs().length > 0 && joinPoint.getArgs()[0] != null) {
-			serviceRequest = (Validatable) joinPoint.getArgs()[0];
+		List<Object> serviceRequest = null;
+		if (joinPoint.getArgs().length > 0) {
+			serviceRequest = Arrays.asList(joinPoint.getArgs());
 		}
 
 		// start creating the response
 		ServiceResponse serviceResponse = null;
 		final Map<String, List<ViolationMessageParts>> messages = new LinkedHashMap<>();
+
 		if (joinPoint.getArgs().length > 0) {
 			MethodSignature methodSignature = (MethodSignature) joinPoint.getStaticPart().getSignature();
-			if (serviceRequest == null) {
-				serviceResponse = (ServiceResponse) methodSignature.getMethod().getReturnType().newInstance();
-				serviceResponse.addMessage(MessageSeverity.ERROR, "Request.NotNull", methodSignature.getMethod()
-						.getParameterTypes()[0].getSimpleName() + ".NotNull");
-			} else {
-				serviceRequest.validate(messages);
-				if (!messages.isEmpty()) {
-					serviceResponse = (ServiceResponse) methodSignature.getMethod().getReturnType().newInstance();
-					convertMapToMessages(serviceResponse, messages);
-					AuditLogger.error(
-							BaseRestProviderAspect.getDefaultAuditableInstance(methodSignature.getMethod()), 
-							serviceResponse.getMessages().stream().map(Message::toString).reduce("", String::concat));
+			for (Object objValidatable: serviceRequest) {
+				if (objValidatable!=null && objValidatable instanceof Validatable) {
+					((Validatable)objValidatable).validate(messages);
 				}
+			}
+			if (!messages.isEmpty()) {
+				serviceResponse = (ServiceResponse) methodSignature.getMethod().getReturnType().newInstance();
+				convertMapToMessages(serviceResponse, messages);
+				AuditLogger.error(
+						BaseRestProviderAspect.getDefaultAuditableInstance(methodSignature.getMethod()), 
+						serviceResponse.getMessages().stream().map(Message::toString).reduce("", String::concat));
 			}
 		}
 
 		try {
 			if (serviceResponse == null) {
 				serviceResponse = (ServiceResponse) joinPoint.proceed();
-			} else {
-				LOGGER.debug(
-						"ServiceValidationToMessageAspect encountered validation errors, not proceeding with call.");
 			}
 		} catch (Throwable throwable) {
 			LOGGER.error("ServiceValidationToMessageAspect encountered uncaught exception. Throwable Cause.",
@@ -91,9 +88,9 @@ public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 		}
 
 		return serviceResponse;
-		
-    }
-	
+
+	}
+
 	/**
 	 * Convert map to messages.  This is exposed so services can call directly if they desire.
 	 * 
@@ -108,5 +105,5 @@ public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 		}
 		Collections.sort(serviceResponse.getMessages(), Comparator.comparing(Message::getKey));
 	}
-	
+
 }
