@@ -1,8 +1,12 @@
 package gov.va.ascent.framework.audit;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +31,9 @@ public class RequestResponseLogSerializer {
     @Autowired
     ObjectMapper mapper;
 
+	@Value("${spring.jackson.date-format}") 
+    private String dateFormat;
+	
     /**
      * Asynchronuously converts an object to JSON and then writes it to the audit logger.
      * @param auditEventData Data specific to the audit event
@@ -39,7 +46,7 @@ public class RequestResponseLogSerializer {
         String auditDetails;
         try{
         	mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
-        	mapper.setDateFormat(DateAdapter.getDateFormat());
+        	mapper.setDateFormat(new SimpleDateFormat(dateFormat, Locale.getDefault()));
         	mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
             auditDetails = mapper.writeValueAsString(requestResponseAuditData);
         } catch (JsonProcessingException ex){
