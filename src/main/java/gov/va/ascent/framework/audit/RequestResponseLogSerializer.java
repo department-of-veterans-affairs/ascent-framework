@@ -31,7 +31,7 @@ public class RequestResponseLogSerializer {
     @Autowired
     ObjectMapper mapper;
 
-	@Value("${spring.jackson.date-format}") 
+	@Value("${spring.jackson.date-format:yyyy-MM-dd'T'HH:mm:ss.SSSZ}") 
     private String dateFormat;
 	
     /**
