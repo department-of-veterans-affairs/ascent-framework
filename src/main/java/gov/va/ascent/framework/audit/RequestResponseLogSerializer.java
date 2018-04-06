@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import gov.va.ascent.framework.messages.MessageSeverity;
-import gov.va.ascent.framework.transfer.jaxb.adapters.DateAdapter;
 
 /**
  * @author npaulus
