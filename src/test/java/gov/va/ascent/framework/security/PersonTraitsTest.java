@@ -21,7 +21,7 @@ public class PersonTraitsTest {
 
 	PersonTraits personTraitsDefault = new PersonTraits("NA","NA", AuthorityUtils.NO_AUTHORITIES);
 	SimpleDateFormat format1 = new SimpleDateFormat(PATTERN_FORMAT.BIRTHDATE_YYYYMMDD.getPattern());
-	
+
 	@Before
 	public void setUp() throws Exception {
 		personTraitsDefault.setDodedipnid("TestDodedipnid");
@@ -43,6 +43,7 @@ public class PersonTraitsTest {
 		personTraitsDefault.setPnidType("testValidPnidType");
 		personTraitsDefault.setPid("796079018");
 		personTraitsDefault.setIcn("testValidIcn");
+		personTraitsDefault.setTokenId("tokenId");
 		List<String> correlationIds = new ArrayList<>();
 		correlationIds.add("id1");
 		correlationIds.add("id2");
@@ -418,4 +419,47 @@ public class PersonTraitsTest {
 		assertNotNull(personTraitsDefault.toString());
 	}
 
+	/**
+	 * Test of hasUsername method, of class PersonTraits.
+	 */
+	@Test
+	public void testHasMethods_true() {
+		assertTrue(personTraitsDefault.hasFirstName());
+		assertTrue(personTraitsDefault.hasLastName());
+		assertTrue(personTraitsDefault.hasMiddleName());
+		assertTrue(personTraitsDefault.hasPrefix());
+		assertTrue(personTraitsDefault.hasBirthDate());
+		assertTrue(personTraitsDefault.hasGender());
+		assertTrue(personTraitsDefault.hasEmail());
+		assertTrue(personTraitsDefault.hasDodedipnid());
+		assertTrue(personTraitsDefault.hasPnidType());
+		assertTrue(personTraitsDefault.hasPnid());
+		assertTrue(personTraitsDefault.hasPid());
+		assertTrue(personTraitsDefault.hasIcn());
+		assertTrue(personTraitsDefault.hasFileNumber());
+		assertTrue(personTraitsDefault.hasTokenId());
+		assertNotNull(PersonTraits.PATTERN_FORMAT.getDefault());
+	}
+
+	/**
+	 * Test of hasUsername method, of class PersonTraits.
+	 */
+	@Test
+	public void testHasMethods_false() {
+		PersonTraits personTraits = new PersonTraits();
+		assertFalse(personTraits.hasFirstName());
+		assertFalse(personTraits.hasLastName());
+		assertFalse(personTraits.hasMiddleName());
+		assertFalse(personTraits.hasPrefix());
+		assertFalse(personTraits.hasBirthDate());
+		assertFalse(personTraits.hasGender());
+		assertFalse(personTraits.hasEmail());
+		assertFalse(personTraits.hasDodedipnid());
+		assertFalse(personTraits.hasPnidType());
+		assertFalse(personTraits.hasPnid());
+		assertFalse(personTraits.hasPid());
+		assertFalse(personTraits.hasIcn());
+		assertFalse(personTraits.hasFileNumber());
+		assertFalse(personTraits.hasTokenId());
+	}
 }
