@@ -27,6 +27,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -74,7 +75,7 @@ public class RequestResponseLogSerializerTest {
 		requestResponseAuditData.setHeaders(headers);
 
 		mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
-
+		ReflectionTestUtils.setField(requestResponseLogSerializer, "dateFormat", "yyyy-MM-dd'T'HH:mm:ss");
 	}
 
 	@SuppressWarnings("unchecked")
