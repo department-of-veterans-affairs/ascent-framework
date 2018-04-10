@@ -1,6 +1,8 @@
 package gov.va.ascent.framework.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -265,4 +267,60 @@ public class PersonTraits extends User {
         reflectionToStringBuilder.setExcludeFieldNames(getToStringEqualsHashExcludeFields());
         return reflectionToStringBuilder.toString();
     }
+
+	public boolean hasFirstName() {
+		return !StringUtils.isEmpty(firstName);
+	}
+
+	public boolean hasLastName() {
+		return !StringUtils.isEmpty(lastName);
+	}
+
+	public boolean hasMiddleName() {
+		return !StringUtils.isEmpty(middleName);
+	}
+
+	public boolean hasPrefix() {
+		return !StringUtils.isEmpty(prefix);
+	}
+
+	public boolean hasBirthDate() {
+		return !StringUtils.isEmpty(birthDate);
+	}
+
+	public boolean hasGender() {
+		return !StringUtils.isEmpty(gender);
+	}
+
+	public boolean hasEmail() {
+		return !StringUtils.isEmpty(email);
+	}
+
+	public boolean hasDodedipnid() {
+		return !StringUtils.isEmpty(dodedipnid);
+	}
+
+	public boolean hasPnidType() {
+		return !StringUtils.isEmpty(pnidType);
+	}
+
+	public boolean hasPnid() {
+		return !StringUtils.isEmpty(pnid);
+	}
+
+	public boolean hasPid() {
+		return !StringUtils.isEmpty(pid);
+	}
+
+	public boolean hasIcn() {
+		return !StringUtils.isEmpty(icn);
+	}
+
+	public boolean hasFileNumber() {
+		return !StringUtils.isEmpty(fileNumber);
+	}
+
+	public boolean hasTokenId() {
+		return !StringUtils.isEmpty(tokenId);
+	}
 }
