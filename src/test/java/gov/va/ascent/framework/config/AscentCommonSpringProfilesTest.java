@@ -65,6 +65,11 @@ public class AscentCommonSpringProfilesTest {
 	 * Spring Profile to signify that the application will run embedded redis
 	 */
     public static final String TEST_PROFILE_EMBEDDED_REDIS = "embedded-redis";
+    
+    /** 
+	 * Spring Profile to signify that the application will run embedded AWS
+	 */
+    public static final String TEST_PROFILE_EMBEDDED_AWS = "embedded-aws";
 
     @Test
     public void profileDefaultTest() throws Exception {
@@ -124,6 +129,11 @@ public class AscentCommonSpringProfilesTest {
     @Test
     public void profileEmbeddedRedisTest() throws Exception {
         assertEquals(TEST_PROFILE_EMBEDDED_REDIS, AscentCommonSpringProfiles.PROFILE_EMBEDDED_REDIS);
+    }
+    
+    @Test
+    public void profileEmbeddedAwsTest() throws Exception {
+        assertEquals(TEST_PROFILE_EMBEDDED_AWS, AscentCommonSpringProfiles.PROFILE_EMBEDDED_AWS);
     }
     
     @Test(expected = IllegalStateException.class)

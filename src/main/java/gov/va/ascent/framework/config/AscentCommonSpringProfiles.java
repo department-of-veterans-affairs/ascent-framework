@@ -71,6 +71,11 @@ public final class AscentCommonSpringProfiles {
 	 * Spring Profile to signify that the application will run embedded redis
 	 */
     public static final String PROFILE_EMBEDDED_REDIS = "embedded-redis";
+    
+    /** 
+	 * Spring Profile to signify that the application will run embedded aws
+	 */
+    public static final String PROFILE_EMBEDDED_AWS = "embedded-aws";
 
 	AscentCommonSpringProfiles() {
 		throw new IllegalStateException("Utility class");
