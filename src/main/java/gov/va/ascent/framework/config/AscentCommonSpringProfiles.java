@@ -76,6 +76,11 @@ public final class AscentCommonSpringProfiles {
 	 * Spring Profile to signify that the application will run embedded aws
 	 */
     public static final String PROFILE_EMBEDDED_AWS = "embedded-aws";
+    
+    /** 
+	 * Spring Profile to signify that the configuration will not be loaded in embedded aws
+	 */
+    public static final String NOT_PROFILE_EMBEDDED_AWS = "!embedded-aws";
 
 	AscentCommonSpringProfiles() {
 		throw new IllegalStateException("Utility class");

@@ -71,6 +71,11 @@ public class AscentCommonSpringProfilesTest {
 	 */
     public static final String TEST_PROFILE_EMBEDDED_AWS = "embedded-aws";
 
+    /** 
+	 * Spring Profile to signify that the configuration will not be loaded in embedded aws
+	 */
+    public static final String TES_NOT_PROFILE_EMBEDDED_AWS = "!embedded-aws";
+    
     @Test
     public void profileDefaultTest() throws Exception {
         assertEquals(TEST_PROFILE_DEFAULT, AscentCommonSpringProfiles.PROFILE_DEFAULT);
@@ -134,6 +139,11 @@ public class AscentCommonSpringProfilesTest {
     @Test
     public void profileEmbeddedAwsTest() throws Exception {
         assertEquals(TEST_PROFILE_EMBEDDED_AWS, AscentCommonSpringProfiles.PROFILE_EMBEDDED_AWS);
+    }
+    
+    @Test
+    public void notProfileEmbeddedAwsTest() throws Exception {
+        assertEquals(TES_NOT_PROFILE_EMBEDDED_AWS, AscentCommonSpringProfiles.NOT_PROFILE_EMBEDDED_AWS);
     }
     
     @Test(expected = IllegalStateException.class)
