@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-import gov.va.ascent.framework.transfer.AbstractTransferObject;
+import gov.va.ascent.framework.transfer.AbstractServiceTransferObject;
 
 /**
  * A base Request object capable of representing the payload of a service request.
@@ -14,11 +14,11 @@ import gov.va.ascent.framework.transfer.AbstractTransferObject;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "serviceRequest")
-public class ServiceRequest extends AbstractTransferObject {
+public class ServiceRequest extends AbstractServiceTransferObject {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -8521125059263688741L;
-	
+
 	/**
 	 * Instantiates a new rest request.
 	 */

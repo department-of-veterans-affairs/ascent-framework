@@ -7,14 +7,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import gov.va.ascent.framework.messages.Message;
 import gov.va.ascent.framework.messages.MessageSeverity;
-import gov.va.ascent.framework.transfer.AbstractTransferObject;
+import gov.va.ascent.framework.transfer.AbstractServiceTransferObject;
 
 /**
  * A base Response object capable of representing the payload of a service response.
  *
  * @see gov.va.ascent.framework.transfer.AbstractTransferObject
  */
-public class ServiceResponse extends AbstractTransferObject {
+public class ServiceResponse extends AbstractServiceTransferObject {
 
 	private static final long serialVersionUID = -3937937807439785385L;
 
@@ -23,12 +23,11 @@ public class ServiceResponse extends AbstractTransferObject {
 
 	/*
 	 * cacheResponse
-	 * 
-	 * Must be ignored in the serialization and de-serialization 
+	 *
+	 * Must be ignored in the serialization and de-serialization
 	 */
 	@JsonIgnore
 	private boolean doNotCacheResponse = false;
-
 
 	/**
 	 * Instantiates a new rest response.
@@ -44,8 +43,8 @@ public class ServiceResponse extends AbstractTransferObject {
 	 * @param key the key
 	 * @param text the text
 	 */
-	public final void addMessage(final MessageSeverity severity, final String key, final String text){		
-		if(messages == null){
+	public final void addMessage(final MessageSeverity severity, final String key, final String text) {
+		if (messages == null) {
 			messages = new LinkedList<>();
 		}
 		final Message message = new Message();
@@ -60,8 +59,8 @@ public class ServiceResponse extends AbstractTransferObject {
 	 *
 	 * @param newMessages the newMessages
 	 */
-	public final void addMessages(final List<Message> newMessages){
-		if(messages == null){
+	public final void addMessages(final List<Message> newMessages) {
+		if (messages == null) {
 			messages = new LinkedList<>();
 		}
 		messages.addAll(newMessages);
@@ -69,11 +68,11 @@ public class ServiceResponse extends AbstractTransferObject {
 
 	/**
 	 * Gets the messages.
-	 * 
+	 *
 	 * @return the messages
 	 */
 	public final List<Message> getMessages() {
-		if(messages == null){
+		if (messages == null) {
 			messages = new LinkedList<>();
 		}
 		return this.messages;
@@ -81,7 +80,7 @@ public class ServiceResponse extends AbstractTransferObject {
 
 	/**
 	 * Sets the messages.
-	 * 
+	 *
 	 * @param messages the new messages
 	 */
 	public final void setMessages(final List<Message> messages) {
@@ -94,9 +93,9 @@ public class ServiceResponse extends AbstractTransferObject {
 	 * @param severity the severity
 	 * @return true, if successful
 	 */
-	private boolean hasMessagesOfType(final MessageSeverity severity){
-		for(Message message: getMessages()){
-			if(severity.equals(message.getSeverity())){
+	private boolean hasMessagesOfType(final MessageSeverity severity) {
+		for (Message message : getMessages()) {
+			if (severity.equals(message.getSeverity())) {
 				return true;
 			}
 		}
@@ -108,7 +107,7 @@ public class ServiceResponse extends AbstractTransferObject {
 	 *
 	 * @return true, if successful
 	 */
-	public final boolean hasFatals(){
+	public final boolean hasFatals() {
 		return hasMessagesOfType(MessageSeverity.FATAL);
 	}
 
@@ -126,7 +125,7 @@ public class ServiceResponse extends AbstractTransferObject {
 	 *
 	 * @return true, if successful
 	 */
-	public final boolean hasWarnings(){
+	public final boolean hasWarnings() {
 		return hasMessagesOfType(MessageSeverity.WARN);
 	}
 
@@ -135,12 +134,12 @@ public class ServiceResponse extends AbstractTransferObject {
 	 *
 	 * @return true, if successful
 	 */
-	public final boolean hasInfos(){
+	public final boolean hasInfos() {
 		return hasMessagesOfType(MessageSeverity.INFO);
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isDoNotCacheResponse() {
@@ -148,7 +147,7 @@ public class ServiceResponse extends AbstractTransferObject {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param doNotcacheResponse
 	 */
 	public void setDoNotCacheResponse(boolean doNotCacheResponse) {
