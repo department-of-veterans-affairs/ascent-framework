@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AbstractPartnerTransferObjectTest {
+public class PartnerAbstractTransferObjectTest {
 
 	public class TestPartnerTransferObject extends AbstractPartnerTransferObject {
 		private static final long serialVersionUID = 1L;
