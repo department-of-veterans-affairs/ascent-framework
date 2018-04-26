@@ -13,6 +13,6 @@ package gov.va.ascent.framework.transfer;
  */
 @java.lang.SuppressWarnings("common-java:InsufficientLineCoverage")
 @edu.umd.cs.findbugs.annotations.SuppressWarnings("all")
-public abstract class AbstractPartnerTransferObject extends AbstractTransferObject {
+public abstract class AbstractPartnerTransferObject extends AbstractTransferObject { // NOSONAR
 	private static final long serialVersionUID = 6730544865283424537L;
 }
