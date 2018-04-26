@@ -1,0 +1,2 @@
+#This file is only used for the unit test purposes
+wss-partner-person.ws.client.endpoint: http://localhost:9736/testEndPoint
