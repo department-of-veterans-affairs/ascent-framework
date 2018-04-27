@@ -84,13 +84,14 @@ public class AbstractRemoteServiceCallMockTest {
 	 *
 	 * @throws Exception
 	 */
-	@SuppressWarnings({ "unchecked", "serial" })
 	@Test
 	public void testCallMockService() throws Exception {
 
 		// configure the mock marshaller
 		mockMarshaller.setClassesToBeBound(new Class[] { mockRequest.getClass() });
 		mockMarshaller.setMarshallerProperties(new HashMap<String, Object>() {
+			private static final long serialVersionUID = 1L;
+
 			{
 				put(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 			}

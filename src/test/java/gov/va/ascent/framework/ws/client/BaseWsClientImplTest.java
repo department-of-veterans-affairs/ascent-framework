@@ -1,7 +1,5 @@
 package gov.va.ascent.framework.ws.client;
 
-import static org.junit.Assert.*;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +16,7 @@ public class BaseWsClientImplTest {
 
 	@Test
 	public void test() {
-		TestBaseWsClient test = new TestBaseWsClient();
+		new TestBaseWsClient();
 	}
 
 }

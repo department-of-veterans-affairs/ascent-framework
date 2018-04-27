@@ -92,7 +92,6 @@ public class ServiceExceptionHandlerAspectTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testConstructor() throws IllegalArgumentException{
-		ServiceExceptionHandlerAspect serviceExceptionHandlerAspect =
 				new ServiceExceptionHandlerAspect(null);
 	}
 
@@ -112,15 +111,4 @@ public class ServiceExceptionHandlerAspectTest {
     public void someMethod() {
         // do nothing
     }
-
-	/**
-	 * Gets the Method to use in tests.  Method isn't critical for these tests.
-	 *
-	 * @return the method to use in tests
-	 * @throws NoSuchMethodException the no such method exception
-	 * @throws SecurityException the security exception
-	 */
-	private Method getMethodToUseInTests() throws NoSuchMethodException, SecurityException{
-		return ExceptionToExceptionTranslationHandler.class.getMethod("handleViaTranslation", Method.class, Object[].class, Throwable.class);
-	}
 }

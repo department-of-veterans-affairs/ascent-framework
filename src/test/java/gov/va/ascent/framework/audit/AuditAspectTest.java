@@ -53,7 +53,11 @@ interface AuditableService{
 }
 
 class AuditServiceRequest extends ServiceRequest{
-    private String text;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String text;
 
     public String getText() {
         return text;

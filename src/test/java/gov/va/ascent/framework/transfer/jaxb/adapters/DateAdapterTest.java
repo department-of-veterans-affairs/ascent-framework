@@ -12,12 +12,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.qos.logback.classic.Logger;
 import gov.va.ascent.framework.AbstractBaseLogTester;
 
 public class DateAdapterTest extends AbstractBaseLogTester {
-
-	private Logger dateAdapterLog = super.getLogger(DateAdapter.class);
 
 	@Before
 	public void setUp() throws Exception {

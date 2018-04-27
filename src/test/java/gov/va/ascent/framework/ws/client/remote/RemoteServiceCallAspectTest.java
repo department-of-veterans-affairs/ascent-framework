@@ -183,7 +183,6 @@ public class RemoteServiceCallAspectTest {
 		argValues[2] = request.getClass();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testAroundAdvice_WithJoinpointProceedReturningNull() throws Throwable {
 		argValues[0] = webserviceTemplate;

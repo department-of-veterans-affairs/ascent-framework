@@ -39,10 +39,10 @@ public class AscentRuntimeExceptionTest {
         //do crazy reflection to make server name null
         Field field = AscentRuntimeException.class.getDeclaredField("SERVER_NAME");
         Field modifiersField = Field.class.getDeclaredField( "modifiers" );
-        boolean isModifierAccessible = modifiersField.isAccessible();
+        modifiersField.isAccessible();
         modifiersField.setAccessible( true );
         modifiersField.setInt( field, field.getModifiers() & ~Modifier.FINAL );
-        boolean isAccessible = field.isAccessible();
+        field.isAccessible();
         field.setAccessible( true );
         field.set(null, null );
 

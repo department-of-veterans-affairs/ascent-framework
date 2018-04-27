@@ -56,14 +56,14 @@ public class WsClientSimulatorMarshallingInterceptorTest {
 	@Test
 	public void testWsClientSimulatorMarshallingInterceptorMapOfStringJaxb2Marshaller() {
 		Map<String, Jaxb2Marshaller> marshallerForPackageMap = new HashMap<String, Jaxb2Marshaller>();
-		WsClientSimulatorMarshallingInterceptor wscsmi = new WsClientSimulatorMarshallingInterceptor(marshallerForPackageMap);
+		new WsClientSimulatorMarshallingInterceptor(marshallerForPackageMap);
 	}
 
 	@Test
 	public void testWsClientSimulatorMarshallingInterceptorMapOfStringJaxb2MarshallerMapOfStringObject() {
 		Map<String, Jaxb2Marshaller> marshallerForPackageMap = new HashMap<String, Jaxb2Marshaller>();
 		Map<String,Object> objectFactoryForPackageMap = new HashMap<String,Object>();
-		WsClientSimulatorMarshallingInterceptor wscsmi = new WsClientSimulatorMarshallingInterceptor(marshallerForPackageMap, objectFactoryForPackageMap);
+		new WsClientSimulatorMarshallingInterceptor(marshallerForPackageMap, objectFactoryForPackageMap);
 	}
 
 	@Test

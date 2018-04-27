@@ -23,6 +23,6 @@ public class AnnotationConstantsTest {
     
     @Test(expected = IllegalStateException.class)
     public void annotationConstantsConstructor() throws Exception {
-    		AnnotationConstants ac = new AnnotationConstants();
+    		new AnnotationConstants();
     }    
 }
