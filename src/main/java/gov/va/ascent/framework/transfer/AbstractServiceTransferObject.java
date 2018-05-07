@@ -7,6 +7,4 @@ package gov.va.ascent.framework.transfer;
  */
 public abstract class AbstractServiceTransferObject extends AbstractTransferObject {
 	private static final long serialVersionUID = 7818958501584142876L;
-
-	// TODO move AbstractTransferObject.validate() into this class
 }

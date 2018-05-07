@@ -46,7 +46,7 @@ public final class Defense {
 	 * @param expression the expression
 	 */
 	public static void state(final boolean expression) {
-		Assert.state(expression);
+		Assert.state(expression, "[Assertion failed] - this state invariant must be true");
 	}
 
 	/**
@@ -55,7 +55,7 @@ public final class Defense {
 	 * @param ref the ref
 	 */
 	public static void isNull(final Object ref) {
-		Assert.isNull(ref);
+		Assert.isNull(ref,  "[Assertion failed] - the object argument must be null");
 	}
 
 	/**
@@ -74,7 +74,7 @@ public final class Defense {
 	 * @param ref the ref
 	 */
 	public static void notNull(final Object ref) {
-		Assert.notNull(ref);
+		Assert.notNull(ref, "[Assertion failed] - this argument is required; it must not be null");
 	}
 
 	/**
@@ -93,7 +93,7 @@ public final class Defense {
 	 * @param text the text
 	 */
 	public static void hasText(final String text) {
-		Assert.hasText(text);
+		Assert.hasText(text, "[Assertion failed] - this String argument must have text; it must not be null, empty, or blank");
 	}
 
 	/**
@@ -112,7 +112,7 @@ public final class Defense {
 	 * @param ref the ref
 	 */
 	public static void notEmpty(final Collection<?> ref) {
-		Assert.notEmpty(ref);
+		Assert.notEmpty(ref, "[Assertion failed] - this collection must not be empty: it must contain at least 1 element");
 	}
 
 	/**
@@ -141,8 +141,8 @@ public final class Defense {
 	 * @param expression the expression
 	 */
 	public static void isTrue(final Boolean expression) {
-		Assert.notNull(expression);
-		Assert.isTrue(expression);
+		Assert.notNull(expression, "[Assertion failed] - this argument is required; it must not be null");
+		Assert.isTrue(expression, "[Assertion failed] - this expression must be true");
 	}
 
 	/**

@@ -82,7 +82,7 @@ public class ExceptionToExceptionTranslationHandler {
 	 * @param args the args
 	 * @param throwable the throwable
 	 */
-	@SuppressWarnings("squid:S00112")
+	@SuppressWarnings({ "squid:S00112", "unlikely-arg-type" })
 	// Sonar - ignore throws Throwable because this method could be translating any error.
 	public final void handleViaTranslation(final Method method, final Object[] args, final Throwable throwable) throws Throwable {
 

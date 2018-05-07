@@ -32,7 +32,8 @@ public class ExceptionHandlingUtilsTest {
     @Captor
     private ArgumentCaptor<LoggingEvent> captorLoggingEvent;
 
-    @Before
+    @SuppressWarnings("unchecked")
+	@Before
     public void setUp(){
         final Logger logger = (Logger) LoggerFactory.getLogger(ExceptionHandlingUtilsTest.class);
         logger.setLevel(Level.DEBUG);
@@ -44,7 +45,8 @@ public class ExceptionHandlingUtilsTest {
 
     }
 
-    @Test
+    @SuppressWarnings("unchecked")
+	@Test
     public void testLoggingUtils() throws Exception {
         // setup
         Object[] args = new Object[2];
@@ -61,7 +63,8 @@ public class ExceptionHandlingUtilsTest {
 
     }
 
-    @Test
+    @SuppressWarnings("unchecked")
+	@Test
     public void testLoggingWarnOff() throws Exception {
         final Logger logger = (Logger) LoggerFactory.getLogger(ExceptionHandlingUtilsTest.class);
         logger.setLevel(Level.ERROR);

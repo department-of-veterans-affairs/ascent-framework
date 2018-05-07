@@ -40,6 +40,10 @@ public class TestNonexistingMockRequest
 extends AbstractTransferObject
 {
 
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 2396390075291310912L;
 	private String somePrivateMember;
 
 	/**

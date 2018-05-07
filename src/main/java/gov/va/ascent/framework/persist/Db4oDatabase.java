@@ -37,9 +37,6 @@ import java.util.List;
  * 
  * @author jshrader
  */
-//jshrader - multiple methods are synchronized at the method level to ensure we only initialize this database 1 time 
-//	and don't have multiple instances getting instantiated and triggering initialization simultaneously.
-@SuppressWarnings("PMD.AvoidSynchronizedAtMethodLevel")
 public class Db4oDatabase {
 
 	/** The Constant LOGGER. */
@@ -145,6 +142,7 @@ public class Db4oDatabase {
 	/**
 	 * Delete all data in the database
 	 */
+	@SuppressWarnings("rawtypes")
 	public final void deleteAll(){
 		final ObjectSet objects = client.queryByExample(null);
 	    for (Object object : objects) {
@@ -192,6 +190,7 @@ public class Db4oDatabase {
 	 * @param clazz the clazz
 	 * @return the objects of type
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public final Object[] getObjectsOfType(final Class clazz){
 		final Object[] foundEm = client.query(clazz).toArray();
 		for(Object foundIt: foundEm){
@@ -292,7 +291,6 @@ public class Db4oDatabase {
 	// to try our hardest to lazily open the client/server.  this isn't intended to be used at runtime in prod.
 	//CHECKSTYLE:OFF
 	@edu.umd.cs.findbugs.annotations.SuppressWarnings
-	@SuppressWarnings("PMD.AvoidCatchingGenericException")
 	private synchronized void startInClientServerMode() {
 		if (!enabled || client != null) {
 			return;

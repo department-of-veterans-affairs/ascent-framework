@@ -31,6 +31,7 @@ public class ModelValidatorTest {
 		assertNotNull(modelValidator.readResolve());
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testValidateModelPropertiesWithMock() {
 		
@@ -145,5 +146,10 @@ public class ModelValidatorTest {
 	}
 }
 class TestRequest extends ServiceRequest {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 469530062192402379L;
 	
 }
