@@ -6,6 +6,7 @@ import gov.va.ascent.framework.log.PerformanceLogMethodInterceptor;
 import gov.va.ascent.framework.util.Defense;
 import gov.va.ascent.framework.ws.security.VAServiceWss4jSecurityInterceptor;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponseInterceptor;
@@ -339,6 +340,9 @@ public class BaseWsClientConfig {
 		interceptor.setSecurementPasswordType("PasswordText");
 		interceptor.setVaApplicationName(vaApplicationName);
 		interceptor.setSecurementMustUnderstand(false);
+		if (!StringUtils.isEmpty(stationId)) {
+			interceptor.setStationId(stationId);
+		}
 		return interceptor;
 	}
 

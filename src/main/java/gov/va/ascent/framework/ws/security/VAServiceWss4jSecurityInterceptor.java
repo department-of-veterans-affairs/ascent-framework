@@ -48,7 +48,7 @@ public class VAServiceWss4jSecurityInterceptor extends Wss4jSecurityInterceptor 
 	private String clientMachine;
 
 	/** The va station id. */
-	private String stationId = "281";	//RR: Temporary, to be REMOVED
+	private String stationId;
 
 	/** The va application name. */
 	private String vaApplicationName;
