@@ -37,11 +37,19 @@ public class RestClientTemplateTest {
 	public void testExecuteURL() {
 		try {
 			restClientTemplate = this.context.getBean(RestClientTemplate.class);
-			responseEntity = restClientTemplate.executeURL(DUMMY_ENDPOINT, responseType);
+			setResponseEntity(restClientTemplate.executeURL(DUMMY_ENDPOINT, responseType));
 		}catch(Exception e) {
 			System.out.println("REST call is expected to fail");			
 			assertTrue(e instanceof RestClientException);
 		}
+	}
+
+	public ResponseEntity<ServiceResponse> getResponseEntity() {
+		return responseEntity;
+	}
+
+	public void setResponseEntity(ResponseEntity<ServiceResponse> responseEntity) {
+		this.responseEntity = responseEntity;
 	}
 }
 

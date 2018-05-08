@@ -328,6 +328,10 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 }
 
 class TestServiceRequest extends ServiceRequest {
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 8736731329416969081L;
 	private String text;
 
 	public String getText() {

@@ -27,6 +27,7 @@ public class WsClientSimulatorMarshallingInterceptorTest {
 	@Mock
 	MethodInvocation mockMethodInvocationWithJaxBElementArg;	
 	
+	@SuppressWarnings("rawtypes")
 	@Mock
 	JAXBElement mockJaxbElement;
 	@Mock

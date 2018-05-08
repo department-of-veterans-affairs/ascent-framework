@@ -139,6 +139,7 @@ public class ModelValidator implements Serializable {
 	 * @param messages the messages
 	 * @param constraintViolations the constraint violations
 	 */
+	@SuppressWarnings("rawtypes")
 	private <T extends Serializable> void convertConstraintViolationsToMessages(
 			final Class modelClass, final String specifiedPropertyPathKey,
 			final Map<String, List<ViolationMessageParts>> messages, final Set<ConstraintViolation<T>> constraintViolations) {

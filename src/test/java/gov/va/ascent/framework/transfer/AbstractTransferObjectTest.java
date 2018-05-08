@@ -41,6 +41,11 @@ public class AbstractTransferObjectTest {
 	}
 	
 	public class TransferObjectTest extends AbstractTransferObject{
+
+		/**
+		 * serialVersionUID
+		 */
+		private static final long serialVersionUID = -7039260376178629879L;
 		
 	}
 

@@ -90,7 +90,6 @@ public final class DateAdapter {
 	 * @return the date format object
 	 */
 	public static DateFormat getDateFormat() {
-		final DateFormat formatter = new SimpleDateFormat(DATE_TIME_FORMAT, Locale.getDefault());
-		return formatter;
+		return new SimpleDateFormat(DATE_TIME_FORMAT, Locale.getDefault());
 	}
 }

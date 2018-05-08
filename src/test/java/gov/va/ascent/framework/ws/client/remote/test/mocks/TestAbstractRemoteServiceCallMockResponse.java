@@ -36,7 +36,11 @@ public class TestAbstractRemoteServiceCallMockResponse
     extends AbstractTransferObject
 {
 
-    protected String someData;
+    /**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 8565439898520091824L;
+	protected String someData;
 
     /**
      * Gets the value of the someData property.

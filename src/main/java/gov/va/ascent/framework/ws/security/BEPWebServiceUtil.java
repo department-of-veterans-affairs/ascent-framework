@@ -56,7 +56,7 @@ public final class BEPWebServiceUtil {
 		
 		Defense.notNull(computedVal);
 		if (computedVal != null) {
-			Assert.isTrue(computedVal.length()<=EXTERNALUID_LENGTH);
+			Assert.isTrue(computedVal.length()<=EXTERNALUID_LENGTH, "[Assertion failed] - this expression must be true");
 		}
 		return computedVal;
 	}

@@ -48,7 +48,7 @@ public final class HashGenerator {
         	sBuffer.append(Integer.toString((byteData[i] & MD5_0XFF) + MD5_0X100, MD5_RANGE).substring(1));
         }
 
-        Assert.isTrue(sBuffer.length()==MD5_HASH_LENGTH);
+        Assert.isTrue(sBuffer.length()==MD5_HASH_LENGTH, "[Assertion failed] - this expression must be true");
 		return sBuffer.toString();
 	}
 

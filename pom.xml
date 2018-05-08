@@ -160,19 +160,6 @@
 				<clearOutputDir>false</clearOutputDir>
 				<arguments>-mark-generated</arguments>
 			</configuration>
-			<executions>
-				<execution>
-					<id>xjc-IAMAuthentication</id>
-					<goals>
-						<goal>xjc</goal>
-					</goals>
-					<configuration>
-						<schemaDirectory>${project.basedir}/src/main/resources/xsd/IAM</schemaDirectory>
-						<packageName>gov.va.ascent.framework.security.iam</packageName>
-						<staleFile>${project.build.directory}/generated-sources/.jaxb-staleFlag-IAM</staleFile>
-					</configuration>
-				</execution>
-			</executions>
 		</plugin>
         <!-- The skip property allows to skip the execution of the Spring Boot maven plugin altogether -->
         <plugin>

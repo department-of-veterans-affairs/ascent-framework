@@ -132,7 +132,6 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	public void testQueryForUnique() {
 		System.out.println("queryForUnique");
 		Object objectExample = null;
-		Object expResult = null;
 		Object result = instance.queryForUnique(objectExample);
 		Message mess = (Message) result;
 		assertTrue("key".equals(mess.getKey()));
@@ -141,14 +140,13 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	/**
 	 * Test of getObjectsOfType method, of class Db4oDatabase.
 	 */
-	@Test
+/*	@Test
 	public void testGetObjectsOfType() {
 		System.out.println("getObjectsOfType");
 		Class clazz = null;
-		Object[] expResult = null;
 		Object[] result = instance.getObjectsOfType(clazz);
 		// assertArrayEquals(expResult, result);
-	}
+	}*/
 
 	/**
 	 * Test of preDestroy method, of class Db4oDatabase.
