@@ -1,4 +1,4 @@
-package gov.va.ascent.framework.ws.security;
+package gov.va.ascent.framework.security;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
