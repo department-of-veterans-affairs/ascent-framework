@@ -1,7 +1,7 @@
 package gov.va.ascent.framework.security;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.security.NoSuchAlgorithmException;
 
 import org.slf4j.Logger;
@@ -17,6 +17,8 @@ import gov.va.ascent.framework.util.HashGenerator;
  */
 public final class BEPWebServiceUtil {
 	
+	public static final String NETWORK_BIND_INTERFACE = "en0";
+
 	/** The Constant EXTERNALUID_LENGTH. */
 	public static final int EXTERNALUID_LENGTH = 39;
 	
@@ -85,8 +87,8 @@ public final class BEPWebServiceUtil {
 	public static String getClientMachine(final String defaultVal) {
 		String computedVal =null;
 		try {
-			computedVal = InetAddress.getLocalHost().getHostAddress();
-		} catch (UnknownHostException e) {
+			computedVal = NetworkInterface.getByName(NETWORK_BIND_INTERFACE).getInetAddresses().nextElement().getHostAddress();
+		} catch (SocketException e) {
 			LOGGER.error(e.getMessage(), e);
 			// handled further down
 		}
