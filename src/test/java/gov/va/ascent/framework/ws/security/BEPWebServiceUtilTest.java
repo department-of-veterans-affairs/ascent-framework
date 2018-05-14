@@ -7,6 +7,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import gov.va.ascent.framework.security.BEPWebServiceUtil;
+
 public class BEPWebServiceUtilTest {
 	
 	@Before

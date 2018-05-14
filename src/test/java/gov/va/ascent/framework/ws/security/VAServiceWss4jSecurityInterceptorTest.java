@@ -14,6 +14,8 @@ import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapMessage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import gov.va.ascent.framework.security.VAServiceWss4jSecurityInterceptor;
 @RunWith(MockitoJUnitRunner.class)
 public class VAServiceWss4jSecurityInterceptorTest {
 	private TestVAServiceSecurityInterceptorTest interceptor;

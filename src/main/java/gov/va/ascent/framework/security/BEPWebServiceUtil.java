@@ -3,6 +3,7 @@ package gov.va.ascent.framework.security;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -53,7 +54,9 @@ public final class BEPWebServiceUtil {
 		}
 		
 		Defense.notNull(computedVal);
-		Assert.isTrue(computedVal.length()<=EXTERNALUID_LENGTH);
+		if (computedVal != null) {
+			Assert.isTrue(computedVal.length()<=EXTERNALUID_LENGTH, "[Assertion failed] - this expression must be true");
+		}
 		return computedVal;
 	}
 
