@@ -12,6 +12,7 @@ import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapMessage;
 import org.w3c.dom.Document;
 
+
 /**
  * The Class VAServiceEncryptionWss4jSecurityInterceptor.
  */
@@ -24,6 +25,9 @@ public class VAServiceEncryptionWss4jSecurityInterceptor extends AbstractEncrypt
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(VAServiceEncryptionWss4jSecurityInterceptor.class);
 
+	/** The Constant REQUEST_CONTENT. */
+	private static final String REQUEST_CONTENT = "content";
+
 	/** Turns on/off auditing. */
 	@Value("${wss-framework-audit.enabled:true}")
 	private boolean auditEnabled;
@@ -31,6 +35,7 @@ public class VAServiceEncryptionWss4jSecurityInterceptor extends AbstractEncrypt
 	/** Turns on/off auditing of the full payload. */
 	@Value("${wss-framework-audit.auditFullMessageContent:true}")
 	private boolean auditFullMessageContentsEnabled;
+
 
 
 	/*
@@ -60,8 +65,6 @@ public class VAServiceEncryptionWss4jSecurityInterceptor extends AbstractEncrypt
 			final Document doc = soapMessage.getDocument();
 			final WSSecHeader secHeader = new WSSecHeader();
 			secHeader.insertSecurityHeader(doc);
-
-			LOGGER.info("Log unencrypted Soap message: ß" + soapMessage.toString());
 			encrypt.setDocument(doc);
 
 			encrypt.build(doc, getCrypto(), secHeader);
@@ -90,6 +93,7 @@ public class VAServiceEncryptionWss4jSecurityInterceptor extends AbstractEncrypt
 		this.auditFullMessageContentsEnabled = auditFullMessageContentsEnabled;
 	}
 
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -100,6 +104,5 @@ public class VAServiceEncryptionWss4jSecurityInterceptor extends AbstractEncrypt
 	@Override
 	protected final void validateMessage(final SoapMessage soapMessage, final MessageContext messageContext) {
 		super.validateMessage(soapMessage, messageContext);
-		LOGGER.info(soapMessage.toString());
 	}
 }

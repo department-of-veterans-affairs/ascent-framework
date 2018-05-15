@@ -18,7 +18,14 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor_UnitTest {
 		SoapMessage sm = WSInterceptorTestUtil.createSoapMessage("src/test/resources/testFiles/security/soapMessage.xml");
 		
 		VAServiceTimeStampWss4jSecurityInterceptor tsInterceptor = new VAServiceTimeStampWss4jSecurityInterceptor();
+		//tsInterceptor.setSecurementActions("UsernameToken");
+		//tsInterceptor.setSecurementUsername("Username");
+		//tsInterceptor.setSecurementPassword("Password");
+		//tsInterceptor.setSecurementPasswordType("PasswordText");
+		//tsInterceptor.setSecurementUsernameTokenElements("Created");
 		tsInterceptor.setTimeStamp("60");
+		//tsInterceptor.setValidateRequest(false);
+		//tsInterceptor.setValidateResponse(false);
 		
 		tsInterceptor.secureMessage(sm, null);
 		System.out.println(WSInterceptorTestUtil.getRawXML(sm));

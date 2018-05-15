@@ -28,6 +28,7 @@ public class VAServiceTimeStampWss4jSecurityInterceptor_UnitTest {
 
 		VAServiceTimeStampWss4jSecurityInterceptor interceptor = new VAServiceTimeStampWss4jSecurityInterceptor();
 		interceptor.setTimeStamp(TTL_STR);
+		interceptor.setSecurementActions("Encrypt");
 		interceptor.secureMessage(sm, null);
 		Assert.assertTrue(sm.getSoapHeader()
 				.examineHeaderElements(new QName("Security")).hasNext());

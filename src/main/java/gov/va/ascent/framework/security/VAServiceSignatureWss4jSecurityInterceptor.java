@@ -18,7 +18,6 @@ import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapMessage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import gov.va.ascent.framework.security.AbstractEncryptionWss4jSecurityInterceptor;
 
 /**
  * The Class VAServiceSignatureWss4jSecurityInterceptor.
@@ -34,7 +33,6 @@ public class VAServiceSignatureWss4jSecurityInterceptor extends AbstractEncrypti
 	 * @see org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor#secureMessage(org.springframework.ws.soap .SoapMessage,
 	 * org.springframework.ws.context.MessageContext)
 	 */
-	@SuppressWarnings("deprecation")
 	@Override
 	protected final void secureMessage(final SoapMessage soapMessage, final MessageContext messageContext) {
 

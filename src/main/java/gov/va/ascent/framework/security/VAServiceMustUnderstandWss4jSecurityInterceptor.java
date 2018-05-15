@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.message.WSSecHeader;
+import org.apache.wss4j.dom.engine.WSSecurityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ws.context.MessageContext;
@@ -27,6 +28,7 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor extends Wss4jSecuri
 	/** The Constant SOAP_NS_LIST. */
 	private static final List<String> SOAP_NS_LIST = Arrays.asList(new String[] {
 			javax.xml.soap.SOAPConstants.URI_NS_SOAP_1_1_ENVELOPE, javax.xml.soap.SOAPConstants.URI_NS_SOAP_1_2_ENVELOPE });
+	
 
 	/*
 	 * (non-Javadoc)

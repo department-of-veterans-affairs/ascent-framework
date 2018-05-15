@@ -6,7 +6,6 @@ import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
 /**
  * The Class VAServiceEncryptionWss4jSecurityInterceptor.
  */
-@SuppressWarnings("deprecation")
 public abstract class AbstractEncryptionWss4jSecurityInterceptor extends Wss4jSecurityInterceptor {
 
 	/** The crypto. */
