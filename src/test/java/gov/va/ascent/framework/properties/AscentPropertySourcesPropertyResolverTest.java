@@ -63,7 +63,6 @@ public class AscentPropertySourcesPropertyResolverTest {
      */
     @Test
     public void testContainsProperty() throws IOException {
-        System.out.println("containsProperty");
         String key = "wss-partner-person.ws.client.endpoint";
         boolean expResult = true;
         boolean result = instance.containsProperty(key);
@@ -76,7 +75,6 @@ public class AscentPropertySourcesPropertyResolverTest {
      */
     @Test
     public void testContainsProperty_null() throws IOException {
-        System.out.println("containsProperty");
         String key = "wss-partner-person.ws.client.endpoints";
         boolean expResult = false;
         boolean result = instance.containsProperty(key);
@@ -89,7 +87,6 @@ public class AscentPropertySourcesPropertyResolverTest {
      */
     @Test
     public void testContainsPropertyeEsolverNull() throws IOException {
-        System.out.println("containsProperty");
         String key = "wss-partner-person.ws.client.endpoints";
         boolean expResult = false;
         instance.setPropertySourcesPropertyResolver(null);
@@ -103,7 +100,6 @@ public class AscentPropertySourcesPropertyResolverTest {
      */
     @Test
     public void testGetFromFileProperty() throws IOException {
-        System.out.println("getFromFileProperty");
         String key = "wss-partner-person.ws.client.endpoint";
         String expResult = "http://localhost:9736/testEndPoint";
         String result = instance.getFromFileProperty(key);
@@ -115,7 +111,6 @@ public class AscentPropertySourcesPropertyResolverTest {
      */
     @Test
     public void testGetProperty_String() {
-        System.out.println("getProperty");
         String key = "wss-partner-person.ws.client.endpoint";
         String expResult = "http://localhost:9736/testEndPoint";
         String result = instance.getProperty(key);
@@ -129,7 +124,6 @@ public class AscentPropertySourcesPropertyResolverTest {
      */
     @Test
     public void testGetProperty_String_Class() {
-        System.out.println("getProperty");
         String key = "wss-partner-person.ws.client.endpoint";
         String expResult = "http://localhost:9736/testEndPoint";
         Object result = instance.getProperty(key);
@@ -141,7 +135,6 @@ public class AscentPropertySourcesPropertyResolverTest {
      */
     @Test
     public void testGetProperty_String_Class_ResolverNull() {
-        System.out.println("getProperty");
         String key = "wss-partner-person.ws.client.endpoint";
         String expResult = null;
         instance.setPropertySourcesPropertyResolver(null);
@@ -154,7 +147,6 @@ public class AscentPropertySourcesPropertyResolverTest {
      */
     @Test
     public void testGetProperty_String_String() {
-        System.out.println("getProperty");
         String key = "wss-partner-person.ws.client.endpoint";
         String defaultValue = "test";
         String expResult = "http://localhost:9736/testEndPoint";
@@ -169,7 +161,6 @@ public class AscentPropertySourcesPropertyResolverTest {
      */
     @Test
     public void testGetProperty_String_Null() {
-        System.out.println("getProperty");
         String key = "wss-partner-person.ws.client.endpointa:test";
         String defaultValue = null;
         String expResult = null;
@@ -182,7 +173,6 @@ public class AscentPropertySourcesPropertyResolverTest {
      */
     @Test
     public void testGetProperty_String_Null_ResolverNull() {
-        System.out.println("getProperty");
         String key = "wss-partner-person.ws.client.endpointa:test";
         String defaultValue = null;
         String expResult = null;
@@ -196,7 +186,6 @@ public class AscentPropertySourcesPropertyResolverTest {
      */
     @Test
     public void testGetProperty_targeValueType() {
-        System.out.println("getProperty");
         String key = "wss-partner-person.ws.client.endpointa:test";
         String expResult = null;
         String result = instance.getProperty(key, String.class);
@@ -208,7 +197,6 @@ public class AscentPropertySourcesPropertyResolverTest {
      */
     @Test
     public void testGetProperty_targeValueTypeResolverNull() {
-        System.out.println("getProperty");
         String key = "wss-partner-person.ws.client.endpointa:test";
         String expResult = null;
         instance.setPropertySourcesPropertyResolver(null);
@@ -221,7 +209,6 @@ public class AscentPropertySourcesPropertyResolverTest {
      */
     @Test
     public void testGetPropertyFileHolders() {
-        System.out.println("getPropertyFileHolders");
         List<PropertyFileHolder> expResult = new ArrayList<>();
         List<PropertyFileHolder> result = instance.getPropertyFileHolders();
         assertEquals(expResult, result);
@@ -232,7 +219,6 @@ public class AscentPropertySourcesPropertyResolverTest {
      */
     @Test
     public void testSetPropertySources() {
-        System.out.println("setPropertySources");
         PropertySources propertySources = null;
         instance.setPropertySources(propertySources);
     }
@@ -242,7 +228,6 @@ public class AscentPropertySourcesPropertyResolverTest {
      */
     @Test
     public void testSetPropertySourcesPropertyResolver() {
-        System.out.println("setPropertySourcesPropertyResolver");
         PropertyResolver propertySourcesPropertyResolver = null;
         AscentPropertySourcesPropertyResolver instance = new AscentPropertySourcesPropertyResolver();
         instance.setPropertySourcesPropertyResolver(propertySourcesPropertyResolver);
@@ -253,7 +238,6 @@ public class AscentPropertySourcesPropertyResolverTest {
      */
     @Test
     public void testSetValueSeparator() {
-        System.out.println("setValueSeparator");
         String valueSeparator = "";
         AscentPropertySourcesPropertyResolver instance = new AscentPropertySourcesPropertyResolver();
         instance.setValueSeparator(valueSeparator);

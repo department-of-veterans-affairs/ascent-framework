@@ -22,7 +22,6 @@ public class BasePropertiesConfigTest {
      */
     @Test
     public void testProperties() {
-        System.out.println("properties");
         PropertySourcesPlaceholderConfigurer result = BasePropertiesConfig.properties();
         assertNotNull(result);
         
