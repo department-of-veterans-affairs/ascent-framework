@@ -47,7 +47,7 @@ public class BEPWebServiceUtilTest {
 		String retVal = BEPWebServiceUtil.
 		getClientMachine("localhost");
 		assertNotNull(retVal);
-		assertTrue(StringUtils.contains(retVal, ":"));
+		assertTrue(StringUtils.contains(retVal, "."));
 	}
 
 }

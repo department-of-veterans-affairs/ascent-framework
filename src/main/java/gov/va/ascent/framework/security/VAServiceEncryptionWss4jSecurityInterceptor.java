@@ -17,26 +17,9 @@ import org.w3c.dom.Document;
  * The Class VAServiceEncryptionWss4jSecurityInterceptor.
  */
 public class VAServiceEncryptionWss4jSecurityInterceptor extends AbstractEncryptionWss4jSecurityInterceptor {
-	/**
-	 * message encoding.
-	 */
-	private static final String UTF_8 = "utf-8";
 
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(VAServiceEncryptionWss4jSecurityInterceptor.class);
-
-	/** The Constant REQUEST_CONTENT. */
-	private static final String REQUEST_CONTENT = "content";
-
-	/** Turns on/off auditing. */
-	@Value("${wss-framework-audit.enabled:true}")
-	private boolean auditEnabled;
-
-	/** Turns on/off auditing of the full payload. */
-	@Value("${wss-framework-audit.auditFullMessageContent:true}")
-	private boolean auditFullMessageContentsEnabled;
-
-
 
 	/*
 	 * (non-Javadoc)
@@ -74,25 +57,6 @@ public class VAServiceEncryptionWss4jSecurityInterceptor extends AbstractEncrypt
 			LOGGER.error("failed to encrypt ", e);
 		}
 	}
-
-	/**
-	 * Sets the audit enabled.
-	 * 
-	 * @param auditEnabled the new audit enabled
-	 */
-	public final void setAuditEnabled(final boolean auditEnabled) {
-		this.auditEnabled = auditEnabled;
-	}
-
-	/**
-	 * Sets the audit full message contents enabled.
-	 * 
-	 * @param auditFullMessageContentsEnabled the new audit full message contents enabled
-	 */
-	public final void setAuditFullMessageContentsEnabled(final boolean auditFullMessageContentsEnabled) {
-		this.auditFullMessageContentsEnabled = auditFullMessageContentsEnabled;
-	}
-
 
 	/*
 	 * (non-Javadoc)

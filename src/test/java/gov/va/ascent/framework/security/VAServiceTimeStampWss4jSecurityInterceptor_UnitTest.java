@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,7 +29,6 @@ public class VAServiceTimeStampWss4jSecurityInterceptor_UnitTest {
 
 		VAServiceTimeStampWss4jSecurityInterceptor interceptor = new VAServiceTimeStampWss4jSecurityInterceptor();
 		interceptor.setTimeStamp(TTL_STR);
-		interceptor.setSecurementActions("Encrypt");
 		interceptor.secureMessage(sm, null);
 		Assert.assertTrue(sm.getSoapHeader()
 				.examineHeaderElements(new QName("Security")).hasNext());

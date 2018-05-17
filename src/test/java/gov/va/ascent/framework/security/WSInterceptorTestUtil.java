@@ -57,6 +57,7 @@ public final class WSInterceptorTestUtil {
 		final SoapMessageFactory sf = new AxiomSoapMessageFactory();
 		final InputStream is = new FileInputStream(new File(filePath));
 		final SoapMessage sm = sf.createWebServiceMessage();
+		docFactory.setNamespaceAware(true);
 		final DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 		final Document doc = docBuilder.parse(is);
 		sm.setDocument(doc);

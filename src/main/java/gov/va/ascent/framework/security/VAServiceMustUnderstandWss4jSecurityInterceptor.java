@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.message.WSSecHeader;
-import org.apache.wss4j.dom.engine.WSSecurityEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ws.context.MessageContext;
