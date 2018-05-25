@@ -1,19 +1,23 @@
 package gov.va.ascent.framework.security;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ws.security.SOAPConstants;
 import org.apache.ws.security.WSConstants;
 import org.apache.ws.security.WSEncryptionPart;
 import org.apache.ws.security.WSSConfig;
 import org.apache.ws.security.WSSecurityException;
+import org.apache.ws.security.components.crypto.Crypto;
 import org.apache.ws.security.components.crypto.CryptoFactory;
 import org.apache.ws.security.message.WSSecHeader;
 import org.apache.ws.security.message.WSSecSignature;
 import org.apache.ws.security.util.WSSecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapMessage;
 import org.w3c.dom.Document;
@@ -27,6 +31,51 @@ public class VAServiceSignatureWss4jSecurityInterceptor extends AbstractEncrypti
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(VAServiceSignatureWss4jSecurityInterceptor.class);
 
+	/**
+	 * The security crypto provider
+	 */
+	@Value("${ascent-framework.org.apache.ws.security.crypto.provider}")
+	private String securityCryptoProvider;
+
+	/**
+	 * The security.crypto.merlin.keystore.type
+	 */
+	@Value("${ascent-framework.org.apache.ws.security.crypto.merlin.keystore.type}")
+	private String securityCryptoMerlinKeystoreType;
+	
+	/**
+	 * The security.crypto.merlin.keystore.password.
+	 */
+	@Value("${ascent-framework.org.apache.ws.security.crypto.merlin.keystore.password}")
+	private String securityCryptoMerlinKeystorePassword;
+	
+	/**
+	 * The security.crypto.merlin.keystore.alias
+	 */
+	@Value("${ascent-framework.org.apache.ws.security.crypto.merlin.keystore.alias}")
+	private String securityCryptoMerlinKeystoreAlias;
+	
+	/**
+	 * The securityCryptoMerlinKeystoreFile
+	 */
+	@Value("${ascent-framework.org.apache.ws.security.crypto.merlin.keystore.file}")
+	private String securityCryptoMerlinKeystoreFile;
+	
+	/**
+	 * Retrieves properties to set to create a crypto file
+	 * @return
+	 */
+	private Map<Object, Object> retrieveCryptoProps() {
+		Map<Object, Object> propsMap = new HashMap<Object, Object>();
+		propsMap.put("org.apache.ws.security.crypto.provider", securityCryptoProvider);
+		propsMap.put("org.apache.ws.security.crypto.merlin.keystore.type", securityCryptoMerlinKeystoreType);
+		propsMap.put("org.apache.ws.security.crypto.merlin.keystore.password", securityCryptoMerlinKeystorePassword);
+		propsMap.put("org.apache.ws.security.crypto.merlin.keystore.alias", securityCryptoMerlinKeystoreAlias);
+		propsMap.put("org.apache.ws.security.crypto.merlin.keystore.file", securityCryptoMerlinKeystoreFile);
+		return propsMap;
+	}
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -44,7 +93,8 @@ public class VAServiceSignatureWss4jSecurityInterceptor extends AbstractEncrypti
 
 			if (getCrypto() == null) {
 				LOGGER.debug("Initializing crypto properties...");
-				setCrypto(CryptoFactory.getInstance(getCryptoFile()));
+				Map<Object, Object> propsMap = retrieveCryptoProps();
+				setCrypto(CryptoFactory.getInstance(Crypto.class, propsMap));
 			}
 
 			final WSSecSignature sign = new WSSecSignature();
