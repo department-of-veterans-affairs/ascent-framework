@@ -11,7 +11,7 @@ import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
 import org.w3c.dom.Document;
 
 /**
- * The Class VAServiceTimeStampWss4jSecurityInterceptor.
+ * A Wss4j2 Security Interceptor to add a timestamp and time-to-live to a soap message.
  */
 public class VAServiceTimeStampWss4jSecurityInterceptor extends Wss4jSecurityInterceptor {
 
@@ -23,7 +23,7 @@ public class VAServiceTimeStampWss4jSecurityInterceptor extends Wss4jSecurityInt
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor#secureMessage(org.springframework.ws.soap.SoapMessage,
 	 * org.springframework.ws.context.MessageContext)
 	 */
@@ -51,7 +51,7 @@ public class VAServiceTimeStampWss4jSecurityInterceptor extends Wss4jSecurityInt
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor#afterPropertiesSet()
 	 */
 	@Override
@@ -61,7 +61,7 @@ public class VAServiceTimeStampWss4jSecurityInterceptor extends Wss4jSecurityInt
 
 	/**
 	 * Gets the time stamp.
-	 * 
+	 *
 	 * @return the time stamp
 	 */
 	public final String getTimeStamp() {
@@ -70,7 +70,7 @@ public class VAServiceTimeStampWss4jSecurityInterceptor extends Wss4jSecurityInt
 
 	/**
 	 * Sets the time stamp.
-	 * 
+	 *
 	 * @param timeStamp the new time stamp
 	 */
 	public final void setTimeStamp(final String timeStamp) {

@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * The Class VAServiceSignatureWss4jSecurityInterceptor.
+ * A Wss4j2 Security Interceptor to digitally sign a soap message.
  */
 public class VAServiceSignatureWss4jSecurityInterceptor extends AbstractEncryptionWss4jSecurityInterceptor {
 
@@ -42,31 +42,32 @@ public class VAServiceSignatureWss4jSecurityInterceptor extends AbstractEncrypti
 	 */
 	@Value("${ascent-framework.org.apache.ws.security.crypto.merlin.keystore.type}")
 	private String securityCryptoMerlinKeystoreType;
-	
+
 	/**
 	 * The security.crypto.merlin.keystore.password.
 	 */
 	@Value("${ascent-framework.org.apache.ws.security.crypto.merlin.keystore.password}")
 	private String securityCryptoMerlinKeystorePassword;
-	
+
 	/**
 	 * The security.crypto.merlin.keystore.alias
 	 */
 	@Value("${ascent-framework.org.apache.ws.security.crypto.merlin.keystore.alias}")
 	private String securityCryptoMerlinKeystoreAlias;
-	
+
 	/**
 	 * The securityCryptoMerlinKeystoreFile
 	 */
 	@Value("${ascent-framework.org.apache.ws.security.crypto.merlin.keystore.file}")
 	private String securityCryptoMerlinKeystoreFile;
-	
+
 	/**
 	 * Retrieves properties to set to create a crypto file
+	 * 
 	 * @return
 	 */
 	private Map<Object, Object> retrieveCryptoProps() {
-		Map<Object, Object> propsMap = new HashMap<Object, Object>();
+		final Map<Object, Object> propsMap = new HashMap<Object, Object>();
 		propsMap.put("org.apache.ws.security.crypto.provider", securityCryptoProvider);
 		propsMap.put("org.apache.ws.security.crypto.merlin.keystore.type", securityCryptoMerlinKeystoreType);
 		propsMap.put("org.apache.ws.security.crypto.merlin.keystore.password", securityCryptoMerlinKeystorePassword);
@@ -74,11 +75,10 @@ public class VAServiceSignatureWss4jSecurityInterceptor extends AbstractEncrypti
 		propsMap.put("org.apache.ws.security.crypto.merlin.keystore.file", securityCryptoMerlinKeystoreFile);
 		return propsMap;
 	}
-	
-	
+
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor#secureMessage(org.springframework.ws.soap .SoapMessage,
 	 * org.springframework.ws.context.MessageContext)
 	 */
@@ -93,7 +93,7 @@ public class VAServiceSignatureWss4jSecurityInterceptor extends AbstractEncrypti
 
 			if (getCrypto() == null) {
 				LOGGER.debug("Initializing crypto properties...");
-				Map<Object, Object> propsMap = retrieveCryptoProps();
+				final Map<Object, Object> propsMap = retrieveCryptoProps();
 				setCrypto(CryptoFactory.getInstance(Crypto.class, propsMap));
 			}
 
@@ -122,13 +122,13 @@ public class VAServiceSignatureWss4jSecurityInterceptor extends AbstractEncrypti
 
 	/**
 	 * Gets the encryption parts list.
-	 * 
+	 *
 	 * @param soapMessage the soap message
 	 * @return the encryption parts list
 	 */
 	private List<WSEncryptionPart> getEncryptionPartsList(final Element soapMessage) {
 
-		List<WSEncryptionPart> retVal = new ArrayList<WSEncryptionPart>();
+		final List<WSEncryptionPart> retVal = new ArrayList<WSEncryptionPart>();
 		WSEncryptionPart encPart = null;
 
 		final Element timestamp = WSSecurityUtil.findElement(soapMessage, WSConstants.TIMESTAMP_TOKEN_LN, WSConstants.WSU_NS);
@@ -144,5 +144,5 @@ public class VAServiceSignatureWss4jSecurityInterceptor extends AbstractEncrypti
 
 		return retVal;
 	}
-	
+
 }

@@ -12,8 +12,10 @@ import org.w3c.dom.Element;
 /**
  * Extension of the Wss4jSecurityInterceptor to inject the VA application headers into the WSS security element
  * 
- * <vaws:VaServiceHeaders xmlns:vaws="http://vbawebservices.vba.va.gov/vawss">
- * <vaws:applicationName>VDC</vaws:applicationName> </vaws:VaServiceHeaders>
+ * <pre>
+ * &lt;vaws:VaServiceHeaders xmlns:vaws="http://vbawebservices.vba.va.gov/vawss">
+ * &lt;vaws:applicationName>VDC</vaws:applicationName> </vaws:VaServiceHeaders>
+ * </pre>
  */
 public class VAServiceWss4jSecurityInterceptor extends Wss4jSecurityInterceptor {
 
@@ -55,7 +57,7 @@ public class VAServiceWss4jSecurityInterceptor extends Wss4jSecurityInterceptor 
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor#secureMessage(
 	 * org.springframework.ws.soap.SoapMessage, org.springframework.ws.context.MessageContext)
 	 */
@@ -80,7 +82,7 @@ public class VAServiceWss4jSecurityInterceptor extends Wss4jSecurityInterceptor 
 		vaHeader.appendChild(appNameHeader);
 
 		final Element externalUidHeader = soapDoc.createElementNS(VA_NS, VA_PREFIX + EXTERNAL_UID);
-		String userId = BEPWebServiceUtil.getExternalUID(EXTERNAL_UID_DEFAULT);
+		final String userId = BEPWebServiceUtil.getExternalUID(EXTERNAL_UID_DEFAULT);
 		externalUidHeader.setTextContent(userId);
 		vaHeader.appendChild(externalUidHeader);
 
@@ -102,7 +104,7 @@ public class VAServiceWss4jSecurityInterceptor extends Wss4jSecurityInterceptor 
 
 	/**
 	 * Gets the client machine.
-	 * 
+	 *
 	 * @return the client machine
 	 */
 	public final String getClientMachine() {
@@ -111,7 +113,7 @@ public class VAServiceWss4jSecurityInterceptor extends Wss4jSecurityInterceptor 
 
 	/**
 	 * Sets the client machine.
-	 * 
+	 *
 	 * @param clientMachine the new client machine
 	 */
 	public final void setClientMachine(final String clientMachine) {
@@ -120,7 +122,7 @@ public class VAServiceWss4jSecurityInterceptor extends Wss4jSecurityInterceptor 
 
 	/**
 	 * Gets the station id.
-	 * 
+	 *
 	 * @return the station id
 	 */
 	public final String getStationId() {
@@ -129,7 +131,7 @@ public class VAServiceWss4jSecurityInterceptor extends Wss4jSecurityInterceptor 
 
 	/**
 	 * Sets the station id.
-	 * 
+	 *
 	 * @param stationId the new station id
 	 */
 	public final void setStationId(final String stationId) {
@@ -138,7 +140,7 @@ public class VAServiceWss4jSecurityInterceptor extends Wss4jSecurityInterceptor 
 
 	/**
 	 * Gets the va application name.
-	 * 
+	 *
 	 * @return the va application name
 	 */
 	public final String getVaApplicationName() {
@@ -147,7 +149,7 @@ public class VAServiceWss4jSecurityInterceptor extends Wss4jSecurityInterceptor 
 
 	/**
 	 * Sets the va application name.
-	 * 
+	 *
 	 * @param vaApplicationName the new va application name
 	 */
 	public final void setVaApplicationName(final String vaApplicationName) {

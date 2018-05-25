@@ -23,7 +23,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * The Class VAServiceSAMLWss4jSecurityInterceptor.
+ * A Wss4j2 Security Interceptor to add a SAML assertion to the secure message header.
  */
 public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityInterceptor {
 
@@ -38,7 +38,7 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor#secureMessage(org.springframework.ws.soap .SoapMessage,
 	 * org.springframework.ws.context.MessageContext)
 	 */
@@ -71,7 +71,7 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor#afterPropertiesSet()
 	 */
 	@Override
@@ -81,7 +81,7 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 
 	/**
 	 * Gets the sAML assertion as element.
-	 * 
+	 *
 	 * @return the sAML assertion as element
 	 */
 	private Element getSAMLAssertionAsElement() {
@@ -120,7 +120,7 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 
 	/**
 	 * Gets the saml file.
-	 * 
+	 *
 	 * @return the saml file
 	 */
 	public final String getSamlFile() {
@@ -129,7 +129,7 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 
 	/**
 	 * Sets the saml file.
-	 * 
+	 *
 	 * @param samlFile the new saml file
 	 */
 	public final void setSamlFile(final String samlFile) {
