@@ -2,6 +2,8 @@ package gov.va.ascent.framework.security;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+
 import javax.xml.namespace.QName;
 import org.apache.ws.security.components.crypto.Crypto;
 import org.apache.ws.security.components.crypto.CryptoBase;
@@ -73,8 +75,9 @@ public class VAServiceSignatureWss4jSecurityInterceptor_UnitTest {
 	public void testSecureMessage() throws Exception {
 		
 		SoapMessage sm = WSInterceptorTestUtil.createSoapMessage(SOAP_MESSAGE_FILE);
-		Map<Object, Object> propsMap = retrieveCryptoProps();
-		Crypto crypto = CryptoFactory.getInstance(Merlin.class, propsMap);
+		//Map<Object, Object> propsMap = retrieveCryptoProps();
+		Properties props = retrieveCryptoProps();
+		Crypto crypto = CryptoFactory.getInstance(props);
         interceptor.setCrypto(crypto);
    
         interceptor.setSecurementActions("Timestamp SAMLTokenSigned");
@@ -90,12 +93,26 @@ public class VAServiceSignatureWss4jSecurityInterceptor_UnitTest {
 
 	}
 	
+	/**
+	 * Retrieves properties to set to create a crypto file
+	 * @return
+	 */
+	private Properties retrieveCryptoProps() {
+		Properties props = new Properties();
+		props.put("org.apache.ws.security.crypto.provider", securityCryptoProvider);
+		props.put("org.apache.ws.security.crypto.merlin.keystore.type", securityCryptoMerlinKeystoreType);
+		props.put("org.apache.ws.security.crypto.merlin.keystore.password", securityCryptoMerlinKeystorePassword);
+		props.put("org.apache.ws.security.crypto.merlin.keystore.alias", securityCryptoMerlinKeystoreAlias);
+		props.put("org.apache.ws.security.crypto.merlin.keystore.file", securityCryptoMerlinKeystoreFile);
+		return props;
+	}
+	
 
 	/**
 	 * Retrieves properties to set to create a crypto file
 	 * @return
 	 */
-	private Map<Object, Object> retrieveCryptoProps() {
+/*	private Map<Object, Object> retrieveCryptoProps() {
 		Map<Object, Object> propsMap = new HashMap<Object, Object>();
 		propsMap.put("org.apache.ws.security.crypto.provider", securityCryptoProvider);
 		propsMap.put("org.apache.ws.security.crypto.merlin.keystore.type", securityCryptoMerlinKeystoreType);
@@ -103,7 +120,7 @@ public class VAServiceSignatureWss4jSecurityInterceptor_UnitTest {
 		propsMap.put("org.apache.ws.security.crypto.merlin.keystore.alias", securityCryptoMerlinKeystoreAlias);
 		propsMap.put("org.apache.ws.security.crypto.merlin.keystore.file", securityCryptoMerlinKeystoreFile);
 		return propsMap;
-	}
+	}*/
 		
 
 }
