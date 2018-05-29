@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.xml.namespace.QName;
 import org.apache.ws.security.components.crypto.Crypto;
+import org.apache.ws.security.components.crypto.CryptoBase;
 import org.apache.ws.security.components.crypto.CryptoFactory;
+import org.apache.ws.security.components.crypto.Merlin;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,7 +45,7 @@ public class VAServiceSignatureWss4jSecurityInterceptor_UnitTest {
 	/**
 	 * The security.crypto.merlin.keystore.type
 	 */
-	@Value("${ascent-framework.org.apache.ws.security.crypto.merlin.keystore.type}")
+	@Value("${ascent-framework.org.apache.ws.security.crypto.merlin.keystore.type}")  
 	private String securityCryptoMerlinKeystoreType;
 	
 	/**
@@ -72,7 +74,7 @@ public class VAServiceSignatureWss4jSecurityInterceptor_UnitTest {
 		
 		SoapMessage sm = WSInterceptorTestUtil.createSoapMessage(SOAP_MESSAGE_FILE);
 		Map<Object, Object> propsMap = retrieveCryptoProps();
-		Crypto crypto = CryptoFactory.getInstance(Crypto.class, propsMap);
+		Crypto crypto = CryptoFactory.getInstance(Merlin.class, propsMap);
         interceptor.setCrypto(crypto);
    
         interceptor.setSecurementActions("Timestamp SAMLTokenSigned");
