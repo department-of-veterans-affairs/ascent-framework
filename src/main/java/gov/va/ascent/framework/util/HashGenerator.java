@@ -10,14 +10,6 @@ import javax.xml.bind.DatatypeConverter;
  */
 public final class HashGenerator {
 
-	/** The Constant MD5_RANGE. */
-	private static final int MD5_RANGE = 16;
-
-	/** The Constant MD5_0X100. */
-	private static final int MD5_0X100 = 0x100;
-
-	/** The Constant MD5_0XFF. */
-	private static final int MD5_0XFF = 0xff;
 
 	/** The Constant MD5_DIGEST_ALGORITHM. */
 	public static final String MD5_DIGEST_ALGORITHM = "MD5";

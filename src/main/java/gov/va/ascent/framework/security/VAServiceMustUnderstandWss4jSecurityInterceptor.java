@@ -55,15 +55,6 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor extends Wss4jSecuri
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor#afterPropertiesSet()
-	 */
-	@Override
-	public void afterPropertiesSet() {
-
-	}
 
 	/**
 	 * Removes the attribute with soapns.

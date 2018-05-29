@@ -49,15 +49,6 @@ public class VAServiceTimeStampWss4jSecurityInterceptor extends Wss4jSecurityInt
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor#afterPropertiesSet()
-	 */
-	@Override
-	public void afterPropertiesSet() {
-
-	}
 
 	/**
 	 * Gets the time stamp.

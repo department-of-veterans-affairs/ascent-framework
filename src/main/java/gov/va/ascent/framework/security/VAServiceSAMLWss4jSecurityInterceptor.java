@@ -69,15 +69,6 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor#afterPropertiesSet()
-	 */
-	@Override
-	public void afterPropertiesSet() {
-
-	}
 
 	/**
 	 * Gets the sAML assertion as element.
@@ -107,13 +98,9 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 			final Document doc = builder.parse(inStream);
 			retVal = doc.getDocumentElement();
 
-		} catch (final ParserConfigurationException e) {
+		} catch (final ParserConfigurationException | SAXException | IOException e) {
 			LOGGER.error(ERROR_SAML_ASSERTION, e);
-		} catch (final SAXException e) {
-			LOGGER.error(ERROR_SAML_ASSERTION, e);
-		} catch (final IOException e) {
-			LOGGER.error(ERROR_SAML_ASSERTION, e);
-		}
+		} 
 
 		return retVal;
 	}

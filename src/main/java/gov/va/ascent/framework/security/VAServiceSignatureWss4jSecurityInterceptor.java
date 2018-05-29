@@ -67,7 +67,7 @@ public class VAServiceSignatureWss4jSecurityInterceptor extends AbstractEncrypti
 	 * @return
 	 */
 	private Map<Object, Object> retrieveCryptoProps() {
-		final Map<Object, Object> propsMap = new HashMap<Object, Object>();
+		final Map<Object, Object> propsMap = new HashMap<>();
 		propsMap.put("org.apache.ws.security.crypto.provider", securityCryptoProvider);
 		propsMap.put("org.apache.ws.security.crypto.merlin.keystore.type", securityCryptoMerlinKeystoreType);
 		propsMap.put("org.apache.ws.security.crypto.merlin.keystore.password", securityCryptoMerlinKeystorePassword);
@@ -128,7 +128,7 @@ public class VAServiceSignatureWss4jSecurityInterceptor extends AbstractEncrypti
 	 */
 	private List<WSEncryptionPart> getEncryptionPartsList(final Element soapMessage) {
 
-		final List<WSEncryptionPart> retVal = new ArrayList<WSEncryptionPart>();
+		final List<WSEncryptionPart> retVal = new ArrayList<>();
 		WSEncryptionPart encPart = null;
 
 		final Element timestamp = WSSecurityUtil.findElement(soapMessage, WSConstants.TIMESTAMP_TOKEN_LN, WSConstants.WSU_NS);
