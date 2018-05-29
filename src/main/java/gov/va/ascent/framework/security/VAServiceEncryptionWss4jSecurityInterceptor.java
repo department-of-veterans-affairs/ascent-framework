@@ -7,14 +7,12 @@ import org.apache.ws.security.message.WSSecEncrypt;
 import org.apache.ws.security.message.WSSecHeader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapMessage;
 import org.w3c.dom.Document;
 
-
 /**
- * The Class VAServiceEncryptionWss4jSecurityInterceptor.
+ * A Wss4j2 Security Interceptor to encrypt secure message header and body.
  */
 public class VAServiceEncryptionWss4jSecurityInterceptor extends AbstractEncryptionWss4jSecurityInterceptor {
 
@@ -23,7 +21,7 @@ public class VAServiceEncryptionWss4jSecurityInterceptor extends AbstractEncrypt
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor#secureMessage(org.springframework.ws.soap .SoapMessage,
 	 * org.springframework.ws.context.MessageContext)
 	 */
@@ -60,7 +58,7 @@ public class VAServiceEncryptionWss4jSecurityInterceptor extends AbstractEncrypt
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor#validateMessage(org.springframework.ws.soap.SoapMessage,
 	 * org.springframework.ws.context.MessageContext)

@@ -8,8 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
- * The Class SecurityUtils contains various reusable utility functions related to security in web app.
- * 
+ * Contains various reusable utility functions related to security in web app.
+ *
  * @author jshrader
  * @author jluck
  */
@@ -24,12 +24,11 @@ public class SecurityUtils {
 	/**
 	 * Returns the user id existing in the ThreadLocal SecurityContextHolder This will therefore obviously only work if
 	 * the user has been previously authenticated/setup in spring security.
-	 * 
+	 *
 	 * @return String the user id
 	 */
 	public static final String getUserId() {
-		if (SecurityContextHolder.getContext() != null
-				&& SecurityContextHolder.getContext().getAuthentication() != null
+		if (SecurityContextHolder.getContext() != null && SecurityContextHolder.getContext().getAuthentication() != null
 				&& SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
 			return SecurityContextHolder.getContext().getAuthentication().getName();
 		} else {
@@ -39,12 +38,11 @@ public class SecurityUtils {
 
 	/**
 	 * Get the VaafiTraits user principal from the Spring SecurityContext
-	 * 
+	 *
 	 * @return user principal
 	 */
 	public static final PersonTraits getPersonTraits() {
-		if (SecurityContextHolder.getContext() != null
-				&& SecurityContextHolder.getContext().getAuthentication() != null
+		if (SecurityContextHolder.getContext() != null && SecurityContextHolder.getContext().getAuthentication() != null
 				&& SecurityContextHolder.getContext().getAuthentication().isAuthenticated()
 				&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof PersonTraits) {
 			return (PersonTraits) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -55,13 +53,12 @@ public class SecurityUtils {
 
 	/**
 	 * Get the current users's roles from the Spring SecurityContext
-	 * 
+	 *
 	 * @return roles
 	 */
 	@SuppressWarnings("unchecked")
 	public static final Collection<GrantedAuthority> getAuthorities() {
-		if (SecurityContextHolder.getContext() != null
-				&& SecurityContextHolder.getContext().getAuthentication() != null) {
+		if (SecurityContextHolder.getContext() != null && SecurityContextHolder.getContext().getAuthentication() != null) {
 			return (Collection<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
 		} else {
 			return Collections.unmodifiableList(new ArrayList<GrantedAuthority>());
@@ -70,7 +67,7 @@ public class SecurityUtils {
 
 	/**
 	 * Checks if is user in role.
-	 * 
+	 *
 	 * @param role the role
 	 * @return true, if is user in role
 	 */
@@ -79,7 +76,7 @@ public class SecurityUtils {
 
 		if (authorities != null) {
 			// loop through the list of granted authorities
-			for (GrantedAuthority ga : authorities) {
+			for (final GrantedAuthority ga : authorities) {
 				if (ga.toString().equals(role)) {
 					return true;
 				}

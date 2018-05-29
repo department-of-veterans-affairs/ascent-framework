@@ -4,7 +4,8 @@ import org.apache.ws.security.components.crypto.Crypto;
 import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
 
 /**
- * The Class VAServiceEncryptionWss4jSecurityInterceptor.
+ * An abstract implementation of spring's Wss4jSecurityInterceptor that adds
+ * common encryption properties for encryption related implementations.
  */
 public abstract class AbstractEncryptionWss4jSecurityInterceptor extends Wss4jSecurityInterceptor {
 
@@ -22,7 +23,7 @@ public abstract class AbstractEncryptionWss4jSecurityInterceptor extends Wss4jSe
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor#afterPropertiesSet()
 	 */
 	@Override
@@ -32,7 +33,7 @@ public abstract class AbstractEncryptionWss4jSecurityInterceptor extends Wss4jSe
 
 	/**
 	 * Gets the crypto.
-	 * 
+	 *
 	 * @return the crypto
 	 */
 	public final Crypto getCrypto() {
@@ -41,7 +42,7 @@ public abstract class AbstractEncryptionWss4jSecurityInterceptor extends Wss4jSe
 
 	/**
 	 * Sets the crypto.
-	 * 
+	 *
 	 * @param crypto the new crypto
 	 */
 	public final void setCrypto(final Crypto crypto) {
@@ -50,7 +51,7 @@ public abstract class AbstractEncryptionWss4jSecurityInterceptor extends Wss4jSe
 
 	/**
 	 * Gets the key alias.
-	 * 
+	 *
 	 * @return the key alias
 	 */
 	public final String getKeyAlias() {
@@ -59,7 +60,7 @@ public abstract class AbstractEncryptionWss4jSecurityInterceptor extends Wss4jSe
 
 	/**
 	 * Sets the key alias.
-	 * 
+	 *
 	 * @param keyAlias the new key alias
 	 */
 	public final void setKeyAlias(final String keyAlias) {
@@ -68,7 +69,7 @@ public abstract class AbstractEncryptionWss4jSecurityInterceptor extends Wss4jSe
 
 	/**
 	 * Gets the key password.
-	 * 
+	 *
 	 * @return the key password
 	 */
 	public final String getKeyPassword() {
@@ -77,7 +78,7 @@ public abstract class AbstractEncryptionWss4jSecurityInterceptor extends Wss4jSe
 
 	/**
 	 * Sets the key password.
-	 * 
+	 *
 	 * @param keyPassword the new key password
 	 */
 	public final void setKeyPassword(final String keyPassword) {
@@ -86,7 +87,7 @@ public abstract class AbstractEncryptionWss4jSecurityInterceptor extends Wss4jSe
 
 	/**
 	 * Gets the crypto file.
-	 * 
+	 *
 	 * @return the crypto file
 	 */
 	public final String getCryptoFile() {
@@ -95,7 +96,7 @@ public abstract class AbstractEncryptionWss4jSecurityInterceptor extends Wss4jSe
 
 	/**
 	 * Sets the crypto file.
-	 * 
+	 *
 	 * @param cryptoFile the new crypto file
 	 */
 	public final void setCryptoFile(final String cryptoFile) {

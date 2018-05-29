@@ -14,7 +14,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * The Class VAServiceMustUnderstandWss4jSecurityInterceptor.
+ * A Wss4j2 Security Interceptor to remove "mustUnderstand" attributes from the envelope namespaces in the message header.
  */
 public class VAServiceMustUnderstandWss4jSecurityInterceptor extends Wss4jSecurityInterceptor {
 
@@ -27,11 +27,10 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor extends Wss4jSecuri
 	/** The Constant SOAP_NS_LIST. */
 	private static final List<String> SOAP_NS_LIST = Arrays.asList(new String[] {
 			javax.xml.soap.SOAPConstants.URI_NS_SOAP_1_1_ENVELOPE, javax.xml.soap.SOAPConstants.URI_NS_SOAP_1_2_ENVELOPE });
-	
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor#secureMessage(org.springframework.ws.soap.SoapMessage,
 	 * org.springframework.ws.context.MessageContext)
 	 */
@@ -52,13 +51,13 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor extends Wss4jSecuri
 			soapMessage.setDocument(doc);
 
 		} catch (final WSSecurityException e) {
-			LOGGER.error("Error while attempting to remove " + "mustUnderstand attribute.", e);
+			LOGGER.error("Error while attempting to remove mustUnderstand attribute.", e);
 		}
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor#afterPropertiesSet()
 	 */
 	@Override
@@ -68,7 +67,7 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor extends Wss4jSecuri
 
 	/**
 	 * Removes the attribute with soapns.
-	 * 
+	 *
 	 * @param target the target
 	 * @param attrLocalName the attr local name
 	 * @return true, if successful
