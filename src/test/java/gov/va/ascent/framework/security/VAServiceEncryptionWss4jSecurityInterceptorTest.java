@@ -1,16 +1,11 @@
 package gov.va.ascent.framework.security;
 
-import java.io.IOException;
+import static org.junit.Assert.fail;
 
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.ws.security.WSSecurityException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.ws.soap.SoapMessage;
-import org.xml.sax.SAXException;
-
 
 public class VAServiceEncryptionWss4jSecurityInterceptorTest {
 
@@ -20,14 +15,22 @@ public class VAServiceEncryptionWss4jSecurityInterceptorTest {
 
 	@After
 	public final void tearDown() {
-	
+
 	}
 
 	@Test
-	public void testValidateMessage() throws IOException, ParserConfigurationException, SAXException, WSSecurityException {
+	public void testValidateMessage() { // throws IOException, ParserConfigurationException, SAXException, WSSecurityException {
+
 		final VAServiceEncryptionWss4jSecurityInterceptor encryptionWss4jSecurityInterceptor =
 				new VAServiceEncryptionWss4jSecurityInterceptor();
-		final SoapMessage sm = WSInterceptorTestUtil.createSoapMessage("src/test/resources/testFiles/security/soapMessage.xml");
+
+		SoapMessage sm = null;
+		try {
+			sm = WSInterceptorTestUtil.createSoapMessage("src/test/resources/testFiles/security/soapMessage.xml");
+		} catch (final Exception e) {
+			e.printStackTrace();
+			fail("Should not have thrown exception");
+		}
 
 		encryptionWss4jSecurityInterceptor.validateMessage(sm, null);
 	}

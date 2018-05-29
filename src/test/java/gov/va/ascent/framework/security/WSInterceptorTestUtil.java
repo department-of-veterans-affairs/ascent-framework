@@ -54,14 +54,23 @@ public final class WSInterceptorTestUtil {
 
 	public static final SoapMessage createSoapMessage(final String filePath)
 			throws IOException, ParserConfigurationException, SAXException {
-		final SoapMessageFactory sf = new AxiomSoapMessageFactory();
-		final InputStream is = new FileInputStream(new File(filePath));
-		final SoapMessage sm = sf.createWebServiceMessage();
-		docFactory.setNamespaceAware(true);
-		final DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-		final Document doc = docBuilder.parse(is);
-		sm.setDocument(doc);
-		is.close();
+		SoapMessage sm = null;
+		InputStream is = null;
+
+		try {
+			final SoapMessageFactory sf = new AxiomSoapMessageFactory();
+			is = new FileInputStream(new File(filePath));
+			sm = sf.createWebServiceMessage();
+			docFactory.setNamespaceAware(true);
+			final DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+			final Document doc = docBuilder.parse(is);
+			sm.setDocument(doc);
+		} finally {
+			if (is != null) {
+				is.close();
+			}
+		}
+
 		return sm;
 	}
 
