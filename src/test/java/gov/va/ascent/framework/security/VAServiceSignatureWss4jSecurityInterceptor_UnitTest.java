@@ -1,14 +1,16 @@
 package gov.va.ascent.framework.security;
 
-import java.util.HashMap;
-import java.util.Map;
+import static org.mockito.Mockito.mock;
+
 import java.util.Properties;
 
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.ws.security.components.crypto.Crypto;
-import org.apache.ws.security.components.crypto.CryptoBase;
 import org.apache.ws.security.components.crypto.CryptoFactory;
-import org.apache.ws.security.components.crypto.Merlin;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +23,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapMessage;
+import org.w3c.dom.Document;
 import gov.va.ascent.framework.config.AscentCommonSpringProfiles;
 import gov.va.ascent.framework.config.BaseYamlConfig;
 
@@ -34,8 +38,6 @@ import gov.va.ascent.framework.config.BaseYamlConfig;
 @ContextConfiguration(inheritLocations = false, classes = { BaseYamlConfig.class})
 public class VAServiceSignatureWss4jSecurityInterceptor_UnitTest {
 
-
-	private static final String PROPERTIES_FILE = "apache-trusted-crypto.properties";
 	private static final String SOAP_MESSAGE_FILE = "src/test/resources/testFiles/security/soapMessage.xml";
 	
 	/**
@@ -75,23 +77,47 @@ public class VAServiceSignatureWss4jSecurityInterceptor_UnitTest {
 	public void testSecureMessage() throws Exception {
 		
 		SoapMessage sm = WSInterceptorTestUtil.createSoapMessage(SOAP_MESSAGE_FILE);
-		//Map<Object, Object> propsMap = retrieveCryptoProps();
 		Properties props = retrieveCryptoProps();
 		Crypto crypto = CryptoFactory.getInstance(props);
         interceptor.setCrypto(crypto);
-   
-        interceptor.setSecurementActions("Timestamp SAMLTokenSigned");
-        //interceptor.setSecurementSignatureCrypto(crypto);
+        interceptor.setValidationActions("Signature");
         interceptor.setSecurementUsername("selfsigned");
         interceptor.setSecurementPassword("password");
+        //interceptor.setValidationCallbackHandler(new SamlCallbackHandler());
         interceptor.afterPropertiesSet();   
-        
-		interceptor.secureMessage(sm, null);
+        MessageContext messageContextMock = mock(MessageContext.class);
+        sm.setDocument(createDocument());
+     	interceptor.secureMessage(sm, messageContextMock);
 		
 		Assert.assertTrue(sm.getSoapHeader()
 				.examineHeaderElements(new QName("Security")).hasNext());
 
 	}
+	
+	
+	/**
+	 * Create sample document 
+	 * 
+	 * @return
+	 * @throws ParserConfigurationException
+	 */
+	private Document createDocument() throws ParserConfigurationException {
+		
+		 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		 dbf.setNamespaceAware(true);
+		 DocumentBuilder builder = dbf.newDocumentBuilder();
+	     Document doc = builder.newDocument();
+        /* Element element = doc.createElement("root");
+		 doc.appendChild(element);
+		 Comment comment = doc.createComment("This is a comment");
+		 doc.insertBefore(comment, element);
+		 Element itemElement = doc.createElement("item");
+		 element.appendChild(itemElement);
+		 itemElement.setAttribute("myattr", "attrvalue");
+		 itemElement.insertBefore(doc.createTextNode("text"), itemElement.getLastChild());*/
+		 return doc;
+	}
+	
 	
 	/**
 	 * Retrieves properties to set to create a crypto file
