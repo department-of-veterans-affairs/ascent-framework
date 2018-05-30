@@ -81,12 +81,15 @@ public class VAServiceSignatureWss4jSecurityInterceptor_UnitTest {
 		Crypto crypto = CryptoFactory.getInstance(props);
         interceptor.setCrypto(crypto);
         interceptor.setValidationActions("Signature");
+        interceptor.setValidateRequest(false);
+        interceptor.setValidateResponse(false);
         interceptor.setSecurementUsername("selfsigned");
         interceptor.setSecurementPassword("password");
+        
         //interceptor.setValidationCallbackHandler(new SamlCallbackHandler());
         interceptor.afterPropertiesSet();   
         MessageContext messageContextMock = mock(MessageContext.class);
-        sm.setDocument(createDocument());
+        //sm.setDocument(createDocument());
      	interceptor.secureMessage(sm, messageContextMock);
 		
 		Assert.assertTrue(sm.getSoapHeader()
