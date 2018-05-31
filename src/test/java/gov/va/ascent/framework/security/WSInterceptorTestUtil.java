@@ -1,5 +1,8 @@
 package gov.va.ascent.framework.security;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -27,6 +30,9 @@ public final class WSInterceptorTestUtil {
 	public static final String getRawXML(final SoapMessage sm) {
 		StringWriter sw = null;
 		String result = null;
+
+		assertNotNull("SoapMessage cannot be null.", sm);
+		assertNotNull("SoapMessage.getDocument cannot be null.", sm.getDocument());
 
 		try {
 			sw = new StringWriter();
@@ -56,6 +62,8 @@ public final class WSInterceptorTestUtil {
 			throws IOException, ParserConfigurationException, SAXException {
 		SoapMessage sm = null;
 		InputStream is = null;
+
+		assertTrue("filePath cannot be null or empty", filePath != null && !filePath.isEmpty());
 
 		try {
 			final SoapMessageFactory sf = new AxiomSoapMessageFactory();
