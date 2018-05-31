@@ -38,21 +38,22 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor extends Wss4jSecuri
 	protected final void secureMessage(final SoapMessage soapMessage, final MessageContext messageContext) {
 
 		super.secureMessage(soapMessage, messageContext);
+	    final Document doc = soapMessage.getDocument();
+		final WSSecHeader secHeader = new WSSecHeader();
 
 		try {
-			final Document doc = soapMessage.getDocument();
-			final WSSecHeader secHeader = new WSSecHeader();
-
 			if (!secHeader.isEmpty(doc)) {
 				final Element header = secHeader.getSecurityHeader();
 				removeAttributeWithSOAPNS(header, MUST_UNDERSTAND_ATTR);
 			}
-
-			soapMessage.setDocument(doc);
-
-		} catch (final WSSecurityException e) {
-			LOGGER.error("Error while attempting to remove mustUnderstand attribute.", e);
+		} catch (WSSecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
+		soapMessage.setDocument(doc);
+
+
 	}
 
 
