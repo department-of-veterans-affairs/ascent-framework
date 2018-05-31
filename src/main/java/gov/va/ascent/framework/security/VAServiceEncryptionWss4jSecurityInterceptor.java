@@ -1,7 +1,9 @@
 package gov.va.ascent.framework.security;
 
+import java.util.Map;
 import org.apache.ws.security.WSSConfig;
 import org.apache.ws.security.WSSecurityException;
+import org.apache.ws.security.components.crypto.Crypto;
 import org.apache.ws.security.components.crypto.CryptoFactory;
 import org.apache.ws.security.message.WSSecEncrypt;
 import org.apache.ws.security.message.WSSecHeader;
@@ -19,6 +21,7 @@ public class VAServiceEncryptionWss4jSecurityInterceptor extends AbstractEncrypt
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(VAServiceEncryptionWss4jSecurityInterceptor.class);
 
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -34,8 +37,9 @@ public class VAServiceEncryptionWss4jSecurityInterceptor extends AbstractEncrypt
 		try {
 
 			if (getCrypto() == null) {
-				LOGGER.error("Initializing crypto properties..." + getCryptoFile() + "end");
-				setCrypto(CryptoFactory.getInstance(getCryptoFile()));
+				LOGGER.debug("Initializing crypto properties...");
+				final Map<Object, Object> propsMap = retrieveCryptoProps();
+				setCrypto(CryptoFactory.getInstance(Crypto.class, propsMap));
 			}
 
 			LOGGER.debug("Encrypting outgoing message...");

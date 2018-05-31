@@ -87,6 +87,24 @@ public class VAServiceSignatureWss4jSecurityInterceptor_UnitTest {
 
 	}
 	
+	@Test
+	public void testSecureMessageNoCrypto() throws Exception {
+		
+		SoapMessage sm = WSInterceptorTestUtil.createSoapMessage(SOAP_MESSAGE_FILE);
+        interceptor.setKeyAlias(securityCryptoMerlinKeystoreAlias);
+        interceptor.setValidationActions("Signature");
+        interceptor.setValidateRequest(false);
+        interceptor.setValidateResponse(false);
+        interceptor.setSecurementUsername("selfsigned");
+        interceptor.setSecurementPassword("password");
+        interceptor.afterPropertiesSet();   
+        MessageContext messageContextMock = mock(MessageContext.class);
+     	interceptor.secureMessage(sm, messageContextMock);
+		
+		assertNotNull(sm);
+
+	}
+	
 	
 	/**
 	 * Retrieves properties to set to create a crypto file

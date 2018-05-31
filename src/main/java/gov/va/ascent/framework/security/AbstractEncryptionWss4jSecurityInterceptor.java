@@ -1,6 +1,10 @@
 package gov.va.ascent.framework.security;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.ws.security.components.crypto.Crypto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
 
 /**
@@ -20,6 +24,51 @@ public abstract class AbstractEncryptionWss4jSecurityInterceptor extends Wss4jSe
 
 	/** The crypto file. */
 	private String cryptoFile;
+	
+	/**
+	 * The security crypto provider
+	 */
+	@Value("${ascent-framework.org.apache.ws.security.crypto.provider}")
+	private String securityCryptoProvider;
+
+	/**
+	 * The security.crypto.merlin.keystore.type
+	 */
+	@Value("${ascent-framework.org.apache.ws.security.crypto.merlin.keystore.type}")
+	private String securityCryptoMerlinKeystoreType;
+
+	/**
+	 * The security.crypto.merlin.keystore.password.
+	 */
+	@Value("${ascent-framework.org.apache.ws.security.crypto.merlin.keystore.password}")
+	private String securityCryptoMerlinKeystorePassword;
+
+	/**
+	 * The security.crypto.merlin.keystore.alias
+	 */
+	@Value("${ascent-framework.org.apache.ws.security.crypto.merlin.keystore.alias}")
+	private String securityCryptoMerlinKeystoreAlias;
+
+	/**
+	 * The securityCryptoMerlinKeystoreFile
+	 */
+	@Value("${ascent-framework.org.apache.ws.security.crypto.merlin.keystore.file}")
+	private String securityCryptoMerlinKeystoreFile;
+
+	/**
+	 * Retrieves properties to set to create a crypto file
+	 * 
+	 * @return
+	 */
+	protected Map<Object, Object> retrieveCryptoProps() {
+		final Map<Object, Object> propsMap = new HashMap<>();
+		propsMap.put("org.apache.ws.security.crypto.provider", securityCryptoProvider);
+		propsMap.put("org.apache.ws.security.crypto.merlin.keystore.type", securityCryptoMerlinKeystoreType);
+		propsMap.put("org.apache.ws.security.crypto.merlin.keystore.password", securityCryptoMerlinKeystorePassword);
+		propsMap.put("org.apache.ws.security.crypto.merlin.keystore.alias", securityCryptoMerlinKeystoreAlias);
+		propsMap.put("org.apache.ws.security.crypto.merlin.keystore.file", securityCryptoMerlinKeystoreFile);
+		return propsMap;
+	}
 
 	/*
 	 * (non-Javadoc)
