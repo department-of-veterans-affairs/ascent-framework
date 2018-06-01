@@ -46,8 +46,8 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor extends Wss4jSecuri
 				final Element header = secHeader.getSecurityHeader();
 				removeAttributeWithSOAPNS(header, MUST_UNDERSTAND_ATTR);
 			}
-		} catch (WSSecurityException e) {
-			LOGGER.error(e.getMessage());
+		} catch (WSSecurityException e) { // NOSONAR
+			LOGGER.error(e.getMessage()); // NOSONAR
 		}
 
 		soapMessage.setDocument(doc);

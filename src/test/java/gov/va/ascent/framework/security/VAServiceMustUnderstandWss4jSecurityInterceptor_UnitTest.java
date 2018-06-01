@@ -11,6 +11,7 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.ws.security.WSSecurityException;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -46,7 +47,8 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor_UnitTest {
 		Assert.assertTrue(WSInterceptorTestUtil.getRawXML(sm).indexOf("mustUnderstand", 0)<0);
 	}
 	
-/*	@Test
+	@Ignore
+    @Test  
 	public void testSecureMessageWSSecurityException() throws IOException, ParserConfigurationException, SAXException {
 
 		SoapMessage sm = WSInterceptorTestUtil.createSoapMessage(SOAP_MESSAGE_FILE);
@@ -55,8 +57,9 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor_UnitTest {
 	    VAServiceMustUnderstandWss4jSecurityInterceptor interceptorSpy =  Mockito.spy(interceptor);
 	    doThrow(WSSecurityException.class)
 	     .when(interceptorSpy).secureMessage(sm, messageContextMock);
-
+	    
+	    interceptorSpy.secureMessage(sm, messageContextMock);
 		
-	}*/
+	}
 
 }
