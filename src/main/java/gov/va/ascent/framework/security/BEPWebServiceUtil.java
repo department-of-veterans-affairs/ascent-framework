@@ -106,7 +106,6 @@ public final class BEPWebServiceUtil {
 
 				for (; inetAddress.hasMoreElements();) {
 					InetAddress addr = inetAddress.nextElement();
-					LOGGER.debug("InetAddress IP:  " + addr.getHostAddress());
 					if (!addr.isLoopbackAddress() && !addr.isAnyLocalAddress() && !addr.isLinkLocalAddress()
 							&& !addr.isMulticastAddress() && validate(addr.getHostAddress())) {
 						computedVal = addr.getHostAddress().toString();
@@ -118,7 +117,6 @@ public final class BEPWebServiceUtil {
 			LOGGER.error(e.getMessage(), e);
 			// handled further down
 		}
-		LOGGER.debug("Computed Value for Client Machine:  " + computedVal);
 		return getComputedValue(computedVal, defaultVal);
 	}
 
