@@ -42,7 +42,7 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 	 * @see org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor#secureMessage(org.springframework.ws.soap .SoapMessage,
 	 * org.springframework.ws.context.MessageContext)
 	 */
-	@Override
+	@Override 
 	protected void secureMessage(final SoapMessage soapMessage, final MessageContext messageContext) {
 
 		super.secureMessage(soapMessage, messageContext);
