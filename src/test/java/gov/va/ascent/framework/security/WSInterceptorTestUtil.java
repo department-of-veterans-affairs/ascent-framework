@@ -31,6 +31,9 @@ public final class WSInterceptorTestUtil {
 		StringWriter sw = null;
 		String result = null;
 
+		assertNotNull("SoapMessage cannot be null.", sm);
+		assertNotNull("SoapMessage.getDocument cannot be null.", sm.getDocument());
+
 		try {
 			sw = new StringWriter();
 
@@ -59,6 +62,8 @@ public final class WSInterceptorTestUtil {
 			throws IOException, ParserConfigurationException, SAXException {
 		SoapMessage sm = null;
 		InputStream is = null;
+
+		assertTrue("filePath cannot be null or empty", filePath != null && !filePath.isEmpty());
 
 		try {
 			final SoapMessageFactory sf = new AxiomSoapMessageFactory();
