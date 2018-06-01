@@ -249,20 +249,24 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	 */
 	private void writeAudit(List<Object> request, Object response,
 			AuditEventData auditEventData, MessageSeverity messageSeverity) {
+		
+		HttpServletRequest httpServletRequest = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		
 		RequestResponseAuditData requestResponseAuditData = new RequestResponseAuditData();
-
-        HttpServletRequest httpServletRequest = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-
-        if(httpServletRequest != null){
-            getHttpRequestAuditData(httpServletRequest, requestResponseAuditData);
-        }
+		
         if(request != null){
             requestResponseAuditData.setRequest(request);
         }
         if(response != null){
             requestResponseAuditData.setResponse(response);
         }
+        
+        if(httpServletRequest != null) {
+            getHttpRequestAuditData(httpServletRequest, requestResponseAuditData);
+        }
+        
         LOGGER.debug("Invoking asyncLogRequestResponseAspectAuditData");
+        
         if (asyncLogging != null) {
         		asyncLogging.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData, messageSeverity);
         }
@@ -284,6 +288,8 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 		
 		final String contentType = httpServletRequest.getContentType();
 		
+		LOGGER.debug("Content Type: {}", contentType);
+		
 		if (contentType != null
 				&& (contentType.toLowerCase(Locale.ENGLISH).startsWith(MediaType.MULTIPART_FORM_DATA_VALUE)
 						|| contentType.toLowerCase(Locale.ENGLISH).startsWith("multipart/mixed"))) {
@@ -300,7 +306,9 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 			} finally {
 				IOUtils.closeQuietly(inputstream);
 			}
+			LOGGER.debug("Attachment Text List: {}", attachmentTextList);
 			requestResponseAuditData.setAttachmentTextList(attachmentTextList);
+			requestResponseAuditData.setRequest(null);
 		}
 
 	}
