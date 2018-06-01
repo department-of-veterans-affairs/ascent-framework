@@ -1,8 +1,11 @@
 package gov.va.ascent.framework.security;
 
+import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Enumeration;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,12 +15,13 @@ import gov.va.ascent.framework.util.Defense;
 import gov.va.ascent.framework.util.HashGenerator;
 
 /**
- * Provides a common method of handling elements of web service calls made to
- * VA Business Enterprise Platform (BEP) layer.
+ * Provides a common method of handling elements of web service calls made to VA
+ * Business Enterprise Platform (BEP) layer.
  */
 public final class BEPWebServiceUtil {
 
-	public static final String NETWORK_BIND_INTERFACE = "en0";
+	private static final Pattern IPv4RegexPattern = Pattern
+			.compile("^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
 
 	/** The Constant EXTERNALUID_LENGTH. */
 	public static final int EXTERNALUID_LENGTH = 39;
@@ -33,14 +37,16 @@ public final class BEPWebServiceUtil {
 
 	/**
 	 * Gets the External UID based on the below BEP specification. <br/>
-	 * User’s identifier (user name, user id, etc…) corresponding to the caller’s identity in the client application.
-	 * Do not use this element for internal application. 39 characters is the limit. <br/>
-	 * The function will get the User ID (name) as recorded in the EVSS User table.
-	 * If the ID is null, then the supplied default is used.
-	 * If the ID meets the specification, then it is returned as-is.
-	 * Else, the ID is converted to an MD5 digest.
+	 * User’s identifier (user name, user id, etc…) corresponding to the
+	 * caller’s identity in the client application. Do not use this element for
+	 * internal application. 39 characters is the limit. <br/>
+	 * The function will get the User ID (name) as recorded in the EVSS User
+	 * table. If the ID is null, then the supplied default is used. If the ID
+	 * meets the specification, then it is returned as-is. Else, the ID is
+	 * converted to an MD5 digest.
 	 *
-	 * @param defaultVal the default val
+	 * @param defaultVal
+	 *            the default val
 	 * @return the external uid
 	 */
 	public static String getExternalUID(final String defaultVal) {
@@ -57,21 +63,24 @@ public final class BEPWebServiceUtil {
 
 		Defense.notNull(computedVal);
 		if (computedVal != null) {
-			Assert.isTrue(computedVal.length() <= EXTERNALUID_LENGTH, "[Assertion failed] - this expression must be true");
+			Assert.isTrue(computedVal.length() <= EXTERNALUID_LENGTH,
+					"[Assertion failed] - this expression must be true");
 		}
 		return computedVal;
 	}
 
 	/**
 	 * Gets the External Key based on the below BEP specification. <br/>
-	 * User’s system identifier associated with the caller's identity (if the ExternalUid represents
-	 * a unique identifier of the user’s identity, then this value is equal to the ExternalUid,
-	 * otherwise represents a unique id – such a PK). Do not user this element for internal applications.
-	 * 39 characters is the limit. <br/>
+	 * User’s system identifier associated with the caller's identity (if the
+	 * ExternalUid represents a unique identifier of the user’s identity, then
+	 * this value is equal to the ExternalUid, otherwise represents a unique id
+	 * – such a PK). Do not user this element for internal applications. 39
+	 * characters is the limit. <br/>
 	 *
 	 * This function simply proxies to getExternalUid for now.
 	 *
-	 * @param defaultVal the default val
+	 * @param defaultVal
+	 *            the default val
 	 * @return the external key
 	 */
 	public static String getExternalKey(final String defaultVal) {
@@ -79,27 +88,51 @@ public final class BEPWebServiceUtil {
 	}
 
 	/**
-	 * Gets the client machine value. BEP specification - User’s workstation IP address.
+	 * Gets the client machine value. BEP specification - User’s workstation IP
+	 * address.
 	 *
-	 * @param defaultVal the default val
+	 * @param defaultVal
+	 *            the default val
 	 * @return the client machine
 	 */
 	public static String getClientMachine(final String defaultVal) {
 		String computedVal = null;
 		try {
-			computedVal = NetworkInterface.getByName(NETWORK_BIND_INTERFACE).getInetAddresses().nextElement().getHostAddress();
+			Enumeration<NetworkInterface> enumNI = NetworkInterface.getNetworkInterfaces();
+
+			for (; enumNI.hasMoreElements();) {
+				NetworkInterface elementNI = enumNI.nextElement();
+				Enumeration<InetAddress> inetAddress = elementNI.getInetAddresses();
+
+				for (; inetAddress.hasMoreElements();) {
+					InetAddress addr = inetAddress.nextElement();
+					LOGGER.debug("InetAddress IP:  " + addr.getHostAddress());
+					if (!addr.isLoopbackAddress() && !addr.isAnyLocalAddress() && !addr.isLinkLocalAddress()
+							&& !addr.isMulticastAddress() && validate(addr.getHostAddress())) {
+						computedVal = addr.getHostAddress().toString();
+						break;
+					}
+				}
+			}
 		} catch (final SocketException e) {
 			LOGGER.error(e.getMessage(), e);
 			// handled further down
 		}
+		LOGGER.debug("Computed Value for Client Machine:  " + computedVal);
 		return getComputedValue(computedVal, defaultVal);
+	}
+
+	private static boolean validate(final String ip) {
+		return IPv4RegexPattern.matcher(ip).matches();
 	}
 
 	/**
 	 * Helper method that adds null checking to cumputedVal and defaultVal.
 	 *
-	 * @param computedVal the computed val
-	 * @param defaultVal the default val
+	 * @param computedVal
+	 *            the computed val
+	 * @param defaultVal
+	 *            the default val
 	 * @return the computed value
 	 */
 	private static String getComputedValue(final String computedVal, final String defaultVal) {
