@@ -47,8 +47,7 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor extends Wss4jSecuri
 				removeAttributeWithSOAPNS(header, MUST_UNDERSTAND_ATTR);
 			}
 		} catch (WSSecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error(e.getMessage());
 		}
 
 		soapMessage.setDocument(doc);

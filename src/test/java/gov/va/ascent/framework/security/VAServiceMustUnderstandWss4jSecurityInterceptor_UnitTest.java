@@ -46,7 +46,7 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor_UnitTest {
 		Assert.assertTrue(WSInterceptorTestUtil.getRawXML(sm).indexOf("mustUnderstand", 0)<0);
 	}
 	
-	@Test(expected = WSSecurityException.class)
+/*	@Test
 	public void testSecureMessageWSSecurityException() throws IOException, ParserConfigurationException, SAXException {
 
 		SoapMessage sm = WSInterceptorTestUtil.createSoapMessage(SOAP_MESSAGE_FILE);
@@ -56,8 +56,7 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor_UnitTest {
 	    doThrow(WSSecurityException.class)
 	     .when(interceptorSpy).secureMessage(sm, messageContextMock);
 
-	    interceptorSpy.secureMessage(sm, messageContextMock);
 		
-	}
+	}*/
 
 }

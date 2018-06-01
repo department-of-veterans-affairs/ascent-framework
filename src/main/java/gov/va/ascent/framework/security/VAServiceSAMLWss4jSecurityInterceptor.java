@@ -82,7 +82,7 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 		try {
 			final InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream(getSamlFile());
 			clientAssertion = IOUtils.toString(input, "UTF-8");
-		} catch (final IOException e) {
+		} catch (final Exception e) {
 			LOGGER.error("Unable to read SAML assertion from file." + getSamlFile(), e);
 			return retVal;
 		}
