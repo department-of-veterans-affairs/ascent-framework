@@ -95,33 +95,39 @@ public final class BEPWebServiceUtil {
 	 *            the default val
 	 * @return the client machine
 	 */
-	public static String getClientMachine(final String defaultVal) {
-		String computedVal = null;
+	public static String getClientMachine(final String defaultValue) {
+		String computedVal = defaultValue;
 		try {
-			Enumeration<NetworkInterface> enumNI = NetworkInterface.getNetworkInterfaces();
-
-			for (; enumNI.hasMoreElements();) {
-				NetworkInterface elementNI = enumNI.nextElement();
-				Enumeration<InetAddress> inetAddress = elementNI.getInetAddresses();
-
-				for (; inetAddress.hasMoreElements();) {
-					InetAddress addr = inetAddress.nextElement();
-					if (!addr.isLoopbackAddress() && !addr.isAnyLocalAddress() && !addr.isLinkLocalAddress()
-							&& !addr.isMulticastAddress() && validate(addr.getHostAddress())) {
-						computedVal = addr.getHostAddress().toString();
-						break;
-					}
+			for (Enumeration<NetworkInterface> enNetI = NetworkInterface
+	                .getNetworkInterfaces(); enNetI.hasMoreElements(); ) {
+	            NetworkInterface netI = enNetI.nextElement();
+	            for (Enumeration<InetAddress> enumIpAddr = netI
+	                    .getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+	                InetAddress inetAddress = enumIpAddr.nextElement();
+					computedVal = computeClientIP(inetAddress, defaultValue);
 				}
-			}
+	         }
 		} catch (final SocketException e) {
 			LOGGER.error(e.getMessage(), e);
 			// handled further down
 		}
-		return getComputedValue(computedVal, defaultVal);
+		return computedVal;
 	}
 
-	private static boolean validate(final String ip) {
-		return IPv4RegexPattern.matcher(ip).matches();
+	/**
+	 * Compute client IP.
+	 *
+	 * @param inetAddress the inet address
+	 * @param defaultValue the default value
+	 * @return the string
+	 */
+	private static String computeClientIP(final InetAddress inetAddress, final String defaultValue) {
+		String computedVal = null;
+		if (!inetAddress.isLoopbackAddress() && !inetAddress.isAnyLocalAddress()
+				&& !inetAddress.isLinkLocalAddress() && IPv4RegexPattern.matcher(inetAddress.getHostAddress()).matches()) {
+			computedVal = inetAddress.getHostAddress();
+		}
+		return getComputedValue(computedVal, defaultValue);
 	}
 
 	/**
