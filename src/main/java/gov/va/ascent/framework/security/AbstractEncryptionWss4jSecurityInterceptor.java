@@ -52,7 +52,7 @@ public abstract class AbstractEncryptionWss4jSecurityInterceptor extends Wss4jSe
 	/**
 	 * The securityCryptoMerlinKeystoreFile
 	 */
-	@Value("${ascent-framework.org.apache.ws.security.crypto.merlin.keystore.file}")
+	@Value("${partner.client.keystore}")
 	private String securityCryptoMerlinKeystoreFile;
 
 	/**

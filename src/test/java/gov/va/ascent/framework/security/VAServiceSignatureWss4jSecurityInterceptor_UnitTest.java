@@ -59,7 +59,7 @@ public class VAServiceSignatureWss4jSecurityInterceptor_UnitTest {
 	/**
 	 * The securityCryptoMerlinKeystoreFile
 	 */
-	@Value("${ascent-framework.org.apache.ws.security.crypto.merlin.keystore.file}")
+	@Value("${partner.client.keystore}")
 	private String securityCryptoMerlinKeystoreFile;
 
 	@Mock

@@ -8,5 +8,4 @@ ascent-framework.org.apache.ws.security.crypto.provider: org.apache.ws.security.
 ascent-framework.org.apache.ws.security.crypto.merlin.keystore.type: jks
 ascent-framework.org.apache.ws.security.crypto.merlin.keystore.alias: ebn_vbms_cert
 partner.client.keystorePassword: changeit
-partner.client.keystore : /encryption/EFolderService
-ascent-framework.org.apache.ws.security.crypto.merlin.keystore.file: ${partner.client.keystore}/vbmsKeystore.jks
+partner.client.keystore :  /encryption/EFolderService/vbmsKeystore.jks
