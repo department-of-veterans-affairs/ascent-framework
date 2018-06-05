@@ -56,7 +56,7 @@ public class VAServiceEncryptionWss4jSecurityInterceptorTest {
 	/**
 	 * The security.crypto.merlin.keystore.password.
 	 */
-	@Value("${ascent-framework.org.apache.ws.security.crypto.merlin.keystore.password}")
+	@Value("${partner.client.keystorePassword}")
 	private String securityCryptoMerlinKeystorePassword;
 	
 	/**
