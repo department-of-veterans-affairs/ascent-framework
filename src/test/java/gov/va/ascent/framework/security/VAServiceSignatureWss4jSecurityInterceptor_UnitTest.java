@@ -35,13 +35,13 @@ public class VAServiceSignatureWss4jSecurityInterceptor_UnitTest {
 	/**
 	 * The security crypto provider
 	 */
-	@Value("${ascent-framework.org.apache.ws.security.crypto.provider}")
+	@Value("${vetservices-partner-efolder.org.apache.ws.security.crypto.provider}")
 	private String securityCryptoProvider;
 
 	/**
 	 * The security.crypto.merlin.keystore.type
 	 */
-	@Value("${ascent-framework.org.apache.ws.security.crypto.merlin.keystore.type}")  
+	@Value("${vetservices-partner-efolder.org.apache.ws.security.crypto.merlin.keystore.type}")  
 	private String securityCryptoMerlinKeystoreType;
 	
 	/**
@@ -53,7 +53,7 @@ public class VAServiceSignatureWss4jSecurityInterceptor_UnitTest {
 	/**
 	 * The security.crypto.merlin.keystore.alias
 	 */
-	@Value("${ascent-framework.org.apache.ws.security.crypto.merlin.keystore.alias}")
+	@Value("${vetservices-partner-efolder.org.apache.ws.security.crypto.merlin.keystore.alias}")
 	private String securityCryptoMerlinKeystoreAlias;
 	
 	/**
