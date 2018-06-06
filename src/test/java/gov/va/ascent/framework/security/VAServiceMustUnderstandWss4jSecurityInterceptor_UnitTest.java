@@ -1,14 +1,12 @@
 package gov.va.ascent.framework.security;
 
-import static org.hamcrest.CoreMatchers.any;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.ws.security.WSSecurityException;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -25,6 +23,7 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapMessage;
 import org.xml.sax.SAXException;
+
 import gov.va.ascent.framework.config.AscentCommonSpringProfiles;
 import gov.va.ascent.framework.config.BaseYamlConfig;
 

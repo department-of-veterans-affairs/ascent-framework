@@ -15,67 +15,36 @@ import org.apache.ws.security.components.crypto.CryptoFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.mockito.Mockito;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapMessage;
 import org.xml.sax.SAXException;
 
-import gov.va.ascent.framework.config.AscentCommonSpringProfiles;
-import gov.va.ascent.framework.config.BaseYamlConfig;
-
-@RunWith(SpringJUnit4ClassRunner.class)
-@TestExecutionListeners(inheritListeners = false, listeners = { DependencyInjectionTestExecutionListener.class,
-		DirtiesContextTestExecutionListener.class, TransactionalTestExecutionListener.class })
-@ActiveProfiles({ AscentCommonSpringProfiles.PROFILE_REMOTE_CLIENT_SIMULATORS })
-@ContextConfiguration(inheritLocations = false, classes = { BaseYamlConfig.class})
 public class VAServiceEncryptionWss4jSecurityInterceptorTest {
 	
 	private static final String SOAP_MESSAGE_FILE = "src/test/resources/testFiles/security/soapMessage.xml";
 	
-	/**
-	 * The security crypto provider
-	 */
-	@Value("${vetservices-partner-efolder.org.apache.ws.security.crypto.provider}")
-	private String securityCryptoProvider;
-
-	/**
-	 * The security.crypto.merlin.keystore.type
-	 */
-	@Value("${vetservices-partner-efolder.org.apache.ws.security.crypto.merlin.keystore.type}")  
-	private String securityCryptoMerlinKeystoreType;
-	
-	/**
-	 * The security.crypto.merlin.keystore.password.
-	 */
-	@Value("${partner.client.keystorePassword}")
-	private String securityCryptoMerlinKeystorePassword;
-	
-	/**
-	 * The security.crypto.merlin.keystore.alias
-	 */
-	@Value("${vetservices-partner-efolder.org.apache.ws.security.crypto.merlin.keystore.alias}")
+	/** The security.crypto.merlin.keystore.alias*/
 	private String securityCryptoMerlinKeystoreAlias;
 	
-	/**
-	 * The securityCryptoMerlinKeystoreFile
-	 */
-	@Value("${partner.client.keystore}")
-	private String securityCryptoMerlinKeystoreFile;
+	private Properties propsCrypto;
 
-	@Mock
-	VAServiceEncryptionWss4jSecurityInterceptor encryptionWss4jSecurityInterceptor = new VAServiceEncryptionWss4jSecurityInterceptor();
+	private VAServiceEncryptionWss4jSecurityInterceptor encryptionWss4jSecurityInterceptor = Mockito.spy(VAServiceEncryptionWss4jSecurityInterceptor.class);
 	
 	@Before
 	public final void setUp() throws Exception {
+		
+		// Spy AbstractEncryptionWss4jSecurityInterceptor and set the properties
+		ReflectionTestUtils.setField(encryptionWss4jSecurityInterceptor, "securityCryptoProvider", "org.apache.ws.security.components.crypto.Merlin");
+		ReflectionTestUtils.setField(encryptionWss4jSecurityInterceptor, "securityCryptoMerlinKeystoreType", "jks");
+		ReflectionTestUtils.setField(encryptionWss4jSecurityInterceptor, "securityCryptoMerlinKeystorePassword", "changeit");
+		ReflectionTestUtils.setField(encryptionWss4jSecurityInterceptor, "securityCryptoMerlinKeystoreAlias", "ebn_vbms_cert");
+		ReflectionTestUtils.setField(encryptionWss4jSecurityInterceptor, "securityCryptoMerlinKeystoreFile", "/encryption/EFolderService/vbmsKeystore.jks");
+		
+		propsCrypto = encryptionWss4jSecurityInterceptor.retrieveCryptoProps();
+		
+		securityCryptoMerlinKeystoreAlias = (String) propsCrypto.get("org.apache.ws.security.crypto.merlin.keystore.alias");
 	}
 
 	@After
@@ -93,8 +62,7 @@ public class VAServiceEncryptionWss4jSecurityInterceptorTest {
 			e.printStackTrace();
 			fail("VAServiceEncryptionWss4jSecurityInterceptor : testSecureMessage test method fail");
 		}
-		Properties props = retrieveCryptoProps();
-		Crypto crypto = CryptoFactory.getInstance(props);
+		Crypto crypto = CryptoFactory.getInstance(propsCrypto);
 		crypto.setDefaultX509Identifier(securityCryptoMerlinKeystoreAlias);
 		encryptionWss4jSecurityInterceptor.setCrypto(crypto);
 		encryptionWss4jSecurityInterceptor.setKeyAlias(securityCryptoMerlinKeystoreAlias);
@@ -134,26 +102,9 @@ public class VAServiceEncryptionWss4jSecurityInterceptorTest {
 		assertNotNull(sm);
 
 	}
-	
-	/**
-	 * Retrieves properties to set to create a crypto file
-	 * @return
-	 */
-	private Properties retrieveCryptoProps() {
-		Properties props = new Properties();
-		props.put("org.apache.ws.security.crypto.provider", securityCryptoProvider);
-		props.put("org.apache.ws.security.crypto.merlin.keystore.type", securityCryptoMerlinKeystoreType);
-		props.put("org.apache.ws.security.crypto.merlin.keystore.password", securityCryptoMerlinKeystorePassword);
-		props.put("org.apache.ws.security.crypto.merlin.keystore.alias", securityCryptoMerlinKeystoreAlias);
-		props.put("org.apache.ws.security.crypto.merlin.keystore.file", securityCryptoMerlinKeystoreFile);
-		return props;
-	}
 
 	@Test
 	public void testValidateMessage() {
-
-		final VAServiceEncryptionWss4jSecurityInterceptor encryptionWss4jSecurityInterceptor =
-				new VAServiceEncryptionWss4jSecurityInterceptor();
 
 		SoapMessage sm = null;
 		try {

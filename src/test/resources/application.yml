@@ -8,4 +8,4 @@ vetservices-partner-efolder.org.apache.ws.security.crypto.provider: org.apache.w
 vetservices-partner-efolder.org.apache.ws.security.crypto.merlin.keystore.type: jks
 vetservices-partner-efolder.org.apache.ws.security.crypto.merlin.keystore.alias: ebn_vbms_cert
 partner.client.keystorePassword: changeit
-partner.client.keystore :  /encryption/EFolderService/vbmsKeystore.jks
+partner.client.keystore:  /encryption/EFolderService/vbmsKeystore.jks

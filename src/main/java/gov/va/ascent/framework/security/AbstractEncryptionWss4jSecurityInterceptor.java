@@ -1,7 +1,6 @@
 package gov.va.ascent.framework.security;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Properties;
 
 import org.apache.ws.security.components.crypto.Crypto;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,14 +59,16 @@ public abstract class AbstractEncryptionWss4jSecurityInterceptor extends Wss4jSe
 	 * 
 	 * @return
 	 */
-	protected Map<Object, Object> retrieveCryptoProps() {
-		final Map<Object, Object> propsMap = new HashMap<>();
-		propsMap.put("org.apache.ws.security.crypto.provider", securityCryptoProvider);
-		propsMap.put("org.apache.ws.security.crypto.merlin.keystore.type", securityCryptoMerlinKeystoreType);
-		propsMap.put("org.apache.ws.security.crypto.merlin.keystore.password", securityCryptoMerlinKeystorePassword);
-		propsMap.put("org.apache.ws.security.crypto.merlin.keystore.alias", securityCryptoMerlinKeystoreAlias);
-		propsMap.put("org.apache.ws.security.crypto.merlin.keystore.file", securityCryptoMerlinKeystoreFile);
-		return propsMap;
+	protected Properties retrieveCryptoProps() {
+		
+		Properties propertiesMap = new Properties();
+		propertiesMap.setProperty("org.apache.ws.security.crypto.provider", securityCryptoProvider);
+		propertiesMap.setProperty("org.apache.ws.security.crypto.merlin.keystore.type", securityCryptoMerlinKeystoreType);
+		propertiesMap.setProperty("org.apache.ws.security.crypto.merlin.keystore.password", securityCryptoMerlinKeystorePassword);
+		propertiesMap.setProperty("org.apache.ws.security.crypto.merlin.keystore.alias", securityCryptoMerlinKeystoreAlias);
+		propertiesMap.setProperty("org.apache.ws.security.crypto.merlin.keystore.file", securityCryptoMerlinKeystoreFile);
+		
+		return propertiesMap;
 	}
 
 	/*

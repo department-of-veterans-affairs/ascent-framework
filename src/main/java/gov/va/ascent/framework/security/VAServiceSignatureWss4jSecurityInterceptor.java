@@ -2,14 +2,12 @@ package gov.va.ascent.framework.security;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ws.security.SOAPConstants;
 import org.apache.ws.security.WSConstants;
 import org.apache.ws.security.WSEncryptionPart;
 import org.apache.ws.security.WSSConfig;
 import org.apache.ws.security.WSSecurityException;
-import org.apache.ws.security.components.crypto.Crypto;
 import org.apache.ws.security.components.crypto.CryptoFactory;
 import org.apache.ws.security.message.WSSecHeader;
 import org.apache.ws.security.message.WSSecSignature;
@@ -47,8 +45,7 @@ public class VAServiceSignatureWss4jSecurityInterceptor extends AbstractEncrypti
 
 			if (getCrypto() == null) {
 				LOGGER.debug("Initializing crypto properties...");
-				final Map<Object, Object> propsMap = retrieveCryptoProps();
-				setCrypto(CryptoFactory.getInstance(Crypto.class, propsMap));
+				setCrypto(CryptoFactory.getInstance(retrieveCryptoProps()));
 			}
 
 			final WSSecSignature sign = new WSSecSignature();

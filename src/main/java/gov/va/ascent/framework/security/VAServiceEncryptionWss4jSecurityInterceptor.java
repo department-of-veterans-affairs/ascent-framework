@@ -1,9 +1,8 @@
 package gov.va.ascent.framework.security;
 
-import java.util.Map;
+
 import org.apache.ws.security.WSSConfig;
 import org.apache.ws.security.WSSecurityException;
-import org.apache.ws.security.components.crypto.Crypto;
 import org.apache.ws.security.components.crypto.CryptoFactory;
 import org.apache.ws.security.message.WSSecEncrypt;
 import org.apache.ws.security.message.WSSecHeader;
@@ -38,8 +37,7 @@ public class VAServiceEncryptionWss4jSecurityInterceptor extends AbstractEncrypt
 
 			if (getCrypto() == null) {
 				LOGGER.debug("Initializing crypto properties...");
-				final Map<Object, Object> propsMap = retrieveCryptoProps();
-				setCrypto(CryptoFactory.getInstance(Crypto.class, propsMap));
+				setCrypto(CryptoFactory.getInstance(retrieveCryptoProps()));
 			}
 
 			LOGGER.debug("Encrypting outgoing message...");
