@@ -48,13 +48,10 @@ public class TestAbstractEncryptionWss4jSecurityInterceptorTest {
 		tester.setCrypto(crypto);
 		tester.setKeyAlias("test.alias");
 		tester.setKeyPassword("test.password");
-		tester.setCryptoFile("test.file");
 
 		assertNotNull(tester.getCrypto());
 		assertTrue(StringUtils.isNotBlank(tester.getKeyAlias()));
 		assertTrue(StringUtils.isNotBlank(tester.getKeyPassword()));
-		assertTrue(StringUtils.isNotBlank(tester.getCryptoFile()));
-
 	}
 	
 	@Test

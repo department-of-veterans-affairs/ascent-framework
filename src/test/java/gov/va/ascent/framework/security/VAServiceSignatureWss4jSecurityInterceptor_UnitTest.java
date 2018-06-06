@@ -19,6 +19,12 @@ public class VAServiceSignatureWss4jSecurityInterceptor_UnitTest {
 
 	private static final String SOAP_MESSAGE_FILE = "src/test/resources/testFiles/security/soapMessage.xml";
 	
+	/** The key time stamp alias. */
+	private String keyTimeStampAlias = "ebn_vbms_cert";
+
+	/** The key time stamp password.*/
+	private String keyTimeStampPassword = "changeit";
+	
 	/** The security.crypto.merlin.keystore.alias*/
 	private String securityCryptoMerlinKeystoreAlias;
 	
@@ -48,7 +54,8 @@ public class VAServiceSignatureWss4jSecurityInterceptor_UnitTest {
 		Crypto crypto = CryptoFactory.getInstance(propsCrypto);
 		crypto.setDefaultX509Identifier(securityCryptoMerlinKeystoreAlias);
         interceptor.setCrypto(crypto);
-        interceptor.setKeyAlias(securityCryptoMerlinKeystoreAlias);
+        interceptor.setKeyAlias(keyTimeStampAlias);
+        interceptor.setKeyPassword(keyTimeStampPassword);
         interceptor.setValidationActions("Signature");
         interceptor.setValidateRequest(false);
         interceptor.setValidateResponse(false);
@@ -66,7 +73,8 @@ public class VAServiceSignatureWss4jSecurityInterceptor_UnitTest {
 	public void testSecureMessageNoCrypto() throws Exception {
 		
 		SoapMessage sm = WSInterceptorTestUtil.createSoapMessage(SOAP_MESSAGE_FILE);
-        interceptor.setKeyAlias(securityCryptoMerlinKeystoreAlias);
+		interceptor.setKeyAlias(keyTimeStampAlias);
+        interceptor.setKeyPassword(keyTimeStampPassword);
         interceptor.setValidationActions("Signature");
         interceptor.setValidateRequest(false);
         interceptor.setValidateResponse(false);

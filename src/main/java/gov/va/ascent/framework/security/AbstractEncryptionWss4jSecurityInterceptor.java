@@ -20,9 +20,6 @@ public abstract class AbstractEncryptionWss4jSecurityInterceptor extends Wss4jSe
 
 	/** The key password. */
 	private String keyPassword;
-
-	/** The crypto file. */
-	private String cryptoFile;
 	
 	/**
 	 * The security crypto provider
@@ -133,23 +130,5 @@ public abstract class AbstractEncryptionWss4jSecurityInterceptor extends Wss4jSe
 	 */
 	public final void setKeyPassword(final String keyPassword) {
 		this.keyPassword = keyPassword;
-	}
-
-	/**
-	 * Gets the crypto file.
-	 *
-	 * @return the crypto file
-	 */
-	public final String getCryptoFile() {
-		return cryptoFile;
-	}
-
-	/**
-	 * Sets the crypto file.
-	 *
-	 * @param cryptoFile the new crypto file
-	 */
-	public final void setCryptoFile(final String cryptoFile) {
-		this.cryptoFile = cryptoFile;
 	}
 }
