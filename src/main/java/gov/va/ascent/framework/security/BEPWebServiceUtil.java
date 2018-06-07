@@ -3,10 +3,12 @@ package gov.va.ascent.framework.security;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Enumeration;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -25,7 +27,7 @@ public final class BEPWebServiceUtil {
 
 	/** The Constant EXTERNALUID_LENGTH. */
 	public static final int EXTERNALUID_LENGTH = 39;
-
+	
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(BEPWebServiceUtil.class);
 
@@ -96,7 +98,19 @@ public final class BEPWebServiceUtil {
 	 * @return the client machine
 	 */
 	public static String getClientMachine(final String defaultValue) {
+		
+		// Holds final computed value
 		String computedVal = defaultValue;
+		
+		if (StringUtils.isEmpty(defaultValue)) {
+			try {
+				computedVal = InetAddress.getLocalHost().getHostAddress();
+			} catch (UnknownHostException e) {
+				LOGGER.warn(e.getMessage(), e);
+				computedVal = "localhost";
+			}
+		}
+		
 		try {
 			for (Enumeration<NetworkInterface> enNetI = NetworkInterface
 	                .getNetworkInterfaces(); enNetI.hasMoreElements(); ) {
@@ -104,7 +118,7 @@ public final class BEPWebServiceUtil {
 	            for (Enumeration<InetAddress> enumIpAddr = netI
 	                    .getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
 	                InetAddress inetAddress = enumIpAddr.nextElement();
-					computedVal = computeClientIP(inetAddress, defaultValue);
+					computedVal = computeClientIP(inetAddress, computedVal);
 				}
 	         }
 		} catch (final SocketException e) {
