@@ -2,7 +2,8 @@ package gov.va.ascent.framework.ws.client;
 
 import gov.va.ascent.framework.exception.InterceptingExceptionTranslator;
 import gov.va.ascent.framework.log.PerformanceLogMethodInterceptor;
-import gov.va.ascent.framework.ws.security.VAServiceWss4jSecurityInterceptor;
+import gov.va.ascent.framework.security.VAServiceWss4jSecurityInterceptor;
+
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponseInterceptor;
 import org.junit.After;

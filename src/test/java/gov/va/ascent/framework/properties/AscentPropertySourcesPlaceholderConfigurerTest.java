@@ -80,7 +80,6 @@ public class AscentPropertySourcesPlaceholderConfigurerTest {
      */
     @Test
     public void testGetActiveProfiles() {
-        System.out.println("getActiveProfiles");
         String[] expResult = {"local-int"};
         String[] result = instance.getActiveProfiles();
         assertArrayEquals(expResult, result);
@@ -91,7 +90,6 @@ public class AscentPropertySourcesPlaceholderConfigurerTest {
      */
     @Test
     public void testGetDefaultProfiles() {
-        System.out.println("getDefaultProfiles");
         String[] expResult = {"default"};;
         String[] result = instance.getDefaultProfiles();
         assertArrayEquals(expResult, result);
@@ -102,7 +100,6 @@ public class AscentPropertySourcesPlaceholderConfigurerTest {
      */
     @Test
     public void testGetPropertyInfo() {
-        System.out.println("getPropertyInfo");
         AscentPropertySourcesPlaceholderConfigurer instance = new AscentPropertySourcesPlaceholderConfigurer();
         List<PropertyFileHolder> result = instance.getPropertyInfo();
         assertTrue(result.size() == 0 );
@@ -113,7 +110,6 @@ public class AscentPropertySourcesPlaceholderConfigurerTest {
      */
     @Test
     public void testGetPropertySourceResolverWss() {
-        System.out.println("getPropertySourceResolverWss");
         AscentPropertySourcesPropertyResolver result = instance.getPropertySourceResolverWss();
         assertNotNull(result);
     }
@@ -123,7 +119,6 @@ public class AscentPropertySourcesPlaceholderConfigurerTest {
      */
     @Test
     public void testGetSystemProperties() {
-        System.out.println("getSystemProperties");
         Map<String, Object> result = instance.getSystemProperties();
         assertNotNull(result);
     }
@@ -133,7 +128,6 @@ public class AscentPropertySourcesPlaceholderConfigurerTest {
      */
     @Test
     public void testSetEnvironment() {
-        System.out.println("setEnvironment");
         Environment environment = null;
         instance.setEnvironment(environment);
     }

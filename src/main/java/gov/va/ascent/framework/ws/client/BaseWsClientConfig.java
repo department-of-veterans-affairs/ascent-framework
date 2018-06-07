@@ -3,8 +3,8 @@ package gov.va.ascent.framework.ws.client;
 import gov.va.ascent.framework.constants.AnnotationConstants;
 import gov.va.ascent.framework.exception.InterceptingExceptionTranslator;
 import gov.va.ascent.framework.log.PerformanceLogMethodInterceptor;
+import gov.va.ascent.framework.security.VAServiceWss4jSecurityInterceptor;
 import gov.va.ascent.framework.util.Defense;
-import gov.va.ascent.framework.ws.security.VAServiceWss4jSecurityInterceptor;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;

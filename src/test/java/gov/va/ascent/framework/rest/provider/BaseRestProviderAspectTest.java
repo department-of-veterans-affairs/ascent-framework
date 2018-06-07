@@ -57,7 +57,6 @@ public class BaseRestProviderAspectTest {
 	 */
 	@Test
 	public void testAuditableAnnotation() {
-		System.out.println("auditableAnnotation");
 		BaseRestProviderAspect.auditableAnnotation();
 	}
 
@@ -66,7 +65,6 @@ public class BaseRestProviderAspectTest {
 	 */
 	@Test
 	public void testAuditableExecution() {
-		System.out.println("auditableExecution");
 		BaseRestProviderAspect.auditableExecution();
 	}
 
@@ -75,7 +73,6 @@ public class BaseRestProviderAspectTest {
 	 */
 	@Test
 	public void testAuditRestController() {
-		System.out.println("auditRestController");
 		BaseRestProviderAspect.restController();
 	}
 
@@ -84,7 +81,6 @@ public class BaseRestProviderAspectTest {
 	 */
 	@Test
 	public void testGetDefaultAuditableInstance() throws Exception {
-		System.out.println("getDefaultAuditableInstance");
 		Method method = myMethod();
 		AuditEvents expResult = AuditEvents.REQUEST_RESPONSE;
 		AuditEventData result = BaseRestProviderAspect.getDefaultAuditableInstance(method);
@@ -100,7 +96,6 @@ public class BaseRestProviderAspectTest {
 	 */
 	@Test
 	public void testGetDefaultAuditableInstanceMethodNotNull() throws Exception {
-		System.out.println("getDefaultAuditableInstance");
 		Method method = myMethod();
 		AuditEvents expResult = AuditEvents.REQUEST_RESPONSE;
 		AuditEventData result = BaseRestProviderAspect.getDefaultAuditableInstance(method);
@@ -114,7 +109,6 @@ public class BaseRestProviderAspectTest {
 	 */
 	@Test
 	public void testGetDefaultAuditableInstanceMethodNull() throws Exception {
-		System.out.println("getDefaultAuditableInstance");
 		Method method = null;
 		AuditEvents expResult = AuditEvents.REQUEST_RESPONSE;
 		AuditEventData result = BaseRestProviderAspect.getDefaultAuditableInstance(method);

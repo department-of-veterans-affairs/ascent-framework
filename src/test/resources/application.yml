@@ -1,2 +1,11 @@
 #This file is only used for the unit test purposes
 wss-partner-person.ws.client.endpoint: http://localhost:9736/testEndPoint
+
+#*********************************************************************
+# Apache Trusted Crypto Configuration Security files
+#*********************************************************************
+vetservices-partner-efolder.org.apache.ws.security.crypto.provider: org.apache.ws.security.components.crypto.Merlin
+vetservices-partner-efolder.org.apache.ws.security.crypto.merlin.keystore.type: jks
+vetservices-partner-efolder.org.apache.ws.security.crypto.merlin.keystore.alias: ebn_vbms_cert
+partner.client.keystorePassword: changeit
+partner.client.keystore:  /encryption/EFolderService/vbmsKeystore.jks

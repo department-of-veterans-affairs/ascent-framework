@@ -34,7 +34,6 @@ public class BaseYamlConfigTest {
      */
     @Test
     public void testYamlProperties() {
-        System.out.println("properties");
         
         //Resource responseBody = new ClassPathResource("classpath:/src/test/resources/application.yml");
         

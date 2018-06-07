@@ -1,4 +1,4 @@
-package gov.va.ascent.framework.ws.security;
+package gov.va.ascent.framework.security;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -14,6 +14,9 @@ import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapMessage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import gov.va.ascent.framework.security.VAServiceWss4jSecurityInterceptor;
+
 @RunWith(MockitoJUnitRunner.class)
 public class VAServiceWss4jSecurityInterceptorTest {
 	private TestVAServiceSecurityInterceptorTest interceptor;
@@ -112,8 +115,8 @@ public class VAServiceWss4jSecurityInterceptorTest {
 		interceptor.setVaApplicationName("TEST_Application_Name");
 		assertNotNull(interceptor.getVaApplicationName());
 	}
+	
+	class TestVAServiceSecurityInterceptorTest extends VAServiceWss4jSecurityInterceptor {
 
-}
-class TestVAServiceSecurityInterceptorTest extends VAServiceWss4jSecurityInterceptor {
-
+	}
 }
