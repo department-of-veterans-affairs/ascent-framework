@@ -6,5 +6,6 @@ package gov.va.ascent.framework.audit;
 public enum AuditEvents {
 	REQUEST_RESPONSE,
 	SECURITY,
-	PARTNER_REQUEST_RESPONSE
+	PARTNER_REQUEST_RESPONSE,
+	SERVICE_AUDIT
 }

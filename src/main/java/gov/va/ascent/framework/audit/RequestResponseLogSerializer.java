@@ -21,6 +21,7 @@ import gov.va.ascent.framework.messages.MessageSeverity;
 
 /**
  * @author npaulus
+ * @author akulkarni
  * The purpose of this class is to asynchronuously serialize an object to JSON and then write it to the audit logs.
  */
 @Component
@@ -41,7 +42,7 @@ public class RequestResponseLogSerializer {
      */
     @Async
     public void asyncLogRequestResponseAspectAuditData(
-    		AuditEventData auditEventData, RequestResponseAuditData requestResponseAuditData, MessageSeverity messageSeverity){
+    		AuditEventData auditEventData, RequestResponseAuditData requestResponseAuditData, MessageSeverity messageSeverity) {
 
         String auditDetails;
         try{
@@ -70,5 +71,22 @@ public class RequestResponseLogSerializer {
         }
     }
 
+    /**
+     * Asynchronuously writes to the audit logger.
+     *
+     * @param auditEventData Data specific to the audit event
+     * @param messageSeverity the message severity
+     * @param activityDetail the activity detail
+     */
+    @Async
+    public void asyncLogMessageAspectAuditData(
+    		AuditEventData auditEventData, String activityDetail, MessageSeverity messageSeverity) {
+    	
+    	if (messageSeverity.equals(MessageSeverity.ERROR) || messageSeverity.equals(MessageSeverity.FATAL)) {
+    		AuditLogger.error(auditEventData, activityDetail);
+	    } else {
+	    	AuditLogger.info(auditEventData, activityDetail); 
+	    }
+    }
 
 }

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,6 +58,9 @@ public class RequestResponseLogSerializerTest {
 	private RequestResponseLogSerializer requestResponseLogSerializer = new RequestResponseLogSerializer();
 
 	AuditEventData auditEventData = new AuditEventData(AuditEvents.REQUEST_RESPONSE, "MethodName", "ClassName");
+	
+	AuditEventData auditServiceEventData = new AuditEventData(AuditEvents.SERVICE_AUDIT, "MethodName", "ClassName");
+	
 	RequestResponseAuditData requestResponseAuditData = new RequestResponseAuditData();
 
 	@SuppressWarnings("unchecked")
@@ -145,5 +149,27 @@ public class RequestResponseLogSerializerTest {
 				"RequestResponseAuditData{headers={Header1=Header1Value}, uri='/', method='GET', response=Response, request=[Request]}",
 				loggingEvents.get(1).getMessage());
 		assertThat(loggingEvents.get(1).getLevel(), is(Level.ERROR));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testServiceMessage() throws Exception {
+		requestResponseLogSerializer.asyncLogMessageAspectAuditData(auditServiceEventData, "This is test", MessageSeverity.INFO);
+		
+		verify(mockAppender, times(1)).doAppend(captorLoggingEvent.capture());
+		final List<LoggingEvent> loggingEvents = captorLoggingEvent.getAllValues();
+		Assert.assertEquals("This is test", loggingEvents.get(0).getMessage());
+		assertThat(loggingEvents.get(0).getLevel(), is(Level.INFO));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testServiceMessageError() throws Exception {
+		requestResponseLogSerializer.asyncLogMessageAspectAuditData(auditServiceEventData, "Error test", MessageSeverity.ERROR);
+		
+		verify(mockAppender, times(1)).doAppend(captorLoggingEvent.capture());
+		final List<LoggingEvent> loggingEvents = captorLoggingEvent.getAllValues();
+		Assert.assertEquals("Error test", loggingEvents.get(0).getMessage());
+		assertThat(loggingEvents.get(0).getLevel(), is(Level.ERROR));
 	}
 }

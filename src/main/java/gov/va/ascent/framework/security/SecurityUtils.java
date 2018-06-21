@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
  *
  * @author jshrader
  * @author jluck
+ * @author akulkarni
  */
 public class SecurityUtils {
 
@@ -37,7 +38,7 @@ public class SecurityUtils {
 	}
 
 	/**
-	 * Get the VaafiTraits user principal from the Spring SecurityContext
+	 * Get the PersonTraits user principal from the Spring SecurityContext
 	 *
 	 * @return user principal
 	 */
