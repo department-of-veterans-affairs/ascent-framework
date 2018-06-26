@@ -2,7 +2,7 @@ package gov.va.ascent.framework.ws.client.remote;
 
 import org.springframework.ws.client.core.WebServiceTemplate;
 
-import gov.va.ascent.framework.transfer.AbstractTransferObject;
+import gov.va.ascent.framework.transfer.PartnerTransferObjectMarker;
 
 /**
  * Interface for executing remote service calls.
@@ -23,9 +23,10 @@ public interface RemoteServiceCall {
 	 * @param webserviceTemplate the template for the web service being called
 	 * @param request the request (a subclass of AbstractTransferObject)
 	 * @param requestClass the actual Class of the request object
-	 * @return AbstractTransferObject the response from the remote web service (cast it to the desired response type)
+	 * @return PartnerTransferObjectMarker the response from the remote web service (cast it to the desired response type)
 	 */
-	AbstractTransferObject callRemoteService(final WebServiceTemplate webserviceTemplate, final AbstractTransferObject request,
-			final Class<? extends AbstractTransferObject> requestClass);
+	PartnerTransferObjectMarker callRemoteService(final WebServiceTemplate webserviceTemplate,
+			final PartnerTransferObjectMarker request,
+			final Class<? extends PartnerTransferObjectMarker> requestClass);
 
 }

@@ -5,14 +5,16 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import gov.va.ascent.framework.transfer.AbstractTransferObject;
 
+import gov.va.ascent.framework.transfer.PartnerTransferObjectMarker;
 
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
+ * Java class for anonymous complex type.
+ *
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
+ *
  * <pre>
  * &lt;complexType&gt;
  *   &lt;complexContent&gt;
@@ -24,46 +26,41 @@ import gov.va.ascent.framework.transfer.AbstractTransferObject;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "someKeyVariable"
+		"someKeyVariable"
 })
 @XmlRootElement(name = "TestAbstractRemoteServiceCallMockRequest")
 public class TestAbstractRemoteServiceCallMockRequest
-    extends AbstractTransferObject
-{
+		implements PartnerTransferObjectMarker {
 
-    /**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 7199849951206580417L;
 	protected String someKeyVariable;
 
-    /**
-     * Gets the value of the someKeyVariable property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getSomeKeyVariable() {
-        return someKeyVariable;
-    }
+	/**
+	 * Gets the value of the someKeyVariable property.
+	 *
+	 * @return
+	 * 		possible object is
+	 *         {@link String }
+	 *
+	 */
+	public String getSomeKeyVariable() {
+		return someKeyVariable;
+	}
 
-    /**
-     * Sets the value of the someKeyVariable property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setSomeKeyVariable(String value) {
-        this.someKeyVariable = value;
-    }
+	/**
+	 * Sets the value of the someKeyVariable property.
+	 *
+	 * @param value
+	 *            allowed object is
+	 *            {@link String }
+	 *
+	 */
+	public void setSomeKeyVariable(final String value) {
+		this.someKeyVariable = value;
+	}
 
 }

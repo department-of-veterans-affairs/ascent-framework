@@ -7,7 +7,7 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.springframework.ws.client.core.WebServiceTemplate;
 
-import gov.va.ascent.framework.transfer.AbstractTransferObject;
+import gov.va.ascent.framework.transfer.PartnerTransferObjectMarker;
 import gov.va.ascent.framework.ws.client.remote.test.mocks.TestAbstractRemoteServiceCallMockRequest;
 import gov.va.ascent.framework.ws.client.remote.test.mocks.TestAbstractRemoteServiceCallMockResponse;
 
@@ -17,14 +17,14 @@ public class RemoteServiceCallTest {
 	public void testCallRemoteService() {
 
 		try {
-			TestClassSimple test = new TestClassSimple();
+			final TestClassSimple test = new TestClassSimple();
 			assertNotNull(test);
 
-			AbstractTransferObject testResponse = test.callRemoteService(new WebServiceTemplate(),
+			final PartnerTransferObjectMarker testResponse = test.callRemoteService(new WebServiceTemplate(),
 					new TestAbstractRemoteServiceCallMockRequest(), TestAbstractRemoteServiceCallMockRequest.class);
 			assertNotNull(testResponse);
 			assertTrue(TestAbstractRemoteServiceCallMockResponse.class.isAssignableFrom(testResponse.getClass()));
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			fail("Could not instantiate an implementation of RemoteServiceCall interface");
 		}
@@ -34,13 +34,13 @@ public class RemoteServiceCallTest {
 	public void testCallRemoteService_WithException() {
 
 		try {
-			TestClassException test = new TestClassException();
+			final TestClassException test = new TestClassException();
 			test.callRemoteService(new WebServiceTemplate(), new TestAbstractRemoteServiceCallMockRequest(),
 					TestAbstractRemoteServiceCallMockRequest.class);
 			fail("RemoteServiceCall_UnitTest.testCallRemoteService_WithException() did not throw exception as intended.");
-		} catch (ArithmeticException e) {
+		} catch (final ArithmeticException e) {
 			// no-op, exception thrown as expected
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			fail("Could not instantiate an implementation of RemoteServiceCall interface");
 		}
@@ -51,8 +51,9 @@ public class RemoteServiceCallTest {
 		public final static String TEST_BEAN_NAME = "test.RemoteServiceCallTest.RemoteServiceCall";
 
 		@Override
-		public AbstractTransferObject callRemoteService(WebServiceTemplate webserviceTemplate, AbstractTransferObject request,
-				Class<? extends AbstractTransferObject> requestClass) {
+		public PartnerTransferObjectMarker callRemoteService(final WebServiceTemplate webserviceTemplate,
+				final PartnerTransferObjectMarker request,
+				final Class<? extends PartnerTransferObjectMarker> requestClass) {
 			return new TestAbstractRemoteServiceCallMockResponse();
 		}
 
@@ -61,8 +62,9 @@ public class RemoteServiceCallTest {
 	class TestClassException implements RemoteServiceCall {
 
 		@Override
-		public AbstractTransferObject callRemoteService(WebServiceTemplate webserviceTemplate, AbstractTransferObject request,
-				Class<? extends AbstractTransferObject> requestClass) {
+		public PartnerTransferObjectMarker callRemoteService(final WebServiceTemplate webserviceTemplate,
+				final PartnerTransferObjectMarker request,
+				final Class<? extends PartnerTransferObjectMarker> requestClass) {
 			throw new ArithmeticException();
 		}
 
