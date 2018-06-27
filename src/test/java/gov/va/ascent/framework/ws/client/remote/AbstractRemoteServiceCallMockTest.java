@@ -17,7 +17,7 @@ import org.mockito.Spy;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.WebServiceTemplate;
 
-import gov.va.ascent.framework.transfer.AbstractTransferObject;
+import gov.va.ascent.framework.transfer.PartnerTransferObjectMarker;
 import gov.va.ascent.framework.ws.client.remote.test.mocks.TestAbstractRemoteServiceCallMockRequest;
 import gov.va.ascent.framework.ws.client.remote.test.mocks.TestAbstractRemoteServiceCallMockResponse;
 
@@ -70,10 +70,10 @@ public class AbstractRemoteServiceCallMockTest {
 	@Test
 	public void testGetKeyForMockResponse() {
 		testRemoteServiceCallMock = new TestRemoteServiceCallMock();
-		TestAbstractRemoteServiceCallMockRequest request = new TestAbstractRemoteServiceCallMockRequest();
+		final TestAbstractRemoteServiceCallMockRequest request = new TestAbstractRemoteServiceCallMockRequest();
 		request.setSomeKeyVariable(TEST_KEY_FOR_MOCK_RESPONSE);
 
-		String keyForMockResponse = testRemoteServiceCallMock.getKeyForMockResponse(request);
+		final String keyForMockResponse = testRemoteServiceCallMock.getKeyForMockResponse(request);
 
 		assertNotNull(keyForMockResponse);
 		assertTrue(keyForMockResponse.equals(TEST_KEY_FOR_MOCK_RESPONSE));
@@ -100,7 +100,7 @@ public class AbstractRemoteServiceCallMockTest {
 
 		// recreate the class being tested so it resets its mock expectations
 		testRemoteServiceCallMock = new TestRemoteServiceCallMock();
-		Class<? extends AbstractTransferObject> requestClass = mockRequest.getClass();
+		final Class<? extends PartnerTransferObjectMarker> requestClass = mockRequest.getClass();
 
 		// doCallRealMethod().when(mockAbstractRemoteServiceCallMock).callMockService(any(WebServiceTemplate.class),
 		// any(AbstractTransferObject.class), any(Class.class));
@@ -111,7 +111,7 @@ public class AbstractRemoteServiceCallMockTest {
 		try {
 			testresponse = (TestAbstractRemoteServiceCallMockResponse) testRemoteServiceCallMock.callMockService(webserviceTemplate,
 					mockRequest, requestClass);
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 			e.printStackTrace();
 			if (e.getClass().isAssignableFrom(AssertionError.class) && "Further connection(s) expected".equals(e.getMessage())) {
 				/*
@@ -136,13 +136,14 @@ public class AbstractRemoteServiceCallMockTest {
 	class TestRemoteServiceCallMock extends AbstractRemoteServiceCallMock {
 
 		@Override
-		protected String getKeyForMockResponse(AbstractTransferObject request) {
+		protected String getKeyForMockResponse(final PartnerTransferObjectMarker request) {
 			return TEST_KEY_FOR_MOCK_RESPONSE;
 		}
 
 		@Override
-		public AbstractTransferObject callRemoteService(WebServiceTemplate webserviceTemplate, AbstractTransferObject request,
-				Class<? extends AbstractTransferObject> requestClass) {
+		public PartnerTransferObjectMarker callRemoteService(final WebServiceTemplate webserviceTemplate,
+				final PartnerTransferObjectMarker request,
+				final Class<? extends PartnerTransferObjectMarker> requestClass) {
 			return super.callMockService(webserviceTemplate, request, requestClass);
 		}
 	}

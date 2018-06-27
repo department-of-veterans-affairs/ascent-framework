@@ -7,14 +7,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import gov.va.ascent.framework.messages.Message;
 import gov.va.ascent.framework.messages.MessageSeverity;
-import gov.va.ascent.framework.transfer.AbstractServiceTransferObject;
+import gov.va.ascent.framework.transfer.AbstractTransferObject;
+import gov.va.ascent.framework.transfer.ServiceTransferObjectMarker;
 
 /**
  * A base Response object capable of representing the payload of a service response.
  *
  * @see gov.va.ascent.framework.transfer.AbstractTransferObject
  */
-public class ServiceResponse extends AbstractServiceTransferObject {
+public class ServiceResponse extends AbstractTransferObject implements ServiceTransferObjectMarker {
 
 	private static final long serialVersionUID = -3937937807439785385L;
 
@@ -94,7 +95,7 @@ public class ServiceResponse extends AbstractServiceTransferObject {
 	 * @return true, if successful
 	 */
 	private boolean hasMessagesOfType(final MessageSeverity severity) {
-		for (Message message : getMessages()) {
+		for (final Message message : getMessages()) {
 			if (severity.equals(message.getSeverity())) {
 				return true;
 			}
@@ -150,7 +151,7 @@ public class ServiceResponse extends AbstractServiceTransferObject {
 	 *
 	 * @param doNotcacheResponse
 	 */
-	public void setDoNotCacheResponse(boolean doNotCacheResponse) {
+	public void setDoNotCacheResponse(final boolean doNotCacheResponse) {
 		this.doNotCacheResponse = doNotCacheResponse;
 	}
 

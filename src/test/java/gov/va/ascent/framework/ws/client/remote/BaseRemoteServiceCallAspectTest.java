@@ -12,7 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import gov.va.ascent.framework.transfer.AbstractTransferObject;
+import gov.va.ascent.framework.transfer.PartnerTransferObjectMarker;
 import gov.va.ascent.framework.ws.client.remote.test.mocks.TestAbstractRemoteServiceCallMockResponse;
 
 public class BaseRemoteServiceCallAspectTest {
@@ -42,7 +42,7 @@ public class BaseRemoteServiceCallAspectTest {
 	public void testStandardRemoteServiceCallMethod() {
 		try {
 			BaseRemoteServiceCallAspect.standardRemoteServiceCallMethod();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			fail("Threw exceptoin " + e.getMessage());
 		}
@@ -55,10 +55,10 @@ public class BaseRemoteServiceCallAspectTest {
 	}
 
 	public Method myMethod() throws NoSuchMethodException {
-		return getClass().getDeclaredMethod("someResponseMethod",String.class);
+		return getClass().getDeclaredMethod("someResponseMethod", String.class);
 	}
 
-	public AbstractTransferObject someResponseMethod(String simpleParam) {
+	public PartnerTransferObjectMarker someResponseMethod(final String simpleParam) {
 		return new TestAbstractRemoteServiceCallMockResponse();
 	}
 }
