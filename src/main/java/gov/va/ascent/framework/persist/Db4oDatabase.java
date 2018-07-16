@@ -1,5 +1,17 @@
 package gov.va.ascent.framework.persist;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectServer;
@@ -10,34 +22,23 @@ import com.db4o.cs.config.ClientConfiguration;
 import com.db4o.cs.config.ServerConfiguration;
 import com.db4o.ext.Db4oIOException;
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import java.io.File;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.util.List;
-
 /**
  * This class is a simple database client and possibly server for db4o.
- * 
+ *
  * All database startup/shutdown processing is here as well as the handle to the db client that local
  * services/simulators can use for persistence.
- * 
+ *
  * Numerous aspects of the database are configurable via the setters. The assumed usage pattern for this class is that
  * this will be a Spring managed bean with setters invoked via configurable properties where applicable and then Spring
  * will manage @PostConstruct and @PreDestory to startup and shutdown the database server and/or client appropriately.
- * 
+ *
  * This client/server database was developed with the intent to be used for local development to allow easy creation of
  * persistent simulations of remote services. This database is not designed/tested/intended to be used for other
  * purposes such as real persistence of real data.
- * 
+ *
  * @author jshrader
  */
-//jshrader - multiple methods are synchronized at the method level to ensure we only initialize this database 1 time 
+//jshrader - multiple methods are synchronized at the method level to ensure we only initialize this database 1 time
 //	and don't have multiple instances getting instantiated and triggering initialization simultaneously.
 @SuppressWarnings("PMD.AvoidSynchronizedAtMethodLevel")
 public class Db4oDatabase {
@@ -62,7 +63,7 @@ public class Db4oDatabase {
 
 	/** The Database file name. */
 	private String db4oFile = "datafile.db4o";
-	
+
 	/**
 	 * configurable injected true/false to run in clientServerMode (necessary in a cluster, works fine either way in a
 	 * single-server mode).
@@ -73,10 +74,10 @@ public class Db4oDatabase {
 	private String host = "localhost";
 
 	/** The database port, only relevant in client/server mode. */
-	//jshrader - this magic number is on purpose, this field is a default but easily overridden.
-	//CHECKSTYLE:OFF
+	// jshrader - this magic number is on purpose, this field is a default but easily overridden.
+	// CHECKSTYLE:OFF
 	private int port = 9999;
-	//CHECKSTYLE:ON
+	// CHECKSTYLE:ON
 
 	/** The database user, only relevant in client/server mode. */
 	private String user = "db4o";
@@ -89,30 +90,30 @@ public class Db4oDatabase {
 	 * real app with a complex object graph. However in small local databases, such as for simulators, this will perform
 	 * adequately and not encounter object depth issues. This property can be overridden.
 	 */
-	//jshrader - this magic number is on purpose, this field is a default but easily overridden.
-	//CHECKSTYLE:OFF
+	// jshrader - this magic number is on purpose, this field is a default but easily overridden.
+	// CHECKSTYLE:OFF
 	private Integer updateDepth = 100;
-	//CHECKSTYLE:ON
-	
+	// CHECKSTYLE:ON
+
 	/**
 	 * The client/server activation depth, easily overridden via the setter. 100 would provide terrible performance in a
 	 * real app with a complex object graph. However in small local databases, such as for simulators, this will perform
 	 * adequately and not encounter object depth issues. This property can be overridden.
 	 */
-	//jshrader - this magic number is on purpose, this field is a default but easily overridden.
-	//CHECKSTYLE:OFF
+	// jshrader - this magic number is on purpose, this field is a default but easily overridden.
+	// CHECKSTYLE:OFF
 	private Integer activationDepth = 100;
-	//CHECKSTYLE:ON
-	
+	// CHECKSTYLE:ON
+
 	/** The db client and server components. */
 	private ObjectServer server;
 
 	/** The client. */
 	private ObjectContainer client;
-	
+
 	/**
 	 * Checks if is data init permitted for this instance.
-	 * 
+	 *
 	 * If this is client/server mode and this is the client end, then
 	 * don't re-init because the server side will take care of that.
 	 *
@@ -121,53 +122,53 @@ public class Db4oDatabase {
 	public final boolean isDataInitPermittedForThisInstance() {
 		return !clientServerMode || clientServerMode && server != null;
 	}
-	
+
 	/**
 	 * Save object.
 	 *
 	 * @param object the object
 	 */
-	public final void save(final Object object){
+	public final void save(final Object object) {
 		client.store(object);
 		client.commit();
 	}
-	
+
 	/**
 	 * Delete.
 	 *
 	 * @param object the object
 	 */
-	public final void delete(final Object object){
+	public final void delete(final Object object) {
 		client.delete(object);
 		client.commit();
 	}
-	
+
 	/**
 	 * Delete all data in the database
 	 */
-	public final void deleteAll(){
+	public final void deleteAll() {
 		final ObjectSet objects = client.queryByExample(null);
-	    for (Object object : objects) {
-	    	client.delete(object);
-	    }
+		for (final Object object : objects) {
+			client.delete(object);
+		}
 	}
-	
+
 	/**
 	 * Query by example.
 	 *
 	 * @param objectExample the object example
 	 * @return the object
 	 */
-	public final List<Object> queryByExample(final Object objectExample){
+	public final List<Object> queryByExample(final Object objectExample) {
 		final List<Object> foundEm = client.queryByExample(objectExample);
 
-		for (Object entity : foundEm){
-			//refresh our copy
+		for (final Object entity : foundEm) {
+			// refresh our copy
 			client.ext().refresh(entity, updateDepth);
 		}
 		return foundEm;
 	}
-	
+
 	/**
 	 * Query for unique.
 	 *
@@ -177,24 +178,24 @@ public class Db4oDatabase {
 	public final Object queryForUnique(final Object objectExample) {
 		final List<Object> foundEm = client.queryByExample(objectExample);
 
-		if(!foundEm.isEmpty()){
-			//refresh our copy
+		if (!foundEm.isEmpty()) {
+			// refresh our copy
 			client.ext().refresh(foundEm.get(0), updateDepth);
 			return foundEm.get(0);
 		} else {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Gets the objects of type.
 	 *
 	 * @param clazz the clazz
 	 * @return the objects of type
 	 */
-	public final Object[] getObjectsOfType(final Class clazz){
+	public final Object[] getObjectsOfType(final Class clazz) {
 		final Object[] foundEm = client.query(clazz).toArray();
-		for(Object foundIt: foundEm){
+		for (final Object foundIt : foundEm) {
 			client.ext().refresh(foundIt, updateDepth);
 		}
 		return foundEm;
@@ -202,7 +203,7 @@ public class Db4oDatabase {
 
 	/**
 	 * Post construction/setter injects initialization of the database server and/or client.
-	 * 
+	 *
 	 * This method is synchronized to ensure we only initialize this data 1 time and don't have multiple instances
 	 * getting instantiated and triggering initialization simultaneously.
 	 */
@@ -289,8 +290,8 @@ public class Db4oDatabase {
 	 */
 	// jshrader - this is a "lazy initializing" internal object database intended to be used in simulators, its not
 	// going to be perfect elegant design. this method is synchronized, locks, catchs exceptions, etc. on puprose
-	// to try our hardest to lazily open the client/server.  this isn't intended to be used at runtime in prod.
-	//CHECKSTYLE:OFF
+	// to try our hardest to lazily open the client/server. this isn't intended to be used at runtime in prod.
+	// CHECKSTYLE:OFF
 	@edu.umd.cs.findbugs.annotations.SuppressWarnings
 	@SuppressWarnings("PMD.AvoidCatchingGenericException")
 	private synchronized void startInClientServerMode() {
@@ -309,8 +310,8 @@ public class Db4oDatabase {
 				LOGGER.warn("db4o server startup failed, assuming server started/cleaned on other server.", e);
 				try {
 					// pause, wait for server to start if its starting on another node in the cluster.
-					synchronized(this) {
-					    this.wait(5000); // NOSONAR
+					synchronized (this) {
+						this.wait(5000); // NOSONAR
 					}
 				} catch (final InterruptedException ie) {
 					LOGGER.error("error sleeping trying to wait for db4o server to startup.", ie);
@@ -320,10 +321,12 @@ public class Db4oDatabase {
 			openClientInClientServerMode(); // if an error occurs, raise it as, we are dead in the water at this point
 		}
 	}
-	//CHECKSTYLE:ON
+	// CHECKSTYLE:ON
 
 	/**
 	 * Open server for client server mode.
+	 * <p>
+	 * If the db4o server has not yet been started, this method throws an exception.
 	 *
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
@@ -361,7 +364,7 @@ public class Db4oDatabase {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -371,7 +374,7 @@ public class Db4oDatabase {
 
 	/**
 	 * Sets the update depth.
-	 * 
+	 *
 	 * @param updateDepth the new update depth
 	 */
 	public final void setUpdateDepth(final Integer updateDepth) {
@@ -380,7 +383,7 @@ public class Db4oDatabase {
 
 	/**
 	 * Sets the password.
-	 * 
+	 *
 	 * @param password the new password
 	 */
 	public final void setPw(final String password) {
@@ -389,7 +392,7 @@ public class Db4oDatabase {
 
 	/**
 	 * Sets the user.
-	 * 
+	 *
 	 * @param user the new user
 	 */
 	public final void setUser(final String user) {
@@ -398,7 +401,7 @@ public class Db4oDatabase {
 
 	/**
 	 * Sets the host.
-	 * 
+	 *
 	 * @param host the new host
 	 */
 	public final void setHost(final String host) {
@@ -407,7 +410,7 @@ public class Db4oDatabase {
 
 	/**
 	 * Sets the activation depth.
-	 * 
+	 *
 	 * @param activationDepth the new activation depth
 	 */
 	public final void setActivationDepth(final Integer activationDepth) {
@@ -416,7 +419,7 @@ public class Db4oDatabase {
 
 	/**
 	 * Sets the db4o file.
-	 * 
+	 *
 	 * @param db4oFile the new db4o file
 	 */
 	public final void setDb4oFile(final String db4oFile) {
@@ -425,7 +428,7 @@ public class Db4oDatabase {
 
 	/**
 	 * Sets the client server mode.
-	 * 
+	 *
 	 * @param clientServerMode the new client server mode
 	 */
 	public final void setClientServerMode(final boolean clientServerMode) {
@@ -434,7 +437,7 @@ public class Db4oDatabase {
 
 	/**
 	 * Sets the port.
-	 * 
+	 *
 	 * @param port the new port
 	 */
 	public final void setPort(final int port) {
@@ -443,7 +446,7 @@ public class Db4oDatabase {
 
 	/**
 	 * Sets the enabled.
-	 * 
+	 *
 	 * @param enabled the new enabled
 	 */
 	public final void setEnabled(final boolean enabled) {
@@ -452,7 +455,7 @@ public class Db4oDatabase {
 
 	/**
 	 * Sets the clean data.
-	 * 
+	 *
 	 * @param cleanData the new clean data
 	 */
 	public final void setCleanData(final boolean cleanData) {

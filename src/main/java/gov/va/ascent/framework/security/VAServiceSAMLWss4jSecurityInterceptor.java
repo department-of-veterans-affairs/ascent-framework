@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -42,7 +43,7 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 	 * @see org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor#secureMessage(org.springframework.ws.soap .SoapMessage,
 	 * org.springframework.ws.context.MessageContext)
 	 */
-	@Override 
+	@Override
 	protected void secureMessage(final SoapMessage soapMessage, final MessageContext messageContext) {
 
 		super.secureMessage(soapMessage, messageContext);
@@ -69,7 +70,6 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 		}
 	}
 
-
 	/**
 	 * Gets the sAML assertion as element.
 	 *
@@ -79,18 +79,28 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 		Element retVal = null;
 		String clientAssertion = null;
 
+		InputStream input = null;
 		try {
-			final InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream(getSamlFile());
+			input = Thread.currentThread().getContextClassLoader().getResourceAsStream(getSamlFile());
 			clientAssertion = IOUtils.toString(input, "UTF-8");
 		} catch (final Exception e) {
 			LOGGER.error("Unable to read SAML assertion from file." + getSamlFile(), e);
 			return retVal;
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (final IOException e) { // NOSONAR irrelevant if stream is already closed
+					// NOSONAR irrelevant if stream is already closed
+				} // NOSONAR irrelevant if stream is already closed
+			}
 		}
 
 		try {
 			final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setNamespaceAware(true);
 			final DocumentBuilder builder = factory.newDocumentBuilder();
+			factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
 			final InputSource inStream = new InputSource();
 			inStream.setCharacterStream(new StringReader(clientAssertion));
@@ -100,7 +110,7 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 
 		} catch (final ParserConfigurationException | SAXException | IOException e) {
 			LOGGER.error(ERROR_SAML_ASSERTION, e);
-		} 
+		}
 
 		return retVal;
 	}
