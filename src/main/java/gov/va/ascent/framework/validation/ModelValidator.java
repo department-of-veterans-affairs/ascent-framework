@@ -22,28 +22,28 @@ import gov.va.ascent.framework.util.Defense;
 /**
  * Validators to wrap JSR-303 Validation API, allowing for ad-hoc validation
  * from Spring Web Flow.
- * 
+ *
  * @author jimmyray
  * @version 2.0
  */
 
 public class ModelValidator implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -6019704406389010935L;
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ModelValidator.class);
-	
+
 	/** The factory. */
 	private transient ValidatorFactory factory = Validation
 			.buildDefaultValidatorFactory();
-	
+
 	/** The validator. */
 	private transient Validator validator = factory.getValidator();
 
 	/**
 	 * Reset transient fields on deserialization.
-	 * 
+	 *
 	 * @return this, but with the transient state restored.
 	 */
 	public Object readResolve() {
@@ -54,7 +54,7 @@ public class ModelValidator implements Serializable {
 
 	/**
 	 * Validates a model based on defined constraints.
-	 * 
+	 *
 	 * @param <T>
 	 *            the data type of the model to validate
 	 * @param model
@@ -71,7 +71,7 @@ public class ModelValidator implements Serializable {
 			final Map<String, List<ViolationMessageParts>> messages, final Class<?>... groups) {
 
 		Defense.notNull(messages, "messages can not be null");
-		
+
 		boolean isValid = true;
 
 		final Class<?>[] classes = this.getGroups(groups);
@@ -84,11 +84,11 @@ public class ModelValidator implements Serializable {
 		}
 		return isValid;
 	}
-	
+
 	/**
 	 * Validates a map of model properties based on map keys and optional
 	 * groups.
-	 * 
+	 *
 	 * @param <T>
 	 *            the data type of the model to validate
 	 * @param model
@@ -104,19 +104,14 @@ public class ModelValidator implements Serializable {
 			final Class<?>... groups) {
 
 		Defense.notNull(messages, "messages can not be null");
-		
+
 		boolean isValid = true;
 
 		final Class<?>[] classes = this.getGroups(groups);
 
-		if (null == messages) {
-			// Cannot validate with no properties provided
-			return true;
-		}
-
 		Set<ConstraintViolation<T>> constraintViolations = null;
 
-		for (String key : messages.keySet()) {
+		for (final String key : messages.keySet()) {
 			constraintViolations = doValidateProperty(model, key, classes);
 
 			if (!constraintViolations.isEmpty()) {
@@ -127,8 +122,6 @@ public class ModelValidator implements Serializable {
 
 		return isValid;
 	}
-	
-	
 
 	/**
 	 * Convert constraint violations to messages.
@@ -143,21 +136,21 @@ public class ModelValidator implements Serializable {
 	private <T extends Serializable> void convertConstraintViolationsToMessages(
 			final Class modelClass, final String specifiedPropertyPathKey,
 			final Map<String, List<ViolationMessageParts>> messages, final Set<ConstraintViolation<T>> constraintViolations) {
-		
+
 		ConstraintViolation<T> blankViolation = null;
-		for (ConstraintViolation<T> violation : constraintViolations) {
-			if (violation.getMessageTemplate() == null || violation.getMessageTemplate().length()  == 0) {
+		for (final ConstraintViolation<T> violation : constraintViolations) {
+			if (violation.getMessageTemplate() == null || violation.getMessageTemplate().length() == 0) {
 				blankViolation = violation;
 			}
 		}
 		constraintViolations.remove(blankViolation);
 
-		for (ConstraintViolation<T> violation : constraintViolations) {
-				
-			//construct the key we will use for the property path 
-			//(used to consolidate all potential violations for this field)
+		for (final ConstraintViolation<T> violation : constraintViolations) {
+
+			// construct the key we will use for the property path
+			// (used to consolidate all potential violations for this field)
 			String propertyPathKey = null;
-			if(specifiedPropertyPathKey == null){
+			if (specifiedPropertyPathKey == null) {
 				if (violation.getPropertyPath().toString().isEmpty()) {
 					propertyPathKey = modelClass.getSimpleName();
 				} else {
@@ -166,26 +159,26 @@ public class ModelValidator implements Serializable {
 			} else {
 				propertyPathKey = specifiedPropertyPathKey;
 			}
-			
-			//construct the message parts object
-			//(used to contain all aspects of the violation message)
+
+			// construct the message parts object
+			// (used to contain all aspects of the violation message)
 			final ViolationMessageParts violationMessageParts = new ViolationMessageParts();
 			String replacement = violation.getMessageTemplate();
 			replacement = StringUtils.replaceAll(replacement, "\\{", "");
 			replacement = StringUtils.replaceAll(replacement, "\\}", "");
 			violationMessageParts.setOriginalKey(replacement);
-			
+
 			replacement = convertKeyToNodepathStyle(propertyPathKey, violation.getMessageTemplate());
 			replacement = StringUtils.replaceAll(replacement, "\\{", "");
 			replacement = StringUtils.replaceAll(replacement, "\\}", "");
 			violationMessageParts.setNewKey(replacement);
 			violationMessageParts.setText(violation.getMessage());
-			
+
 			LOGGER.debug("ViolationMessageParts: {}", ReflectionToStringBuilder.toString(violationMessageParts));
-		
-			//associate the violation and it's message parts with the property path
+
+			// associate the violation and it's message parts with the property path
 			List<ViolationMessageParts> messagePartsForPropertyPath;
-			if(messages.containsKey(propertyPathKey)){
+			if (messages.containsKey(propertyPathKey)) {
 				messagePartsForPropertyPath = messages.get(propertyPathKey);
 			} else {
 				messagePartsForPropertyPath = new ArrayList<>();
@@ -193,18 +186,18 @@ public class ModelValidator implements Serializable {
 			}
 			messagePartsForPropertyPath.add(violationMessageParts);
 		}
-		
+
 	}
 
 	/**
-	 * Removes the impl from message template.  Strips out stuff like "org.hibernate.validator" and ".message" and "javax.validation"
-	 * 
-	 * Our own custom validators are expected to follow this same exact standard JSR 303 pattern.  Essentially...
+	 * Removes the impl from message template. Strips out stuff like "org.hibernate.validator" and ".message" and "javax.validation"
+	 *
+	 * Our own custom validators are expected to follow this same exact standard JSR 303 pattern. Essentially...
 	 * {<PACKAGE>.<RULE_OR_REASON>.message}
-	 * 
-	 * We do this because once this validator runs and interpolates the message from the product impl, 
-	 * that key is used and no longer useful for us.  We want to assign a new key that reflects the error
-	 * type and the field type for override by downstream apps.  If the message key isn't seen as a product
+	 *
+	 * We do this because once this validator runs and interpolates the message from the product impl,
+	 * that key is used and no longer useful for us. We want to assign a new key that reflects the error
+	 * type and the field type for override by downstream apps. If the message key isn't seen as a product
 	 * key (aka it's an internal custom key) then we don't alter it.
 	 *
 	 * @param propertyKey the property key
@@ -212,14 +205,14 @@ public class ModelValidator implements Serializable {
 	 * @return the string
 	 */
 	public static String convertKeyToNodepathStyle(final String propertyKey, final String messageTemplate) {
-		String returnKey = messageTemplate;
-		if(messageTemplate != null){
-			String[] parts = messageTemplate.split("\\.");
-			if(parts.length > 1 && parts[parts.length-1].contains("message")){
-				if(StringUtils.isEmpty(propertyKey)){
-					return parts[parts.length-2];
+		final String returnKey = messageTemplate;
+		if (messageTemplate != null) {
+			final String[] parts = messageTemplate.split("\\.");
+			if (parts.length > 1 && parts[parts.length - 1].contains("message")) {
+				if (StringUtils.isEmpty(propertyKey)) {
+					return parts[parts.length - 2];
 				} else {
-					return propertyKey + "." + parts[parts.length-2];
+					return propertyKey + "." + parts[parts.length - 2];
 				}
 			}
 		}
@@ -229,7 +222,7 @@ public class ModelValidator implements Serializable {
 	/**
 	 * Validates a model based on defined constraints. Invokes validate(model,
 	 * groups) on the nested validator.
-	 * 
+	 *
 	 * @param <T>
 	 *            the data type of the model to validate
 	 * @param model
@@ -246,7 +239,7 @@ public class ModelValidator implements Serializable {
 	/**
 	 * Validates a model based on defined constraints. Invokes validate(model,
 	 * key groups) on the nested validator.
-	 * 
+	 *
 	 * @param <T>
 	 *            the data type of the model to validate
 	 * @param model
