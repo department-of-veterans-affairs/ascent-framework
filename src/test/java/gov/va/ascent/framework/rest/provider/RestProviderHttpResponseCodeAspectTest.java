@@ -4,8 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +43,7 @@ import gov.va.ascent.framework.service.ServiceResponse;
 @RunWith(MockitoJUnitRunner.class)
 public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTester {
 
-	private Logger restProviderLog = super.getLogger(RestProviderHttpResponseCodeAspect.class);
+	private final Logger restProviderLog = super.getLogger(RestProviderHttpResponseCodeAspect.class);
 
 	private RestProviderHttpResponseCodeAspect restProviderHttpResponseCodeAspect;
 	@Mock
@@ -57,19 +59,19 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 	private MethodSignature mockSignature;
 
 	@InjectMocks
-	private RestProviderHttpResponseCodeAspect requestResponseAspect = new RestProviderHttpResponseCodeAspect();
+	private final RestProviderHttpResponseCodeAspect requestResponseAspect = new RestProviderHttpResponseCodeAspect();
 
-	private TestServiceRequest mockRequestObject = new TestServiceRequest();
-	private Object[] mockArray = { mockRequestObject };
+	private final TestServiceRequest mockRequestObject = new TestServiceRequest();
+	private final Object[] mockArray = { mockRequestObject };
 
-	private List<Message> detailedMsg = new ArrayList<Message>();
+	private final List<Message> detailedMsg = new ArrayList<Message>();
 
 	@Before
 	public void setUp() throws Exception {
 		super.getAppender().clear();
 
-		MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-		MockHttpServletResponse httpServletResponse = new MockHttpServletResponse();
+		final MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+		final MockHttpServletResponse httpServletResponse = new MockHttpServletResponse();
 
 		httpServletRequest.setContentType("multipart/form-data");
 		final MockPart userData = new MockPart("userData", "userData", "{\"name\":\"test aida\"}".getBytes());
@@ -85,12 +87,12 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 			when(proceedingJoinPoint.getSignature()).thenReturn(mockSignature);
 			when(mockSignature.getMethod()).thenReturn(myMethod());
 
-			Message msg = new Message(MessageSeverity.FATAL, "FatalKey", "Fatal Message");
+			final Message msg = new Message(MessageSeverity.FATAL, "FatalKey", "Fatal Message");
 			detailedMsg.add(msg);
 			when(proceedingJoinPoint.proceed()).thenReturn(responseEntity);
 			when(responseEntity.getBody()).thenReturn(serviceResponse);
 			when(serviceResponse.getMessages()).thenReturn(detailedMsg);
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 
 		}
 
@@ -104,8 +106,8 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 	@Test
 	public void testMultipartFormData() {
 
-		MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-		MockHttpServletResponse httpServletResponse = new MockHttpServletResponse();
+		final MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+		final MockHttpServletResponse httpServletResponse = new MockHttpServletResponse();
 
 		httpServletRequest.setContentType("multipart/form-data");
 		final MockPart userData = new MockPart("userData", "userData", "{\"name\":\"test aida\"}".getBytes());
@@ -122,7 +124,7 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 			when(proceedingJoinPoint.getTarget()).thenReturn(new TestClass());
 
 			returnObject = restProviderHttpResponseCodeAspect.aroundAdvice(proceedingJoinPoint);
-		} catch (Throwable throwable) {
+		} catch (final Throwable throwable) {
 
 		}
 		assertNotNull(returnObject);
@@ -131,8 +133,8 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 	@Test
 	public void testMultipartmixed() {
 
-		MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
-		MockHttpServletResponse httpServletResponse = new MockHttpServletResponse();
+		final MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+		final MockHttpServletResponse httpServletResponse = new MockHttpServletResponse();
 
 		httpServletRequest.setContentType("multipart/mixed");
 		final MockPart userData = new MockPart("userData", "userData", "{\"name\":\"test aida\"}".getBytes());
@@ -149,7 +151,7 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 			when(proceedingJoinPoint.getTarget()).thenReturn(new TestClass());
 
 			returnObject = restProviderHttpResponseCodeAspect.aroundAdvice(proceedingJoinPoint);
-		} catch (Throwable throwable) {
+		} catch (final Throwable throwable) {
 
 		}
 		assertNotNull(returnObject);
@@ -166,7 +168,7 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 			when(proceedingJoinPoint.getTarget()).thenReturn(new TestClass());
 
 			returnObject = restProviderHttpResponseCodeAspect.aroundAdvice(proceedingJoinPoint);
-		} catch (Throwable throwable) {
+		} catch (final Throwable throwable) {
 
 		}
 		assertNotNull(returnObject);
@@ -177,7 +179,7 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
 		Object returnObject = null;
 		try {
-			ServiceResponse serviceResp = new ServiceResponse();
+			final ServiceResponse serviceResp = new ServiceResponse();
 			serviceResp.addMessage(MessageSeverity.FATAL, "Test KEY", "Test Error");
 			when(proceedingJoinPoint.proceed()).thenReturn(serviceResp);
 			when(proceedingJoinPoint.getSignature()).thenReturn(mockSignature);
@@ -185,7 +187,7 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 			when(proceedingJoinPoint.getTarget()).thenReturn(new TestClass());
 
 			returnObject = restProviderHttpResponseCodeAspect.aroundAdvice(proceedingJoinPoint);
-		} catch (Throwable throwable) {
+		} catch (final Throwable throwable) {
 
 		}
 		assertNotNull(returnObject);
@@ -193,7 +195,7 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 
 	@Test
 	public void testConstructorWithParam() {
-		MessagesToHttpStatusRulesEngine ruleEngine = new MessagesToHttpStatusRulesEngine();
+		final MessagesToHttpStatusRulesEngine ruleEngine = new MessagesToHttpStatusRulesEngine();
 		ruleEngine.addRule(new MessageSeverityMatchRule(MessageSeverity.FATAL, HttpStatus.INTERNAL_SERVER_ERROR));
 		ruleEngine.addRule(new MessageSeverityMatchRule(MessageSeverity.ERROR, HttpStatus.BAD_REQUEST));
 		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect(ruleEngine);
@@ -206,7 +208,7 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 		try {
 			restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
 			assertNull(restProviderHttpResponseCodeAspect.aroundAdvice(proceedingJoinPoint));
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 
 		}
 
@@ -226,7 +228,7 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 			when(proceedingJoinPoint.getTarget()).thenReturn(new TestClass());
 
 			returnObject = restProviderHttpResponseCodeAspect.aroundAdvice(proceedingJoinPoint);
-		} catch (Throwable throwable) {
+		} catch (final Throwable throwable) {
 
 		}
 		assertTrue(((ServiceResponse) returnObject).getMessages().size() > 0);
@@ -247,7 +249,7 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 			when(mockSignature.getMethod()).thenReturn(myMethod());
 			when(proceedingJoinPoint.getTarget()).thenReturn(new TestClass());
 			returnObject = restProviderHttpResponseCodeAspect.aroundAdvice(proceedingJoinPoint);
-		} catch (Throwable throwable) {
+		} catch (final Throwable throwable) {
 
 		}
 
@@ -270,7 +272,7 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 			restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
 			obj = restProviderHttpResponseCodeAspect.logAnnotatedMethodRequestResponse(proceedingJoinPoint);
 			assertNotNull(obj);
-		} catch (Throwable throwable) {
+		} catch (final Throwable throwable) {
 			assertTrue(throwable instanceof RuntimeException);
 		}
 	}
@@ -279,12 +281,12 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 	public void testAnnotatedMethodRequestResponseRunTimeException() {
 
 		try {
-			Object[] array = { null, new Object() };
+			final Object[] array = { null, new Object() };
 			when(proceedingJoinPoint.getArgs()).thenReturn(array);
 			when(proceedingJoinPoint.proceed()).thenThrow(new RuntimeException("Unit Test Exception"));
 			restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
 			restProviderHttpResponseCodeAspect.logAnnotatedMethodRequestResponse(proceedingJoinPoint);
-		} catch (Throwable throwable) {
+		} catch (final Throwable throwable) {
 			assertTrue(throwable instanceof RuntimeException);
 		}
 
@@ -294,15 +296,42 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 	public void testAnnotatedMethodRequestResponseRunTimeExceptionArrayZero() {
 
 		try {
-			Object[] array = new Object[0];
+			final Object[] array = new Object[0];
 			when(proceedingJoinPoint.getArgs()).thenReturn(array);
 			when(proceedingJoinPoint.proceed()).thenThrow(new RuntimeException("Unit Test Exception"));
 			restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
 			restProviderHttpResponseCodeAspect.logAnnotatedMethodRequestResponse(proceedingJoinPoint);
-		} catch (Throwable throwable) {
+		} catch (final Throwable throwable) {
 			assertTrue(throwable instanceof RuntimeException);
 		}
 
+	}
+
+	@Test
+	public void testGetReturnResponse() {
+		final RestProviderHttpResponseCodeAspect aspect = new RestProviderHttpResponseCodeAspect();
+		Method method = null;
+		Object retval = null;
+		try {
+			method = aspect.getClass().getDeclaredMethod("getReturnResponse", boolean.class, Object.class);
+			method.setAccessible(true);
+			retval = method.invoke(aspect, Boolean.TRUE, new ResponseEntity<ServiceResponse>(HttpStatus.valueOf(200)));
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			e.printStackTrace();
+			fail("Should not have exception here");
+		}
+		assertNull(retval);
+
+		try {
+			retval = method.invoke(aspect, Boolean.FALSE, "hello");
+		} catch (SecurityException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			e.printStackTrace();
+			fail("Should not have exception here");
+		}
+		assertNotNull(retval);
+		assertTrue("hello".equals(retval));
 	}
 
 	public Method myMethod() throws NoSuchMethodException {
@@ -338,7 +367,7 @@ class TestServiceRequest extends ServiceRequest {
 		return text;
 	}
 
-	public void setText(String text) {
+	public void setText(final String text) {
 		this.text = text;
 	}
 }

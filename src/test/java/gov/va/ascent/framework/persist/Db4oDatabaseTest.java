@@ -6,6 +6,7 @@
 package gov.va.ascent.framework.persist;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -30,7 +31,7 @@ import gov.va.ascent.framework.messages.Message;
 @RunWith(SpringRunner.class)
 public class Db4oDatabaseTest extends AbstractBaseLogTester {
 
-	private Logger db4oLogger = super.getLogger(Db4oDatabase.class);
+	private final Logger db4oLogger = super.getLogger(Db4oDatabase.class);
 
 	Db4oDatabase instance;
 
@@ -38,7 +39,7 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	public void setUp() {
 		instance = new Db4oDatabase();
 		instance.postConstruct();
-		Message message = new Message();
+		final Message message = new Message();
 		message.setKey("key");
 		message.setText("sample text");
 		instance.save(message);
@@ -52,8 +53,8 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 
 	@AfterClass
 	public static void clean() throws Exception {
-		File dir = new File("./");
-		for (File file : dir.listFiles()) {
+		final File dir = new File("./");
+		for (final File file : dir.listFiles()) {
 			if (file.getName().equals("datafile.db4o") || file.getName().equals("singleClientModeTest")) {
 				file.delete();
 			}
@@ -66,8 +67,8 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	 */
 	@Test
 	public void testIsDataInitPermittedForThisInstance() {
-		boolean expResult = false;
-		boolean result = instance.isDataInitPermittedForThisInstance();
+		final boolean expResult = false;
+		final boolean result = instance.isDataInitPermittedForThisInstance();
 		assertEquals(expResult, result);
 	}
 
@@ -76,9 +77,9 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	 */
 	@Test
 	public void testIsDataInitPermittedForThisInstanceTrue() {
-		boolean expResult = true;
+		final boolean expResult = true;
 		instance.setClientServerMode(false);
-		boolean result = instance.isDataInitPermittedForThisInstance();
+		final boolean result = instance.isDataInitPermittedForThisInstance();
 		assertEquals(expResult, result);
 	}
 
@@ -87,7 +88,7 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	 */
 	@Test
 	public void testSave() {
-		Message message = new Message();
+		final Message message = new Message();
 		instance.save(message);
 	}
 
@@ -96,7 +97,7 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	 */
 	@Test
 	public void testDelete() {
-		Message message1 = new Message();
+		final Message message1 = new Message();
 		instance.save(message1);
 		instance.delete(message1);
 	}
@@ -114,8 +115,8 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	 */
 	@Test
 	public void testQueryByExample() {
-		List<Object> result = instance.queryByExample(Message.class);
-		Message mess = (Message) result.get(0);
+		final List<Object> result = instance.queryByExample(Message.class);
+		final Message mess = (Message) result.get(0);
 		assertTrue("key".equals(mess.getKey()));
 	}
 
@@ -124,9 +125,9 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	 */
 	@Test
 	public void testQueryForUnique() {
-		Object objectExample = null;
-		Object result = instance.queryForUnique(objectExample);
-		Message mess = (Message) result;
+		final Object objectExample = null;
+		final Object result = instance.queryForUnique(objectExample);
+		final Message mess = (Message) result;
 		assertTrue("key".equals(mess.getKey()));
 	}
 
@@ -136,19 +137,23 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	@Test
 	public void testPreDestroy() {
 		instance.preDestroy();
+		// openServerForClientServerMode
+		// startInClientServerMode
+//		server = Db4oClientServer.openServer(serverConfig, db4oFile, port);
+
 	}
 
 	/**
 	 * Test of preDestroy method, of class Db4oDatabase.
 	 */
 	@Test
-	public void testPreDestroyServer() {
+	public void testPreDestroyClient() {
 		super.getAppender().clear();
 		db4oLogger.setLevel(Level.INFO);
 
 		instance.preDestroy();
 		super.getAppender().clear();
-		Db4oDatabase db = new Db4oDatabase();
+		final Db4oDatabase db = new Db4oDatabase();
 		db.setClientServerMode(false);
 		db.setDb4oFile("singleClientModeTest");
 		db.postConstruct();
@@ -161,14 +166,13 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	 * Test of preDestroy method, of class Db4oDatabase.
 	 */
 	@Test
-	public void testPreDestroyServerDisabled() {
+	public void testPreDestroyClientDisabled() {
 		super.getAppender().clear();
 		db4oLogger.setLevel(Level.INFO);
 
-
 		instance.preDestroy();
 		super.getAppender().clear();
-		Db4oDatabase db = new Db4oDatabase();
+		final Db4oDatabase db = new Db4oDatabase();
 		db.setClientServerMode(false);
 		db.setDb4oFile("singleClientModeTest");
 		db.setEnabled(false);
@@ -177,11 +181,50 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	}
 
 	/**
+	 * Test of preDestroy method, of class Db4oDatabase.
+	 */
+	@Test
+	public void testPreDestroyServer() {
+		super.getAppender().clear();
+		db4oLogger.setLevel(Level.INFO);
+
+		instance.preDestroy();
+		super.getAppender().clear();
+		final Db4oDatabase db = new Db4oDatabase();
+		db.setClientServerMode(true);
+		db.setDb4oFile("singleClientModeTest");
+		db.postConstruct();
+		assertTrue(super.getAppender().get(0).getMessage().contains("Db4oDatabase enabled & initializing"));
+		assertEquals("database client instantiated.", super.getAppender().get(1).getMessage());
+		instance.preDestroy();
+		System.out.println("<<<<<<<<<<");
+	}
+
+	/**
+	 * Test of preDestroy method, of class Db4oDatabase.
+	 */
+	@Test
+	public void testPreDestroyServerDisabled() {
+		super.getAppender().clear();
+		db4oLogger.setLevel(Level.INFO);
+
+		instance.preDestroy();
+		super.getAppender().clear();
+		final Db4oDatabase db = new Db4oDatabase();
+		db.setClientServerMode(true);
+		db.setDb4oFile("singleClientModeTest");
+		db.setEnabled(false);
+		db.postConstruct();
+		assertEquals("Db4oDatabase not enabled, not going to start the database", super.getAppender().get(0).getMessage());
+		instance.preDestroy();
+	}
+
+	/**
 	 * Test of toString method, of class Db4oDatabase.
 	 */
 	@Test
 	public void testToString() {
-		String result = instance.toString();
+		final String result = instance.toString();
 		assertTrue(result.contains("localhost"));
 	}
 
@@ -190,7 +233,7 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	 */
 	@Test
 	public void testSetUpdateDepth() {
-		Integer updateDepth = null;
+		final Integer updateDepth = null;
 		instance.setUpdateDepth(updateDepth);
 	}
 
@@ -199,8 +242,8 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	 */
 	@Test
 	public void testSetPw() {
-		String password = "";
-		Db4oDatabase instance = new Db4oDatabase();
+		final String password = "";
+		final Db4oDatabase instance = new Db4oDatabase();
 		instance.setPw(password);
 	}
 
@@ -209,8 +252,8 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	 */
 	@Test
 	public void testSetUser() {
-		String user = "";
-		Db4oDatabase instance = new Db4oDatabase();
+		final String user = "";
+		final Db4oDatabase instance = new Db4oDatabase();
 		instance.setUser(user);
 	}
 
@@ -219,8 +262,8 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	 */
 	@Test
 	public void testSetHost() {
-		String host = "";
-		Db4oDatabase instance = new Db4oDatabase();
+		final String host = "";
+		final Db4oDatabase instance = new Db4oDatabase();
 		instance.setHost(host);
 	}
 
@@ -229,8 +272,8 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	 */
 	@Test
 	public void testSetActivationDepth() {
-		Integer activationDepth = null;
-		Db4oDatabase instance = new Db4oDatabase();
+		final Integer activationDepth = null;
+		final Db4oDatabase instance = new Db4oDatabase();
 		instance.setActivationDepth(activationDepth);
 	}
 
@@ -239,8 +282,8 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	 */
 	@Test
 	public void testSetDb4oFile() {
-		String db4oFile = "";
-		Db4oDatabase instance = new Db4oDatabase();
+		final String db4oFile = "";
+		final Db4oDatabase instance = new Db4oDatabase();
 		instance.setDb4oFile(db4oFile);
 	}
 
@@ -249,8 +292,8 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	 */
 	@Test
 	public void testSetClientServerMode() {
-		boolean clientServerMode = false;
-		Db4oDatabase instance = new Db4oDatabase();
+		final boolean clientServerMode = false;
+		final Db4oDatabase instance = new Db4oDatabase();
 		instance.setClientServerMode(clientServerMode);
 	}
 
@@ -259,8 +302,8 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	 */
 	@Test
 	public void testSetPort() {
-		int port = 0;
-		Db4oDatabase instance = new Db4oDatabase();
+		final int port = 0;
+		final Db4oDatabase instance = new Db4oDatabase();
 		instance.setPort(port);
 	}
 
@@ -269,8 +312,8 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	 */
 	@Test
 	public void testSetEnabled() {
-		boolean enabled = false;
-		Db4oDatabase instance = new Db4oDatabase();
+		final boolean enabled = false;
+		final Db4oDatabase instance = new Db4oDatabase();
 		instance.setEnabled(enabled);
 	}
 
@@ -279,9 +322,16 @@ public class Db4oDatabaseTest extends AbstractBaseLogTester {
 	 */
 	@Test
 	public void testSetCleanData() {
-		boolean cleanData = false;
-		Db4oDatabase instance = new Db4oDatabase();
+		final boolean cleanData = false;
+		final Db4oDatabase instance = new Db4oDatabase();
 		instance.setCleanData(cleanData);
+	}
+
+	@Test
+	public void testGetObjectsOfType() {
+		final Object[] messages = instance.getObjectsOfType(Message.class);
+		assertNotNull(messages);
+		assertTrue(messages.length > 0);
 	}
 
 }

@@ -1,10 +1,17 @@
 package gov.va.ascent.framework.ws.client;
 
-import gov.va.ascent.framework.constants.AnnotationConstants;
-import gov.va.ascent.framework.exception.InterceptingExceptionTranslator;
-import gov.va.ascent.framework.log.PerformanceLogMethodInterceptor;
-import gov.va.ascent.framework.security.VAServiceWss4jSecurityInterceptor;
-import gov.va.ascent.framework.util.Defense;
+import java.io.File;
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.SOAPException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -27,17 +34,11 @@ import org.springframework.ws.soap.axiom.AxiomSoapMessageFactory;
 import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
-import javax.xml.soap.MessageFactory;
-import javax.xml.soap.SOAPException;
-import java.io.File;
-import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.util.HashSet;
-import java.util.Set;
+import gov.va.ascent.framework.constants.AnnotationConstants;
+import gov.va.ascent.framework.exception.InterceptingExceptionTranslator;
+import gov.va.ascent.framework.log.PerformanceLogMethodInterceptor;
+import gov.va.ascent.framework.security.VAServiceWss4jSecurityInterceptor;
+import gov.va.ascent.framework.util.Defense;
 
 /**
  * Base WebService Client configuration, consolidates core/common web service configuration operations used across the applications.
@@ -62,22 +63,21 @@ public class BaseWsClientConfig {
 	 */
 	public static final String PACKAGE_ASCENT_FRAMEWORK_EXCEPTION = "gov.va.ascent.framework.exception";
 
-
 	/**
 	 * Creates the default web service template using the default audit request/response interceptors and no web service interceptors.
 	 *
-	 * @param endpoint          the endpoint
-	 * @param readTimeout       the read timeout
+	 * @param endpoint the endpoint
+	 * @param readTimeout the read timeout
 	 * @param connectionTimeout the connection timeout
-	 * @param marshaller        the marshaller
-	 * @param unmarshaller      the unmarshaller
+	 * @param marshaller the marshaller
+	 * @param unmarshaller the unmarshaller
 	 * @return the web service template
-	 * @throws KeyManagementException    the key management exception
+	 * @throws KeyManagementException the key management exception
 	 * @throws UnrecoverableKeyException the unrecoverable key exception
-	 * @throws NoSuchAlgorithmException  the no such algorithm exception
-	 * @throws KeyStoreException         the key store exception
-	 * @throws CertificateException      the certificate exception
-	 * @throws IOException               Signals that an I/O exception has occurred.
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws KeyStoreException the key store exception
+	 * @throws CertificateException the certificate exception
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	protected final WebServiceTemplate createDefaultWebServiceTemplate(final String endpoint, final int readTimeout,
 			final int connectionTimeout, final Marshaller marshaller, final Unmarshaller unmarshaller) {
@@ -90,19 +90,19 @@ public class BaseWsClientConfig {
 	 * Creates the default web service template using the default audit request/response interceptors and the provided web service
 	 * interceptors
 	 *
-	 * @param endpoint          the endpoint
-	 * @param readTimeout       the read timeout
+	 * @param endpoint the endpoint
+	 * @param readTimeout the read timeout
 	 * @param connectionTimeout the connection timeout
-	 * @param marshaller        the marshaller
-	 * @param unmarshaller      the unmarshaller
-	 * @param wsInterceptors    the ws interceptors
+	 * @param marshaller the marshaller
+	 * @param unmarshaller the unmarshaller
+	 * @param wsInterceptors the ws interceptors
 	 * @return the web service template
-	 * @throws KeyManagementException    the key management exception
+	 * @throws KeyManagementException the key management exception
 	 * @throws UnrecoverableKeyException the unrecoverable key exception
-	 * @throws NoSuchAlgorithmException  the no such algorithm exception
-	 * @throws KeyStoreException         the key store exception
-	 * @throws CertificateException      the certificate exception
-	 * @throws IOException               Signals that an I/O exception has occurred.
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws KeyStoreException the key store exception
+	 * @throws CertificateException the certificate exception
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	protected final WebServiceTemplate createDefaultWebServiceTemplate(final String endpoint, final int readTimeout,
 			final int connectionTimeout, final Marshaller marshaller, final Unmarshaller unmarshaller,
@@ -116,31 +116,36 @@ public class BaseWsClientConfig {
 	 * Creates the default web service template using the supplied http request/response interceptors and the provided web service
 	 * interceptors with axiom message factory
 	 *
-	 * @param endpoint                 the endpoint
-	 * @param readTimeout              the read timeout
-	 * @param connectionTimeout        the connection timeout
-	 * @param marshaller               the marshaller
-	 * @param unmarshaller             the unmarshaller
-	 * @param httpRequestInterceptors  the http request interceptors
+	 * @param endpoint the endpoint
+	 * @param readTimeout the read timeout
+	 * @param connectionTimeout the connection timeout
+	 * @param marshaller the marshaller
+	 * @param unmarshaller the unmarshaller
+	 * @param httpRequestInterceptors the http request interceptors
 	 * @param httpResponseInterceptors the http response interceptors
-	 * @param wsInterceptors           the ws interceptors
+	 * @param wsInterceptors the ws interceptors
 	 * @return the web service template
-	 * @throws KeyManagementException    the key management exception
+	 * @throws KeyManagementException the key management exception
 	 * @throws UnrecoverableKeyException the unrecoverable key exception
-	 * @throws NoSuchAlgorithmException  the no such algorithm exception
-	 * @throws KeyStoreException         the key store exception
-	 * @throws CertificateException      the certificate exception
-	 * @throws IOException               Signals that an I/O exception has occurred.
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws KeyStoreException the key store exception
+	 * @throws CertificateException the certificate exception
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	protected final WebServiceTemplate createDefaultWebServiceTemplate(final String endpoint, final int readTimeout,
-			final int connectionTimeout, final Marshaller marshaller, final Unmarshaller unmarshaller,
-			final HttpRequestInterceptor[] httpRequestInterceptors,
-			final HttpResponseInterceptor[] httpResponseInterceptors, final ClientInterceptor[] wsInterceptors) {
+	protected final WebServiceTemplate createDefaultWebServiceTemplate( // NOSONAR do NOT encapsulate params just to reduce the number
+			final String endpoint, // NOSONAR do NOT encapsulate params just to reduce the number
+			final int readTimeout, // NOSONAR do NOT encapsulate params just to reduce the number
+			final int connectionTimeout, // NOSONAR do NOT encapsulate params just to reduce the number
+			final Marshaller marshaller, // NOSONAR do NOT encapsulate params just to reduce the number
+			final Unmarshaller unmarshaller, // NOSONAR do NOT encapsulate params just to reduce the number
+			final HttpRequestInterceptor[] httpRequestInterceptors, // NOSONAR do NOT encapsulate params just to reduce the number
+			final HttpResponseInterceptor[] httpResponseInterceptors, // NOSONAR do NOT encapsulate params just to reduce the number
+			final ClientInterceptor[] wsInterceptors) { // NOSONAR do NOT encapsulate params just to reduce the number
 
-		// create axiom message factory 
+		// create axiom message factory
 		final AxiomSoapMessageFactory axiomSoapMessageFactory = new AxiomSoapMessageFactory();
 		axiomSoapMessageFactory.setAttachmentCacheDir(new File(System.getProperty(BaseWsClientConfig.JAVA_IO_TMPDIR)));
-		
+
 		return this
 				.createWebServiceTemplate(endpoint, readTimeout, connectionTimeout, marshaller, unmarshaller, httpRequestInterceptors,
 						httpResponseInterceptors, wsInterceptors, axiomSoapMessageFactory);
@@ -150,20 +155,20 @@ public class BaseWsClientConfig {
 	 * Creates the web service template using the the default audit request/response interceptors and the provided web service
 	 * interceptors with saaj message factory.
 	 *
-	 * @param endpoint          the endpoint
-	 * @param readTimeout       the read timeout
+	 * @param endpoint the endpoint
+	 * @param readTimeout the read timeout
 	 * @param connectionTimeout the connection timeout
-	 * @param marshaller        the marshaller
-	 * @param unmarshaller      the unmarshaller
-	 * @param wsInterceptors    the ws interceptors
+	 * @param marshaller the marshaller
+	 * @param unmarshaller the unmarshaller
+	 * @param wsInterceptors the ws interceptors
 	 * @return the web service template
-	 * @throws KeyManagementException    the key management exception
+	 * @throws KeyManagementException the key management exception
 	 * @throws UnrecoverableKeyException the unrecoverable key exception
-	 * @throws NoSuchAlgorithmException  the no such algorithm exception
-	 * @throws KeyStoreException         the key store exception
-	 * @throws CertificateException      the certificate exception
-	 * @throws IOException               Signals that an I/O exception has occurred.
-	 * @throws SOAPException             error creating message factory
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws KeyStoreException the key store exception
+	 * @throws CertificateException the certificate exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws SOAPException error creating message factory
 	 */
 	protected final WebServiceTemplate createSAAJWebServiceTemplate(final String endpoint, final int readTimeout,
 			final int connectionTimeout, final Marshaller marshaller, final Unmarshaller unmarshaller,
@@ -178,35 +183,40 @@ public class BaseWsClientConfig {
 	 * Creates web service template using the supplied http request/response interceptors and the provided web service
 	 * interceptors and message factory - if web service clients wish to configure their own message factory.
 	 *
-	 * @param endpoint                 the endpoint
-	 * @param readTimeout              the read timeout
-	 * @param connectionTimeout        the connection timeout
-	 * @param marshaller               the marshaller
-	 * @param unmarshaller             the unmarshaller
-	 * @param httpRequestInterceptors  the http request interceptors
+	 * @param endpoint the endpoint
+	 * @param readTimeout the read timeout
+	 * @param connectionTimeout the connection timeout
+	 * @param marshaller the marshaller
+	 * @param unmarshaller the unmarshaller
+	 * @param httpRequestInterceptors the http request interceptors
 	 * @param httpResponseInterceptors the http response interceptors
-	 * @param wsInterceptors           the ws interceptors
-	 * @param messageFactory           webservice message factory
+	 * @param wsInterceptors the ws interceptors
+	 * @param messageFactory webservice message factory
 	 * @return the web service template
-	 * @throws KeyManagementException    the key management exception
+	 * @throws KeyManagementException the key management exception
 	 * @throws UnrecoverableKeyException the unrecoverable key exception
-	 * @throws NoSuchAlgorithmException  the no such algorithm exception
-	 * @throws KeyStoreException         the key store exception
-	 * @throws CertificateException      the certificate exception
-	 * @throws IOException               Signals that an I/O exception has occurred.
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws KeyStoreException the key store exception
+	 * @throws CertificateException the certificate exception
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	protected final WebServiceTemplate createWebServiceTemplate(final String endpoint, final int readTimeout,
-			final int connectionTimeout, final Marshaller marshaller, final Unmarshaller unmarshaller,
-			final HttpRequestInterceptor[] httpRequestInterceptors,
-			final HttpResponseInterceptor[] httpResponseInterceptors, final ClientInterceptor[] wsInterceptors,
-			final WebServiceMessageFactory messageFactory) {
+	protected final WebServiceTemplate createWebServiceTemplate( // NOSONAR do NOT encapsulate params just to reduce the number
+			final String endpoint, // NOSONAR do NOT encapsulate params just to reduce the number
+			final int readTimeout, // NOSONAR do NOT encapsulate params just to reduce the number
+			final int connectionTimeout, // NOSONAR do NOT encapsulate params just to reduce the number
+			final Marshaller marshaller, // NOSONAR do NOT encapsulate params just to reduce the number
+			final Unmarshaller unmarshaller, // NOSONAR do NOT encapsulate params just to reduce the number
+			final HttpRequestInterceptor[] httpRequestInterceptors, // NOSONAR do NOT encapsulate params just to reduce the number
+			final HttpResponseInterceptor[] httpResponseInterceptors, // NOSONAR do NOT encapsulate params just to reduce the number
+			final ClientInterceptor[] wsInterceptors, // NOSONAR do NOT encapsulate params just to reduce the number
+			final WebServiceMessageFactory messageFactory) { // NOSONAR do NOT encapsulate params just to reduce the number
 		// configure the message sender
 		final HttpComponentsMessageSender messageSender = new HttpComponentsMessageSender();
 		messageSender.setReadTimeout(readTimeout);
 		messageSender.setConnectionTimeout(connectionTimeout);
 
 		final HttpClientBuilder httpClient = HttpClients.custom();
-		
+
 		if (httpRequestInterceptors != null) {
 			for (final HttpRequestInterceptor httpRequestInterceptor : httpRequestInterceptors) {
 				httpClient.addInterceptorFirst(httpRequestInterceptor);
@@ -217,10 +227,10 @@ public class BaseWsClientConfig {
 				httpClient.addInterceptorLast(httpResponseInterceptor);
 			}
 		}
-		
-		LOGGER.debug("HttpClient Object : %s% {}" , ReflectionToStringBuilder.toString(httpClient));
-		LOGGER.debug("Default Uri : %s% {}" , endpoint);
-		
+
+		LOGGER.debug("HttpClient Object : %s% {}", ReflectionToStringBuilder.toString(httpClient));
+		LOGGER.debug("Default Uri : %s% {}", endpoint);
+
 		messageSender.setHttpClient(httpClient.build());
 
 		// set the message factory & configure and return the template
@@ -237,7 +247,7 @@ public class BaseWsClientConfig {
 	/**
 	 * Gets the bean name auto proxy creator.
 	 *
-	 * @param beanNames        the bean names
+	 * @param beanNames the bean names
 	 * @param interceptorNames the interceptor names
 	 * @return the bean name auto proxy creator
 	 */
@@ -251,7 +261,7 @@ public class BaseWsClientConfig {
 	/**
 	 * Gets the intercepting exception translator.
 	 *
-	 * @param defaultExceptionClass      the default exception class
+	 * @param defaultExceptionClass the default exception class
 	 * @param exceptionPackagesToExclude the exception packages to exclude
 	 * @return the intercepting exception translator
 	 * @throws ClassNotFoundException the class not found exception
@@ -282,8 +292,8 @@ public class BaseWsClientConfig {
 	/**
 	 * Gets the marshaller.
 	 *
-	 * @param transferPackage       the transfer package
-	 * @param schemaLocations       the schema locations
+	 * @param transferPackage the transfer package
+	 * @param schemaLocations the schema locations
 	 * @param isLogValidationErrors the is log validation errors
 	 * @return the marshaller
 	 */
@@ -321,12 +331,12 @@ public class BaseWsClientConfig {
 		performanceLogMethodInteceptor.setWarningThreshhold(methodWarningThreshhold);
 		return performanceLogMethodInteceptor;
 	}
-	
+
 	/**
 	 * Gets the security interceptor.
 	 *
-	 * @param username          the username
-	 * @param password          the password
+	 * @param username the username
+	 * @param password the password
 	 * @param vaApplicationName the va application name
 	 * @param stationId the stationd id
 	 * @return the security interceptor
@@ -345,6 +355,5 @@ public class BaseWsClientConfig {
 		}
 		return interceptor;
 	}
-
 
 }

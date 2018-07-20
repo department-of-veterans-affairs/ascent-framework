@@ -38,7 +38,7 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor extends Wss4jSecuri
 	protected final void secureMessage(final SoapMessage soapMessage, final MessageContext messageContext) {
 
 		super.secureMessage(soapMessage, messageContext);
-	    final Document doc = soapMessage.getDocument();
+		final Document doc = soapMessage.getDocument();
 		final WSSecHeader secHeader = new WSSecHeader();
 
 		try {
@@ -46,15 +46,13 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor extends Wss4jSecuri
 				final Element header = secHeader.getSecurityHeader();
 				removeAttributeWithSOAPNS(header, MUST_UNDERSTAND_ATTR);
 			}
-		} catch (WSSecurityException e) { // NOSONAR
-			LOGGER.error(e.getMessage()); // NOSONAR
+		} catch (final WSSecurityException e) { // NOSONAR no action to take
+			LOGGER.error(e.getMessage()); // NOSONAR no action to take
 		}
 
 		soapMessage.setDocument(doc);
 
-
 	}
-
 
 	/**
 	 * Removes the attribute with soapns.
@@ -63,7 +61,8 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor extends Wss4jSecuri
 	 * @param attrLocalName the attr local name
 	 * @return true, if successful
 	 */
-	private boolean removeAttributeWithSOAPNS(final Element target, final String attrLocalName) {
+	boolean removeAttributeWithSOAPNS(final Element target, final String attrLocalName)
+			throws WSSecurityException { // NOSONAR throws is to assist unit testing and coverage
 		boolean retVal = false;
 
 		if (target != null) {

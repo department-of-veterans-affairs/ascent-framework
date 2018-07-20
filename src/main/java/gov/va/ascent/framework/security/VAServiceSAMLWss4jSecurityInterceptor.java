@@ -75,7 +75,8 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 	 *
 	 * @return the sAML assertion as element
 	 */
-	private Element getSAMLAssertionAsElement() {
+	Element getSAMLAssertionAsElement()
+			throws WSSecurityException { // NOSONAR throws to assist unit testing and coverage
 		Element retVal = null;
 		String clientAssertion = null;
 

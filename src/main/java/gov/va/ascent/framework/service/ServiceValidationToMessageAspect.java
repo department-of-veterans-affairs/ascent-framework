@@ -57,7 +57,7 @@ public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 			serviceRequest = Arrays.asList(joinPoint.getArgs());
 		}
 		if (serviceRequest == null) {
-			serviceRequest = new ArrayList<Object>();
+			serviceRequest = new ArrayList<>();
 		}
 
 		// start creating the response
