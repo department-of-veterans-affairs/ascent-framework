@@ -32,3 +32,4 @@ nbdist/
 ### Eclipse ###
 .metadata
 /nbproject/
+/local-only.fpr
