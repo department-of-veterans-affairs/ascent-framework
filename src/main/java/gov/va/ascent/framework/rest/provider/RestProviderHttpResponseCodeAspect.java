@@ -302,7 +302,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 				for (final Part part : httpServletRequest.getParts()) {
 					inputstream = part.getInputStream();
 					attachmentTextList.add(convertBytesToString(inputstream));
-					inputstream.close();
+					IOUtils.closeQuietly(inputstream);
 				}
 			} catch (final Exception ex) {
 				LOGGER.error("Error occurred while reading the upload file. {}", ex);

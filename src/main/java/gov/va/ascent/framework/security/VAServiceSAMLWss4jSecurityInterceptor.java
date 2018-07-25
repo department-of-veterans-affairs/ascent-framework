@@ -88,13 +88,7 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 			LOGGER.error("Unable to read SAML assertion from file." + getSamlFile(), e);
 			return retVal;
 		} finally {
-			if (input != null) {
-				try {
-					input.close();
-				} catch (final IOException e) { // NOSONAR irrelevant if stream is already closed
-					// NOSONAR irrelevant if stream is already closed
-				} // NOSONAR irrelevant if stream is already closed
-			}
+			IOUtils.closeQuietly(input);
 		}
 
 		try {
