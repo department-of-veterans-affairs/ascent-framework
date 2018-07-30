@@ -44,6 +44,16 @@ public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ServiceValidationToMessageAspect.class);
 
+	/**
+	 * Around advice for{@link BaseServiceAspect#serviceImpl()} pointcut.
+	 * <p>
+	 * This method will execute JSR-303 validations on any {@link Validatable} parameter objects in the method signature.<br/>
+	 * Any failed validations is added to the method's response object, and is audit logged.
+	 * 
+	 * @param joinPoint
+	 * @return Object
+	 * @throws Throwable
+	 */
 	@Around("publicStandardServiceMethod() && serviceImpl()")
 	public Object aroundAdvice(final ProceedingJoinPoint joinPoint) throws Throwable {
 
