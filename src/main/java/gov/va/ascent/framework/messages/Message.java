@@ -12,21 +12,23 @@ import gov.va.ascent.framework.transfer.AbstractTransferObject;
  * Message is a generic abstraction of a "message" or "notification" which is layer agnostic and can be used to
  * communicate status or other sorts of information during method calls between components/layers. This is serializable
  * and can be used in SOAP or REST calls.
- * 
+ *
  * @author jshrader
  */
 public class Message extends AbstractTransferObject {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -1711431368372127555L;
-	
-	/** The text is excluded from equals and hash as the key+severity are to jointly indicate
-	 * a unique message.  The text is supplemental information. */
-	private static final String[] EQUALS_HASH_EXCLUDE_FIELDS = new String[]{"text"};
+
+	/**
+	 * The text is excluded from equals and hash as the key+severity are to jointly indicate
+	 * a unique message. The text is supplemental information.
+	 */
+	private static final String[] EQUALS_HASH_EXCLUDE_FIELDS = new String[] { "text" };
 
 	/** The key. */
 	@XmlElement(required = true)
-    @NotNull
+	@NotNull
 	private String key;
 
 	/** The message. */
@@ -34,15 +36,15 @@ public class Message extends AbstractTransferObject {
 
 	/** The message severity. */
 	@XmlElement(required = true)
-    @NotNull
+	@NotNull
 	private MessageSeverity severity;
 
 	/**
 	 * Instantiates a new message.
 	 */
-	public Message() {
-		super();
-	}
+	public Message() { // NOSONAR @NotNull is a validation annotation, not a usage annotation
+		super(); // NOSONAR @NotNull is a validation annotation, not a usage annotation
+	} // NOSONAR @NotNull is a validation annotation, not a usage annotation
 
 	/**
 	 * Instantiates a new message.
@@ -72,7 +74,7 @@ public class Message extends AbstractTransferObject {
 
 	/**
 	 * Gets the key.
-	 * 
+	 *
 	 * @return the key
 	 */
 	public final String getKey() {
@@ -81,13 +83,12 @@ public class Message extends AbstractTransferObject {
 
 	/**
 	 * Sets the key.
-	 * 
+	 *
 	 * @param key the new key
 	 */
 	public final void setKey(final String key) {
 		this.key = key;
 	}
-
 
 	/**
 	 * Gets the text.
@@ -109,7 +110,7 @@ public class Message extends AbstractTransferObject {
 
 	/**
 	 * Gets the message severity.
-	 * 
+	 *
 	 * @return the message severity
 	 */
 	public final MessageSeverity getSeverity() {
@@ -118,14 +119,16 @@ public class Message extends AbstractTransferObject {
 
 	/**
 	 * Sets the message severity.
-	 * 
+	 *
 	 * @param severity the new message severity
 	 */
 	public final void setSeverity(final MessageSeverity severity) {
 		this.severity = severity;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see gov.va.ascent.framework.transfer.AbstractTransferObject#equals(java.lang.Object)
 	 */
 	@Override
@@ -133,7 +136,9 @@ public class Message extends AbstractTransferObject {
 		return EqualsBuilder.reflectionEquals(this, obj, EQUALS_HASH_EXCLUDE_FIELDS);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see gov.va.ascent.framework.transfer.AbstractTransferObject#hashCode()
 	 */
 	@Override

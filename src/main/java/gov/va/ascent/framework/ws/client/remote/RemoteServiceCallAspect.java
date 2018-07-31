@@ -57,7 +57,7 @@ public class RemoteServiceCallAspect extends BaseRemoteServiceCallAspect {
 		PartnerTransferObjectMarker adviceRequest = null;
 		Class<? extends PartnerTransferObjectMarker> adviceRequestClass = null;
 
-		if (joinPoint.getArgs().length >= 0 && joinPoint.getArgs()[0] != null) {
+		if (joinPoint.getArgs() != null && joinPoint.getArgs()[0] != null) {
 			adviceWebserviceTemplate = (WebServiceTemplate) joinPoint.getArgs()[0];
 		}
 		if (joinPoint.getArgs().length >= 1 && joinPoint.getArgs()[1] != null) {
