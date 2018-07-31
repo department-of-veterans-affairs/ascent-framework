@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.constraints.NotNull;
 import javax.validation.groups.Default;
 
 import org.junit.Test;
@@ -112,6 +113,25 @@ public class ModelValidatorTest {
 	}
 
 	@Test
+	public void testValidateModelPropertiesForViolation() {
+		final ModelValidator modelTest = new ModelValidator();
+		final TestPojo tr = new TestPojo();
+		final Map<String, List<ViolationMessageParts>> messages = new LinkedHashMap<>();
+
+		final ViolationMessageParts violationMessageParts = new ViolationMessageParts();
+		violationMessageParts.setOriginalKey("TestKey");
+		violationMessageParts.setNewKey("UpdatedTestKey");
+		final List<ViolationMessageParts> msgList = new ArrayList<>();
+		msgList.add(violationMessageParts);
+		messages.put("test", msgList);
+		final Class<?>[] classes = new Class[1];
+		classes[0] = Default.class;
+
+		assertTrue(!modelTest.validateModelProperties(tr, messages, classes));
+
+	}
+
+	@Test
 	public void testConvertKeyToNodepathStyle() {
 		String retVal = ModelValidator.convertKeyToNodepathStyle("TestKey", "message value1.message value2");
 		assertTrue(retVal.contains("."));
@@ -153,10 +173,18 @@ public class ModelValidatorTest {
 }
 
 class TestRequest extends ServiceRequest {
-
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 469530062192402379L;
+}
 
+class TestPojo extends ServiceRequest {
+	@NotNull
+	String test;
+
+	public String getTest() {
+		return test;
+	}
+
+	public void setTest(final String test) {
+		this.test = test;
+	}
 }

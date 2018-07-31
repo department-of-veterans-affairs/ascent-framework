@@ -132,9 +132,8 @@ public class ModelValidator implements Serializable {
 	 * @param messages the messages
 	 * @param constraintViolations the constraint violations
 	 */
-	@SuppressWarnings("rawtypes")
 	private <T extends Serializable> void convertConstraintViolationsToMessages(
-			final Class modelClass, final String specifiedPropertyPathKey,
+			final Class<?> modelClass, final String specifiedPropertyPathKey,
 			final Map<String, List<ViolationMessageParts>> messages, final Set<ConstraintViolation<T>> constraintViolations) {
 
 		ConstraintViolation<T> blankViolation = null;
@@ -146,47 +145,59 @@ public class ModelValidator implements Serializable {
 		constraintViolations.remove(blankViolation);
 
 		for (final ConstraintViolation<T> violation : constraintViolations) {
-
-			// construct the key we will use for the property path
-			// (used to consolidate all potential violations for this field)
-			String propertyPathKey = null;
-			if (specifiedPropertyPathKey == null) {
-				if (violation.getPropertyPath().toString().isEmpty()) {
-					propertyPathKey = modelClass.getSimpleName();
-				} else {
-					propertyPathKey = violation.getPropertyPath().toString();
-				}
-			} else {
-				propertyPathKey = specifiedPropertyPathKey;
-			}
-
-			// construct the message parts object
-			// (used to contain all aspects of the violation message)
-			final ViolationMessageParts violationMessageParts = new ViolationMessageParts();
-			String replacement = violation.getMessageTemplate();
-			replacement = StringUtils.replaceAll(replacement, "\\{", "");
-			replacement = StringUtils.replaceAll(replacement, "\\}", "");
-			violationMessageParts.setOriginalKey(replacement);
-
-			replacement = convertKeyToNodepathStyle(propertyPathKey, violation.getMessageTemplate());
-			replacement = StringUtils.replaceAll(replacement, "\\{", "");
-			replacement = StringUtils.replaceAll(replacement, "\\}", "");
-			violationMessageParts.setNewKey(replacement);
-			violationMessageParts.setText(violation.getMessage());
-
-			LOGGER.debug("ViolationMessageParts: {}", ReflectionToStringBuilder.toString(violationMessageParts));
-
-			// associate the violation and it's message parts with the property path
-			List<ViolationMessageParts> messagePartsForPropertyPath;
-			if (messages.containsKey(propertyPathKey)) {
-				messagePartsForPropertyPath = messages.get(propertyPathKey);
-			} else {
-				messagePartsForPropertyPath = new ArrayList<>();
-				messages.put(propertyPathKey, messagePartsForPropertyPath);
-			}
-			messagePartsForPropertyPath.add(violationMessageParts);
+			fillMessage(violation, modelClass, specifiedPropertyPathKey, messages);
 		}
 
+	}
+
+	/**
+	 * Puts constraint violation message on the messages list.
+	 *
+	 * @param violation
+	 * @param modelClass
+	 * @param specifiedPropertyPathKey
+	 * @param messages
+	 */
+	private void fillMessage(final ConstraintViolation<?> violation, final Class<?> modelClass, final String specifiedPropertyPathKey,
+			final Map<String, List<ViolationMessageParts>> messages) {
+		// construct the key we will use for the property path
+		// (used to consolidate all potential violations for this field)
+		String propertyPathKey = null;
+		if (specifiedPropertyPathKey == null) {
+			if (violation.getPropertyPath().toString().isEmpty()) {
+				propertyPathKey = modelClass.getSimpleName();
+			} else {
+				propertyPathKey = violation.getPropertyPath().toString();
+			}
+		} else {
+			propertyPathKey = specifiedPropertyPathKey;
+		}
+
+		// construct the message parts object
+		// (used to contain all aspects of the violation message)
+		final ViolationMessageParts violationMessageParts = new ViolationMessageParts();
+		String replacement = violation.getMessageTemplate();
+		replacement = StringUtils.replaceAll(replacement, "\\{", "");
+		replacement = StringUtils.replaceAll(replacement, "\\}", "");
+		violationMessageParts.setOriginalKey(replacement);
+
+		replacement = convertKeyToNodepathStyle(propertyPathKey, violation.getMessageTemplate());
+		replacement = StringUtils.replaceAll(replacement, "\\{", "");
+		replacement = StringUtils.replaceAll(replacement, "\\}", "");
+		violationMessageParts.setNewKey(replacement);
+		violationMessageParts.setText(violation.getMessage());
+
+		LOGGER.debug("ViolationMessageParts: {}", ReflectionToStringBuilder.toString(violationMessageParts));
+
+		// associate the violation and it's message parts with the property path
+		List<ViolationMessageParts> messagePartsForPropertyPath;
+		if (messages.containsKey(propertyPathKey)) {
+			messagePartsForPropertyPath = messages.get(propertyPathKey);
+		} else {
+			messagePartsForPropertyPath = new ArrayList<>();
+			messages.put(propertyPathKey, messagePartsForPropertyPath);
+		}
+		messagePartsForPropertyPath.add(violationMessageParts);
 	}
 
 	/**

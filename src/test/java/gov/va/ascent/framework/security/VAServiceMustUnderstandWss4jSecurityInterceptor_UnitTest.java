@@ -40,20 +40,33 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor_UnitTest {
 
 	private final VAServiceMustUnderstandWss4jSecurityInterceptor interceptor = new VAServiceMustUnderstandWss4jSecurityInterceptor();
 
-	private static final String SOAP_MESSAGE_FILE = "src/test/resources/testFiles/security/soapMessageMustUnderstand.xml";
+	private static final String SOAP_MUSTUNDERSTAND_FILE = "src/test/resources/testFiles/security/soapMessageMustUnderstand.xml";
+	private static final String SOAP_NO_MUSTUNDERSTAND_FILE = "src/test/resources/testFiles/security/soapMessageNoMustUnderstand.xml";
+	private static final String SOAP_EMPTY_FILE = "src/test/resources/testFiles/security/soapEmpty.xml";
 
 	@Test
 	public void testSecureMessage() throws IOException, ParserConfigurationException, SAXException {
-		final SoapMessage sm = WSInterceptorTestUtil.createSoapMessage(SOAP_MESSAGE_FILE);
+		// with "mustUnderstand"
+		final SoapMessage sm = WSInterceptorTestUtil.createSoapMessage(SOAP_MUSTUNDERSTAND_FILE);
 		final MessageContext messageContextMock = mock(MessageContext.class);
 		interceptor.secureMessage(sm, messageContextMock);
 		Assert.assertTrue(WSInterceptorTestUtil.getRawXML(sm).indexOf("mustUnderstand", 0) < 0);
+
+		// without "mustUnderstand"
+		final SoapMessage smNo = WSInterceptorTestUtil.createSoapMessage(SOAP_NO_MUSTUNDERSTAND_FILE);
+		interceptor.secureMessage(smNo, messageContextMock);
+		Assert.assertTrue(WSInterceptorTestUtil.getRawXML(smNo).indexOf("mustUnderstand", 0) < 0);
+
+		// without a security header
+		final SoapMessage smEmpty = WSInterceptorTestUtil.createSoapMessage(SOAP_EMPTY_FILE);
+		interceptor.secureMessage(smEmpty, messageContextMock);
+		Assert.assertTrue(WSInterceptorTestUtil.getRawXML(smEmpty).indexOf("mustUnderstand", 0) < 0);
 	}
 
 	@Test
 	public void testSecureMessageWSSecurityException() throws IOException, ParserConfigurationException, SAXException {
 
-		final SoapMessage sm = WSInterceptorTestUtil.createSoapMessage(SOAP_MESSAGE_FILE);
+		final SoapMessage sm = WSInterceptorTestUtil.createSoapMessage(SOAP_MUSTUNDERSTAND_FILE);
 		final MessageContext messageContextMock = mock(MessageContext.class);
 
 		final VAServiceMustUnderstandWss4jSecurityInterceptor interceptor = new VAServiceMustUnderstandWss4jSecurityInterceptor();
