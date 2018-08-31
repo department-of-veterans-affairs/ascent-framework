@@ -410,6 +410,36 @@ public class BaseWsClientConfig {
 			}
 		}
 
+		addSslContext(httpClient, keystore, keystorePass, truststore, truststorePass);
+
+		LOGGER.debug("HttpClient Object : %s% {}", ReflectionToStringBuilder.toString(httpClient));
+		LOGGER.debug("Default Uri : %s% {}", endpoint);
+
+		messageSender.setHttpClient(httpClient.build());
+
+		// set the message factory & configure and return the template
+		final WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
+		webServiceTemplate.setMessageFactory(messageFactory);
+		webServiceTemplate.setMessageSender(messageSender);
+		webServiceTemplate.setDefaultUri(endpoint);
+		webServiceTemplate.setMarshaller(marshaller);
+		webServiceTemplate.setUnmarshaller(unmarshaller);
+		webServiceTemplate.setInterceptors(wsInterceptors);
+		return webServiceTemplate;
+	}
+
+	/**
+	 * If keystore and truststore are not null, SSL context is added to the httpClient.
+	 *
+	 * @param httpClient
+	 * @param keystore
+	 * @param keystorePass
+	 * @param truststore
+	 * @param truststorePass
+	 */
+	protected void addSslContext(final HttpClientBuilder httpClient,
+			final Resource keystore, final String keystorePass, final Resource truststore, final String truststorePass) {
+
 		if (keystore != null && truststore != null) {
 			// Add SSL
 			try {
@@ -430,21 +460,6 @@ public class BaseWsClientConfig {
 				throw new AscentRuntimeException(msg, e);
 			}
 		}
-
-		LOGGER.debug("HttpClient Object : %s% {}", ReflectionToStringBuilder.toString(httpClient));
-		LOGGER.debug("Default Uri : %s% {}", endpoint);
-
-		messageSender.setHttpClient(httpClient.build());
-
-		// set the message factory & configure and return the template
-		final WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
-		webServiceTemplate.setMessageFactory(messageFactory);
-		webServiceTemplate.setMessageSender(messageSender);
-		webServiceTemplate.setDefaultUri(endpoint);
-		webServiceTemplate.setMarshaller(marshaller);
-		webServiceTemplate.setUnmarshaller(unmarshaller);
-		webServiceTemplate.setInterceptors(wsInterceptors);
-		return webServiceTemplate;
 	}
 
 	/**
@@ -462,8 +477,10 @@ public class BaseWsClientConfig {
 			throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
 		KeyStore keyStore = KeyStore.getInstance("JKS");
 		File key = ResourceUtils.getFile(filePath);
-		InputStream in = new FileInputStream(key);
-		keyStore.load(in, pass);
+
+		try (InputStream in = new FileInputStream(key)) {
+			keyStore.load(in, pass);
+		}
 		return keyStore;
 	}
 

@@ -1,11 +1,18 @@
 package gov.va.ascent.framework.ws.client;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
 
 import javax.xml.soap.SOAPException;
 
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponseInterceptor;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -63,7 +70,8 @@ public class BaseWsClientConfigTest {
 	@Test
 	public void testCreateDefaultWebServiceTemplateStringIntIntMarshallerUnmarshaller() {
 		BaseWsClientConfig test = new BaseWsClientConfig();
-		assertTrue(test.createDefaultWebServiceTemplate("http://dummyservice/endpoint", 30, 30, mockMarshaller, mockUnmarshaller) instanceof WebServiceTemplate);
+		assertTrue(test.createDefaultWebServiceTemplate("http://dummyservice/endpoint", 30, 30, mockMarshaller,
+				mockUnmarshaller) instanceof WebServiceTemplate);
 	}
 
 	@Test
@@ -89,6 +97,28 @@ public class BaseWsClientConfigTest {
 					intercpetors) instanceof WebServiceTemplate);
 		} catch (SOAPException e) {
 
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testAddSslContext() {
+		BaseWsClientConfig test = new BaseWsClientConfig();
+		HttpClientBuilder httpClient = HttpClients.custom();
+
+		Resource mockKeystore = mock(KEYSTORE.getClass());
+
+		// IOException
+		try {
+			when(mockKeystore.getFile()).thenThrow(IOException.class);
+		} catch (IOException e1) {
+			fail("Mocking should not throw exception");
+		}
+		try {
+			test.addSslContext(httpClient, mockKeystore, KEYSTORE_PASS, TRUSTSTORE, TRUSTSTORE_PASS);
+			fail("Should have thrown exception");
+		} catch (Exception e) {
+			assertTrue(e.getCause() != null && e.getCause().getClass().isAssignableFrom(IOException.class));
 		}
 	}
 
