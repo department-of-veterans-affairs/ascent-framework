@@ -1,6 +1,5 @@
 package gov.va.ascent.framework.exception;
 
-
 /**
  * Custom extension of RuntimeException so that we can raise this for exceptions we have no intention
  * of handling and need to raise but for some reason (i.e. checkstyle checks) cannot raise
@@ -56,39 +55,10 @@ public class AscentRuntimeException extends RuntimeException {
 
 	/**
 	 * Gets the server name.
-	 * 
+	 *
 	 * @return the server name
 	 */
 	public final String getServerName() {
 		return SERVER_NAME;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Throwable#getMessage()
-	 */
-	@Override
-	public final String getMessage() {
-		final StringBuilder details = new StringBuilder();
-		if (getServerName() != null) {
-			details.append("Server Name: [" + getServerName() + END_BRACKET);
-		}
-		if (super.getMessage() != null) {
-			details.append(super.getMessage());
-		} else if (super.getCause() != null) {
-			details.append(super.getCause());
-		}
-		return details.toString();
-	}
-
-	/**
-	 * Gets the message without any extra server/uniqueid/category information
-	 * @return <code>super.getMessage()</code>
-	 */
-	public final String getCleanMessage() {
-		return super.getMessage();
-
-	}
-
 }

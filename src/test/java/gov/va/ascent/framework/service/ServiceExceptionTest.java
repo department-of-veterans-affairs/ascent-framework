@@ -1,6 +1,7 @@
 package gov.va.ascent.framework.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.junit.After;
 import org.junit.Before;
@@ -19,7 +20,7 @@ public class ServiceExceptionTest {
 	@Test
 	public void testEmptyConstructor() {
 		ServiceException serviceException = new ServiceException();
-		assertNotNull(serviceException.getMessage());
+		assertNull(serviceException.getMessage());
 		assertNull(serviceException.getCause());
 	}
 
@@ -31,7 +32,7 @@ public class ServiceExceptionTest {
 //        Assert.assertEquals("Unique ID: ["
 //                + serviceException.getUniqueId()
 //                + "] Unit Testing"
-//        , serviceException.getMessage());		
+//        , serviceException.getMessage());
 	}
 
 	@Test
@@ -49,7 +50,7 @@ public class ServiceExceptionTest {
 //        Assert.assertEquals("Unique ID: ["
 //                + serviceException.getUniqueId()
 //                + "] java.lang.Throwable"
-//        , serviceException.getMessage());		
+//        , serviceException.getMessage());
 	}
 
 }
