@@ -103,19 +103,23 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 		Object response = null;
 		List<Object> request = null;
 
-		if (joinPoint.getArgs().length > 0) {
-			request = Arrays.asList(joinPoint.getArgs());
-		}
+		try {
+			if (joinPoint.getArgs().length > 0) {
+				request = Arrays.asList(joinPoint.getArgs());
+			}
 
-		response = joinPoint.proceed();
+			response = joinPoint.proceed();
 
-		final Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
-		final Auditable auditableAnnotation = method.getAnnotation(Auditable.class);
+			final Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
+			final Auditable auditableAnnotation = method.getAnnotation(Auditable.class);
 
-		if (auditableAnnotation != null && AuditEvents.REQUEST_RESPONSE.equals(auditableAnnotation.event())) {
-			final AuditEventData auditEventData = new AuditEventData(auditableAnnotation.event(),
-					auditableAnnotation.activity(), auditableAnnotation.auditClass());
-			writeAudit(request, response, auditEventData, MessageSeverity.INFO);
+			if (auditableAnnotation != null && AuditEvents.REQUEST_RESPONSE.equals(auditableAnnotation.event())) {
+				final AuditEventData auditEventData = new AuditEventData(auditableAnnotation.event(),
+						auditableAnnotation.activity(), auditableAnnotation.auditClass());
+				writeAudit(request, response, auditEventData, MessageSeverity.INFO);
+			}
+		} catch (Throwable e) {
+			LOGGER.error("Error while executing logAnnotatedMethodRequestResponse around auditableExecution", e);
 		}
 		return response;
 	}
@@ -136,28 +140,32 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 
 		Object responseObject = null;
 		List<Object> requestObject = null;
+		ServiceResponse serviceResponse = null;
+		AuditEventData auditEventData = null;
+		boolean returnTypeIsServiceResponse = false;
+		HttpServletResponse response = null;
+		Method method = null;
 
 		if (joinPoint.getArgs().length > 0) {
 			requestObject = Arrays.asList(joinPoint.getArgs());
 		}
 
-		final Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
-		final HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
-
-		final boolean returnTypeIsServiceResponse = method.getReturnType().toString().contains("ResponseEntity") ? false : true;
-
-		final AuditEventData auditEventData = new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(),
-				method.getDeclaringClass().getName());
-
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Request Object: {}", requestObject);
-			LOGGER.debug("Method: {}", method);
-			LOGGER.debug("Return Type as ResponseEntity: {}", returnTypeIsServiceResponse);
-			LOGGER.debug("AuditEventData Object: {}", auditEventData.toString());
-		}
-
-		ServiceResponse serviceResponse = null;
 		try {
+			method = ((MethodSignature) joinPoint.getSignature()).getMethod();
+			response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+
+			returnTypeIsServiceResponse = method.getReturnType().toString().contains("ResponseEntity") ? false : true;
+
+			auditEventData = new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(),
+					method.getDeclaringClass().getName());
+
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("Request Object: {}", requestObject);
+				LOGGER.debug("Method: {}", method);
+				LOGGER.debug("Return Type as ResponseEntity: {}", returnTypeIsServiceResponse);
+				LOGGER.debug("AuditEventData Object: {}", auditEventData.toString());
+			}
+
 			responseObject = joinPoint.proceed();
 
 			if (LOGGER.isDebugEnabled()) {
@@ -174,8 +182,9 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 
 			final HttpStatus ruleStatus = rulesEngine.messagesToHttpStatus(serviceResponse.getMessages());
 
-			if (ruleStatus != null && (HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.SERVER_ERROR
-					|| HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.CLIENT_ERROR)) {
+			if (ruleStatus != null
+					&& (HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.SERVER_ERROR
+							|| HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.CLIENT_ERROR)) {
 				LOGGER.debug("HttpStatus {}", ruleStatus.value());
 				writeAudit(requestObject, responseObject, auditEventData, MessageSeverity.ERROR);
 
@@ -189,18 +198,33 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 				writeAudit(requestObject, responseObject, auditEventData, MessageSeverity.INFO);
 			}
 		} catch (final AscentRuntimeException ascentRuntimeException) {
-			responseObject = writeAuditError(ascentRuntimeException, auditEventData);
-			if (response != null) {
-				response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			Object returnObj = null;
+			LOGGER.error("Error while executing RestProviderHttpResponseCodeAspect.aroundAdvice around restController",
+					ascentRuntimeException);
+			try {
+				responseObject = writeAuditError(ascentRuntimeException, auditEventData);
+				if (response != null) {
+					response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+				}
+				returnObj = getReturnResponse(returnTypeIsServiceResponse, responseObject);
+			} catch (Throwable e) { // NOSONAR intentionally catching throwable
+				LOGGER.error("Throwable occured while attempting to writeAuditError for AscentRuntimeException.", e);
 			}
-			return getReturnResponse(returnTypeIsServiceResponse, responseObject);
-		} catch (final Throwable throwable) {
-			final AscentRuntimeException ascentRuntimeException = new AscentRuntimeException(throwable);
-			responseObject = writeAuditError(ascentRuntimeException, auditEventData);
-			if (response != null) {
-				response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			return returnObj;
+		} catch (final Throwable throwable) { // NOSONAR intentionally catching throwable
+			Object returnObj = null;
+			LOGGER.error("Throwable while executing RestProviderHttpResponseCodeAspect.aroundAdvice around restController", throwable);
+			try {
+				final AscentRuntimeException ascentRuntimeException = new AscentRuntimeException(throwable);
+				responseObject = writeAuditError(ascentRuntimeException, auditEventData);
+				if (response != null) {
+					response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+				}
+				returnObj = getReturnResponse(returnTypeIsServiceResponse, responseObject);
+			} catch (Throwable e) { // NOSONAR intentionally catching throwable
+				LOGGER.error("Throwable occured while attempting to writeAuditError for Throwable.", e);
 			}
-			return getReturnResponse(returnTypeIsServiceResponse, responseObject);
+			return returnObj;
 		} finally {
 			LOGGER.debug("RestProviderHttpResponseCodeAspect after method was called.");
 		}
@@ -322,7 +346,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	 * @return
 	 * @throws IOException
 	 */
-	public static String convertBytesToString(final InputStream in) throws IOException {
+	protected static String convertBytesToString(final InputStream in) throws IOException {
 		int offset = 0;
 		int bytesRead = 0;
 		final byte[] data = new byte[NUMBER_OF_BYTES];

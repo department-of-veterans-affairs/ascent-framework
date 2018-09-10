@@ -10,10 +10,11 @@ import gov.va.ascent.framework.aspect.PerformanceLoggingAspect;
 @Aspect
 @Order(-9999)
 public class RestProviderTimerAspect extends BaseRestProviderAspect {
-	
+
 	@Around("restController() && publicServiceResponseRestMethod()")
 	public Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
+		// thrown exceptions are handled in the PerformanceLoggingAspect
 		return PerformanceLoggingAspect.aroundAdvice(joinPoint);
-    }
-	
+	}
+
 }

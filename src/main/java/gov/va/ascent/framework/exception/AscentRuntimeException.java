@@ -15,9 +15,6 @@ public class AscentRuntimeException extends RuntimeException {
 	/** Server name exception occurred on */
 	public static final String SERVER_NAME = System.getProperty("server.name");
 
-	/** End Bracket String */
-	private static final String END_BRACKET = "] ";
-
 	/**
 	 * Instantiates a new exception.
 	 */

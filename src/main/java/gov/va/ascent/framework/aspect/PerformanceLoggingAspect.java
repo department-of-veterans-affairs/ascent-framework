@@ -8,9 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PerformanceLoggingAspect {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(PerformanceLoggingAspect.class);
-	
+
 	/** number of milliseconds in a second */
 	private static final int NUMBER_OF_MILLIS_N_A_SECOND = 1000;
 
@@ -34,47 +34,50 @@ public class PerformanceLoggingAspect {
 
 	/** The Constant DOT. */
 	private static final String DOT = ".";
-	
+
 	private PerformanceLoggingAspect() {
 	}
 
-	public static final Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {	
-		
-		if(LOGGER.isDebugEnabled()){
-			LOGGER.debug("PerformanceLoggingAspect executing around method:" + joinPoint.toLongString());			
+	public static final Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
+
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("PerformanceLoggingAspect executing around method:" + joinPoint.toLongString());
 		}
-		
-        Method method = ((MethodSignature) joinPoint.getStaticPart().getSignature()).getMethod();
-		final Logger methodLog = LoggerFactory.getLogger(method.getDeclaringClass());
-		final long startTime = System.currentTimeMillis();
-		
-		// only log entry at the debug level
-		if (methodLog.isDebugEnabled()) {
-			methodLog.debug(ENTER + OPEN_BRACKET + method.getDeclaringClass().getSimpleName() + DOT
-					+ method.getName() + CLOSE_BRACKET);
-		}
-		
+
 		Object returnObject = null;
-        try {
-            returnObject = joinPoint.proceed();
-        } catch (Throwable throwable) {
+		Method method = null;
+		Logger methodLog = null;
+		final long startTime = System.currentTimeMillis();
+		try {
+			method = ((MethodSignature) joinPoint.getStaticPart().getSignature()).getMethod();
+			methodLog = LoggerFactory.getLogger(method.getDeclaringClass());
+
+			// only log entry at the debug level
+			if (methodLog.isDebugEnabled()) {
+				methodLog.debug(ENTER + OPEN_BRACKET + method.getDeclaringClass().getSimpleName() + DOT
+						+ method.getName() + CLOSE_BRACKET);
+			}
+
+			returnObject = joinPoint.proceed();
+		} catch (Throwable throwable) {
 			LOGGER.error("PerformanceLoggingAspect encountered uncaught exception. Throwable Cause.",
 					throwable.getCause());
 			throw throwable;
-        }
-        finally {
-        	LOGGER.debug("PerformanceLoggingAspect after method was called.");
-        	final long elapsedTime = System.currentTimeMillis() - startTime;
-        	final String callingClassAndMethod =
-        			method.getDeclaringClass().getSimpleName() + DOT + method.getName();
-    		if (methodLog.isInfoEnabled()) {
-    			methodLog.info(EXIT + OPEN_BRACKET + callingClassAndMethod + IN_ELAPSED_TIME + elapsedTime / NUMBER_OF_MILLIS_N_A_SECOND
-    					+ DOT + elapsedTime % NUMBER_OF_MILLIS_N_A_SECOND + SECS + CLOSE_BRACKET);
-    		}
+		} finally {
+			LOGGER.debug("PerformanceLoggingAspect after method was called.");
+			final long elapsedTime = System.currentTimeMillis() - startTime;
+			final String callingClassAndMethod =
+					method == null ? "null"
+							: method.getDeclaringClass().getSimpleName() + DOT + method.getName();
+			if (methodLog != null && methodLog.isInfoEnabled()) {
+				methodLog.info(EXIT + OPEN_BRACKET + callingClassAndMethod + IN_ELAPSED_TIME
+						+ elapsedTime / NUMBER_OF_MILLIS_N_A_SECOND
+						+ DOT + elapsedTime % NUMBER_OF_MILLIS_N_A_SECOND + SECS + CLOSE_BRACKET);
+			}
 
-        }
-        return returnObject;
-		
-    }
+		}
+		return returnObject;
+
+	}
 
 }

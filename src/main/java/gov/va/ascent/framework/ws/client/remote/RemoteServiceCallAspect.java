@@ -56,47 +56,49 @@ public class RemoteServiceCallAspect extends BaseRemoteServiceCallAspect {
 		WebServiceTemplate adviceWebserviceTemplate = null;
 		PartnerTransferObjectMarker adviceRequest = null;
 		Class<? extends PartnerTransferObjectMarker> adviceRequestClass = null;
-
-		if (joinPoint.getArgs() != null && joinPoint.getArgs()[0] != null) {
-			adviceWebserviceTemplate = (WebServiceTemplate) joinPoint.getArgs()[0];
-		}
-		if (joinPoint.getArgs().length >= 1 && joinPoint.getArgs()[1] != null) {
-			adviceRequest = (PartnerTransferObjectMarker) joinPoint.getArgs()[1];
-		}
-		if (joinPoint.getArgs().length >= 2 && joinPoint.getArgs()[2] != null) {
-			adviceRequestClass = (Class<? extends PartnerTransferObjectMarker>) joinPoint.getArgs()[2];
-		}
-
-		// confirm the objects got created
-		Defense.notNull(adviceWebserviceTemplate,
-				"RemoteServiceCallAspect aroundAdvice for standardRemoteServiceCallMethod received a null argument: WebServiceTemplate");
-		Defense.notNull(adviceRequest,
-				"RemoteServiceCallAspect aroundAdvice for standardRemoteServiceCallMethod received a null argument: serviceRequest");
-		Defense.notNull(adviceRequestClass,
-				"RemoteServiceCallAspect aroundAdvice for standardRemoteServiceCallMethod received a null argument: serviceRequestClass");
-
-		final MethodSignature methodSignature = (MethodSignature) joinPoint.getStaticPart().getSignature();
-		final Method method = methodSignature.getMethod();
-		final RequestResponseAuditData requestResponseAuditData = new RequestResponseAuditData();
-		requestResponseAuditData.setMethod(SOAP_METHOD);
-
-		// accumulate the request
-		requestResponseAuditData.setRequest(Arrays.asList(adviceRequest));
-
-		// invoke the RemoteServiceCall.callRemoteService(...) method as the calling IMPL intended
 		PartnerTransferObjectMarker adviceResponse = null;
+		final RequestResponseAuditData requestResponseAuditData = new RequestResponseAuditData();
+		Method method = null;
+
 		try {
+			if (joinPoint.getArgs() != null && joinPoint.getArgs()[0] != null) {
+				adviceWebserviceTemplate = (WebServiceTemplate) joinPoint.getArgs()[0];
+			}
+			if (joinPoint.getArgs().length >= 1 && joinPoint.getArgs()[1] != null) {
+				adviceRequest = (PartnerTransferObjectMarker) joinPoint.getArgs()[1];
+			}
+			if (joinPoint.getArgs().length >= 2 && joinPoint.getArgs()[2] != null) {
+				adviceRequestClass = (Class<? extends PartnerTransferObjectMarker>) joinPoint.getArgs()[2];
+			}
+
+			// confirm the objects got created
+			Defense.notNull(adviceWebserviceTemplate,
+					"RemoteServiceCallAspect aroundAdvice for standardRemoteServiceCallMethod received a null argument: WebServiceTemplate");
+			Defense.notNull(adviceRequest,
+					"RemoteServiceCallAspect aroundAdvice for standardRemoteServiceCallMethod received a null argument: serviceRequest");
+			Defense.notNull(adviceRequestClass,
+					"RemoteServiceCallAspect aroundAdvice for standardRemoteServiceCallMethod received a null argument: serviceRequestClass");
+
+			final MethodSignature methodSignature = (MethodSignature) joinPoint.getStaticPart().getSignature();
+			method = methodSignature.getMethod();
+			requestResponseAuditData.setMethod(SOAP_METHOD);
+
+			// accumulate the request
+			requestResponseAuditData.setRequest(Arrays.asList(adviceRequest));
+
+			// invoke the RemoteServiceCall.callRemoteService(...) method as the calling IMPL intended
 			adviceResponse = (PartnerTransferObjectMarker) joinPoint.proceed();
 		} catch (final Throwable throwable) {
+
+			// log the exception
+			LOGGER.error(this.getClass().getSimpleName() + " encountered "
+					+ throwable.getClass().getName() + ": " + throwable.getMessage(),
+					throwable);
 
 			// accumulate the exception
 			requestResponseAuditData.setResponse(throwable);
 			// write the audit log
 			writeAudit(MessageSeverity.ERROR, method, requestResponseAuditData);
-
-			// log the exception
-			LOGGER.error(this.getClass().getSimpleName() + " encountered uncaught exception. Throwable Cause.",
-					throwable.getCause());
 
 			// and re-throw
 			throw throwable;

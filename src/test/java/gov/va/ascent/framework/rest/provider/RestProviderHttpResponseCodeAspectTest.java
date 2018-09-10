@@ -232,7 +232,7 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 
 		}
 		assertTrue(((ServiceResponse) returnObject).getMessages().size() > 0);
-		assertEquals("RestProviderHttpResponseCodeAspect encountered uncaught exception in REST endpoint.",
+		assertEquals("Error while executing RestProviderHttpResponseCodeAspect.aroundAdvice around restController",
 				super.getAppender().get(0).getMessage());
 	}
 
@@ -254,9 +254,9 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 		}
 
 		assertTrue(((ServiceResponse) returnObject).getMessages().size() > 0);
-		assertEquals("RestProviderHttpResponseCodeAspect encountered uncaught exception in REST endpoint.",
+		assertEquals("Throwable while executing RestProviderHttpResponseCodeAspect.aroundAdvice around restController",
 				super.getAppender().get(0).getMessage());
-		assertEquals("gov.va.ascent.framework.exception.AscentRuntimeException",
+		assertEquals("java.lang.Throwable",
 				super.getAppender().get(0).getThrowableProxy().getClassName());
 	}
 

@@ -49,7 +49,7 @@ public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 	 * <p>
 	 * This method will execute JSR-303 validations on any {@link Validatable} parameter objects in the method signature.<br/>
 	 * Any failed validations is added to the method's response object, and is audit logged.
-	 * 
+	 *
 	 * @param joinPoint
 	 * @return Object
 	 * @throws Throwable
@@ -57,46 +57,36 @@ public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 	@Around("publicStandardServiceMethod() && serviceImpl()")
 	public Object aroundAdvice(final ProceedingJoinPoint joinPoint) throws Throwable {
 
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("ServiceValidationToMessageAspect executing around method:" + joinPoint.toLongString());
-		}
-
-		// fetch the request
-		List<Object> serviceRequest = null;
-		if (joinPoint.getArgs().length > 0) {
-			serviceRequest = Arrays.asList(joinPoint.getArgs());
-		}
-		if (serviceRequest == null) {
-			serviceRequest = new ArrayList<>();
-		}
-
-		// start creating the response
 		ServiceResponse serviceResponse = null;
-		final Map<String, List<ViolationMessageParts>> messages = new LinkedHashMap<>();
-
-		if (joinPoint.getArgs().length > 0) {
-			final MethodSignature methodSignature = (MethodSignature) joinPoint.getStaticPart().getSignature();
-			for (final Object objValidatable : serviceRequest) {
-				if (objValidatable != null && objValidatable instanceof Validatable) {
-					((Validatable) objValidatable).validate(messages);
-				}
-			}
-			if (!messages.isEmpty()) {
-				serviceResponse = (ServiceResponse) methodSignature.getMethod().getReturnType().newInstance();
-				convertMapToMessages(serviceResponse, messages);
-				AuditLogger.error(
-						BaseRestProviderAspect.getDefaultAuditableInstance(methodSignature.getMethod()),
-						serviceResponse.getMessages().stream().map(Message::toString).reduce("", String::concat));
-			}
-		}
 
 		try {
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("ServiceValidationToMessageAspect executing around method:" + joinPoint.toLongString());
+			}
+
+			// fetch the request
+			List<Object> serviceRequest = null;
+			if (joinPoint.getArgs().length > 0) {
+				serviceRequest = Arrays.asList(joinPoint.getArgs());
+			}
+			if (serviceRequest == null) {
+				serviceRequest = new ArrayList<>();
+			}
+
+			// start creating the response
+			final Map<String, List<ViolationMessageParts>> messages = new LinkedHashMap<>();
+
+			if (joinPoint.getArgs().length > 0) {
+				final MethodSignature methodSignature = (MethodSignature) joinPoint.getStaticPart().getSignature();
+				serviceResponse = validateRequest(methodSignature, serviceRequest, messages);
+			}
+
 			if (serviceResponse == null) {
 				serviceResponse = (ServiceResponse) joinPoint.proceed();
 			}
 		} catch (final Throwable throwable) {
-			LOGGER.error("ServiceValidationToMessageAspect encountered uncaught exception. Throwable Cause.",
-					throwable.getCause());
+			LOGGER.error("ServiceValidationToMessageAspect encountered " + throwable.getClass().getName()
+					+ ": " + throwable.getMessage(), throwable);
 			throw throwable;
 		} finally {
 			LOGGER.debug("ServiceValidationToMessageAspect after method was called.");
@@ -112,7 +102,7 @@ public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 	 * @param serviceResponse the service response
 	 * @param messages the messages
 	 */
-	public static void convertMapToMessages(final ServiceResponse serviceResponse,
+	protected static void convertMapToMessages(final ServiceResponse serviceResponse,
 			final Map<String, List<ViolationMessageParts>> messages) {
 		for (final Entry<String, List<ViolationMessageParts>> entry : messages.entrySet()) {
 			for (final ViolationMessageParts fieldError : entry.getValue()) {
@@ -122,4 +112,32 @@ public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 		Collections.sort(serviceResponse.getMessages(), Comparator.comparing(Message::getKey));
 	}
 
+	/**
+	 * Validate any validatable objects on the serviceRequest list.
+	 * 
+	 * @param methodSignature
+	 * @param serviceRequest
+	 * @param messages
+	 * @return
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
+	private ServiceResponse validateRequest(MethodSignature methodSignature, List<Object> serviceRequest,
+			Map<String, List<ViolationMessageParts>> messages)
+			throws InstantiationException, IllegalAccessException {
+		ServiceResponse serviceResponse = null;
+		for (final Object objValidatable : serviceRequest) {
+			if (objValidatable != null && objValidatable instanceof Validatable) {
+				((Validatable) objValidatable).validate(messages);
+			}
+		}
+		if (!messages.isEmpty()) {
+			serviceResponse = (ServiceResponse) methodSignature.getMethod().getReturnType().newInstance();
+			convertMapToMessages(serviceResponse, messages);
+			AuditLogger.error(
+					BaseRestProviderAspect.getDefaultAuditableInstance(methodSignature.getMethod()),
+					serviceResponse.getMessages().stream().map(Message::toString).reduce("", String::concat));
+		}
+		return serviceResponse;
+	}
 }
