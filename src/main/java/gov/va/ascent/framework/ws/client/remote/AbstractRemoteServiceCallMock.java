@@ -8,6 +8,9 @@ import java.text.MessageFormat;
 
 import javax.xml.transform.Source;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.WebServiceTemplate;
@@ -33,6 +36,7 @@ import gov.va.ascent.framework.util.Defense;
  * @author aburkholder
  */
 public abstract class AbstractRemoteServiceCallMock implements RemoteServiceCall {
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractRemoteServiceCallMock.class);
 
 	/** Constant for the filename template for mocked files */
 	public static final String MOCK_FILENAME_TEMPLATE = "test/mocks/{0}.xml";
@@ -109,23 +113,30 @@ public abstract class AbstractRemoteServiceCallMock implements RemoteServiceCall
 		Defense.notNull(request, "To callMockService, the transfer object 'request' cannot be null.");
 		Defense.notNull(requestClass, "To callMockService, the 'requestClass' of the request transfer object cannot be null.");
 
-		final Source requestPayload = marshalMockRequest((Jaxb2Marshaller) webserviceTemplate.getMarshaller(), request, requestClass);
-		final Source responsePayload = readMockResponseByKey(request);
+		PartnerTransferObjectMarker response = null;
 
-		synchronized (webserviceTemplate) {
+		try {
+			final Source requestPayload =
+					marshalMockRequest((Jaxb2Marshaller) webserviceTemplate.getMarshaller(), request, requestClass);
+			final Source responsePayload = readMockResponseByKey(request);
 
-			final MockWebServiceServer mockSoapServer = MockWebServiceServer.createServer(webserviceTemplate);
+			synchronized (webserviceTemplate) {
 
-			mockSoapServer.expect(payload(requestPayload)).andRespond(withPayload(responsePayload));
+				final MockWebServiceServer mockSoapServer = MockWebServiceServer.createServer(webserviceTemplate);
 
-			final PartnerTransferObjectMarker response =
-					(PartnerTransferObjectMarker) webserviceTemplate.marshalSendAndReceive(requestClass.cast(request));
+				mockSoapServer.expect(payload(requestPayload)).andRespond(withPayload(responsePayload));
 
-			mockSoapServer.verify();
+				response = (PartnerTransferObjectMarker) webserviceTemplate.marshalSendAndReceive(requestClass.cast(request));
 
-			return response;
-
+				mockSoapServer.verify();
+			}
+		} catch (Exception e) {
+			LOGGER.error("MOCK service call failed with requestClass "
+					+ requestClass.getName() + " and request object " + ReflectionToStringBuilder.toString(request), e);
+			throw e;
 		}
+
+		return response;
 	}
 
 	/**
