@@ -2,8 +2,11 @@ package gov.va.ascent.framework.aspect;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.aspectj.lang.JoinPoint;
@@ -47,6 +50,20 @@ public class PerformanceLoggingAspectTest extends AbstractBaseLogTester {
 	@Override
 	@After
 	public void tearDown() {
+	}
+
+	@Test
+	public void testConstructor() {
+		try {
+			Constructor<?> constructor = PerformanceLoggingAspect.class.getDeclaredConstructors()[0];
+			constructor.setAccessible(true);
+			constructor.newInstance(null);
+			fail("Should have thrown InvocationTargetException.");
+		} catch (IllegalAccessError | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			assertTrue(InvocationTargetException.class.equals(e.getClass()));
+			assertTrue(IllegalAccessError.class.equals(e.getCause().getClass()));
+		}
 	}
 
 	@Test
