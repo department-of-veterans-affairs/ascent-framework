@@ -10,7 +10,6 @@ import javax.xml.bind.DatatypeConverter;
  */
 public final class HashGenerator {
 
-
 	/** The Constant MD5_DIGEST_ALGORITHM. */
 	public static final String MD5_DIGEST_ALGORITHM = "MD5";
 
@@ -21,6 +20,7 @@ public final class HashGenerator {
 	 * Constructor to prevent instantiation.
 	 */
 	private HashGenerator() {
+		throw new IllegalAccessError("HashGenerator is a static class. Do not instantiate it.");
 	}
 
 	/**

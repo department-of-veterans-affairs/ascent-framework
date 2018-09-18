@@ -11,7 +11,7 @@ import gov.va.ascent.framework.properties.AscentPropertySourcesPlaceholderConfig
 
 /**
  * Abstract baseclass for Spring configuration of the properties files
- * 
+ *
  * @author Jon Shrader
  */
 public class BasePropertiesConfig {
@@ -50,17 +50,16 @@ public class BasePropertiesConfig {
 	 */
 	protected BasePropertiesConfig() {
 	}
-	
+
 	/**
 	 * properties bean
-	 * 
+	 *
 	 * @return the property sources placeholder configurer
 	 */
 	@Bean(name = "properties")
 	// jshrader - ignoring DesignForExtension check, we cannot make this spring bean method private or final
 	// CHECKSTYLE:OFF
-			static
-			PropertySourcesPlaceholderConfigurer properties() {
+	static PropertySourcesPlaceholderConfigurer properties() {
 		// CHECKSTYLE:ON
 		return new AscentPropertySourcesPlaceholderConfigurer();
 	}
