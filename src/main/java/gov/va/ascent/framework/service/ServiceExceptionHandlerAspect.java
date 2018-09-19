@@ -54,6 +54,13 @@ public class ServiceExceptionHandlerAspect extends BaseServiceAspect {
 		this.exceptionToExceptionTranslator = exceptionToExceptionTranslator;
 	}
 
+	/**
+	 * Translate exceptions at the Service Interface service response
+	 *
+	 * @param joinPoint
+	 * @param throwable
+	 * @throws Throwable
+	 */
 	@AfterThrowing(pointcut = "publicStandardServiceMethod()", throwing = "throwable")
 	public void afterThrowing(JoinPoint joinPoint, Throwable throwable) throws Throwable {
 		if (LOGGER.isDebugEnabled()) {

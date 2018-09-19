@@ -36,6 +36,7 @@ public class PerformanceLoggingAspect {
 	private static final String DOT = ".";
 
 	private PerformanceLoggingAspect() {
+		throw new IllegalAccessError("PerformanceLoggingAspect is a static class. Do not instantiate it.");
 	}
 
 	public static final Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {

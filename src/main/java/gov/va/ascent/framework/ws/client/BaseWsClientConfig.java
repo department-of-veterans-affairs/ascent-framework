@@ -1,8 +1,11 @@
 package gov.va.ascent.framework.ws.client;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.KeyManagementException;
+import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
@@ -10,6 +13,7 @@ import java.security.cert.CertificateException;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.net.ssl.SSLContext;
 import javax.xml.soap.MessageFactory;
 import javax.xml.soap.SOAPException;
 
@@ -17,8 +21,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponseInterceptor;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.wss4j.dom.WSConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
@@ -27,6 +35,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.util.ResourceUtils;
 import org.springframework.ws.WebServiceMessageFactory;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.client.support.interceptor.ClientInterceptor;
@@ -35,6 +44,7 @@ import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 
 import gov.va.ascent.framework.constants.AnnotationConstants;
+import gov.va.ascent.framework.exception.AscentRuntimeException;
 import gov.va.ascent.framework.exception.InterceptingExceptionTranslator;
 import gov.va.ascent.framework.log.PerformanceLogMethodInterceptor;
 import gov.va.ascent.framework.security.VAServiceWss4jSecurityInterceptor;
@@ -148,7 +158,8 @@ public class BaseWsClientConfig {
 
 		return this
 				.createWebServiceTemplate(endpoint, readTimeout, connectionTimeout, marshaller, unmarshaller, httpRequestInterceptors,
-						httpResponseInterceptors, wsInterceptors, axiomSoapMessageFactory);
+						httpResponseInterceptors, wsInterceptors, axiomSoapMessageFactory,
+						null, null, null, null);
 	}
 
 	/**
@@ -170,13 +181,176 @@ public class BaseWsClientConfig {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws SOAPException error creating message factory
 	 */
-	protected final WebServiceTemplate createSAAJWebServiceTemplate(final String endpoint, final int readTimeout,
+	protected final WebServiceTemplate createSaajWebServiceTemplate(final String endpoint, final int readTimeout,
 			final int connectionTimeout, final Marshaller marshaller, final Unmarshaller unmarshaller,
 			final ClientInterceptor[] wsInterceptors) throws SOAPException {
 		return this.createWebServiceTemplate(endpoint, readTimeout, connectionTimeout, marshaller, unmarshaller,
 				new HttpRequestInterceptor[] { null },
 				new HttpResponseInterceptor[] { null }, wsInterceptors,
-				new SaajSoapMessageFactory(MessageFactory.newInstance()));
+				new SaajSoapMessageFactory(MessageFactory.newInstance()),
+				null, null, null, null);
+	}
+
+	/**
+	 * Creates the ssl web service template using the default audit request/response interceptors and no web service interceptors.
+	 *
+	 * @param endpoint the endpoint
+	 * @param readTimeout the read timeout
+	 * @param connectionTimeout the connection timeout
+	 * @param marshaller the marshaller
+	 * @param unmarshaller the unmarshaller
+	 * @param keystore the path to the client ssl keystore
+	 * @param keystorePass the password for the client ssl keystore
+	 * @param truststore the path to the client ssl truststore
+	 * @param truststorePass the password for the client ssl truststore
+	 * @return the web service template
+	 * @throws KeyManagementException the key management exception
+	 * @throws UnrecoverableKeyException the unrecoverable key exception
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws KeyStoreException the key store exception
+	 * @throws CertificateException the certificate exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	protected final WebServiceTemplate createSslWebServiceTemplate( // NOSONAR do NOT encapsulate params just to reduce the number
+			final String endpoint, // NOSONAR do NOT encapsulate params just to reduce the number
+			final int readTimeout,// NOSONAR do NOT encapsulate params just to reduce the number
+			final int connectionTimeout, // NOSONAR do NOT encapsulate params just to reduce the number
+			final Marshaller marshaller, // NOSONAR do NOT encapsulate params just to reduce the number
+			final Unmarshaller unmarshaller,// NOSONAR do NOT encapsulate params just to reduce the number
+			final Resource keystore, // NOSONAR do NOT encapsulate params just to reduce the number
+			final String keystorePass, // NOSONAR do NOT encapsulate params just to reduce the number
+			final Resource truststore, // NOSONAR do NOT encapsulate params just to reduce the number
+			final String truststorePass) { // NOSONAR do NOT encapsulate params just to reduce the number
+		return this.createSslWebServiceTemplate(endpoint, readTimeout, connectionTimeout, marshaller, unmarshaller,
+				new HttpRequestInterceptor[] { null },
+				new HttpResponseInterceptor[] { null }, null, keystore, keystorePass, truststore, truststorePass);
+	}
+
+	/**
+	 * Creates the ssl web service template using the default audit request/response interceptors and the provided web service
+	 * interceptors
+	 *
+	 * @param endpoint the endpoint
+	 * @param readTimeout the read timeout
+	 * @param connectionTimeout the connection timeout
+	 * @param marshaller the marshaller
+	 * @param unmarshaller the unmarshaller
+	 * @param wsInterceptors the ws interceptors
+	 * @param keystore the path to the client ssl keystore
+	 * @param keystorePass the password for the client ssl keystore
+	 * @param truststore the path to the client ssl truststore
+	 * @param truststorePass the password for the client ssl truststore
+	 * @return the web service template
+	 * @throws KeyManagementException the key management exception
+	 * @throws UnrecoverableKeyException the unrecoverable key exception
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws KeyStoreException the key store exception
+	 * @throws CertificateException the certificate exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	protected final WebServiceTemplate createSslWebServiceTemplate( // NOSONAR do NOT encapsulate params just to reduce the number
+			final String endpoint, // NOSONAR do NOT encapsulate params just to reduce the number
+			final int readTimeout,// NOSONAR do NOT encapsulate params just to reduce the number
+			final int connectionTimeout, // NOSONAR do NOT encapsulate params just to reduce the number
+			final Marshaller marshaller, // NOSONAR do NOT encapsulate params just to reduce the number
+			final Unmarshaller unmarshaller,// NOSONAR do NOT encapsulate params just to reduce the number
+			final ClientInterceptor[] wsInterceptors, // NOSONAR do NOT encapsulate params just to reduce the number
+			final Resource keystore, // NOSONAR do NOT encapsulate params just to reduce the number
+			final String keystorePass, // NOSONAR do NOT encapsulate params just to reduce the number
+			final Resource truststore, // NOSONAR do NOT encapsulate params just to reduce the number
+			final String truststorePass) { // NOSONAR do NOT encapsulate params just to reduce the number
+		return this.createSslWebServiceTemplate(endpoint, readTimeout, connectionTimeout, marshaller, unmarshaller,
+				new HttpRequestInterceptor[] { null },
+				new HttpResponseInterceptor[] { null }, wsInterceptors, keystore, keystorePass, truststore, truststorePass);
+	}
+
+	/**
+	 * Creates the ssl web service template using the supplied http request/response interceptors and the provided web service
+	 * interceptors with axiom message factory
+	 *
+	 * @param endpoint the endpoint
+	 * @param readTimeout the read timeout
+	 * @param connectionTimeout the connection timeout
+	 * @param marshaller the marshaller
+	 * @param unmarshaller the unmarshaller
+	 * @param httpRequestInterceptors the http request interceptors
+	 * @param httpResponseInterceptors the http response interceptors
+	 * @param wsInterceptors the ws interceptors
+	 * @param keystore the path to the client ssl keystore
+	 * @param keystorePass the password for the client ssl keystore
+	 * @param truststore the path to the client ssl truststore
+	 * @param truststorePass the password for the client ssl truststore
+	 * @return the web service template
+	 * @throws KeyManagementException the key management exception
+	 * @throws UnrecoverableKeyException the unrecoverable key exception
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws KeyStoreException the key store exception
+	 * @throws CertificateException the certificate exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	protected final WebServiceTemplate createSslWebServiceTemplate( // NOSONAR do NOT encapsulate params just to reduce the number
+			final String endpoint, // NOSONAR do NOT encapsulate params just to reduce the number
+			final int readTimeout, // NOSONAR do NOT encapsulate params just to reduce the number
+			final int connectionTimeout, // NOSONAR do NOT encapsulate params just to reduce the number
+			final Marshaller marshaller, // NOSONAR do NOT encapsulate params just to reduce the number
+			final Unmarshaller unmarshaller, // NOSONAR do NOT encapsulate params just to reduce the number
+			final HttpRequestInterceptor[] httpRequestInterceptors, // NOSONAR do NOT encapsulate params just to reduce the number
+			final HttpResponseInterceptor[] httpResponseInterceptors, // NOSONAR do NOT encapsulate params just to reduce the number
+			final ClientInterceptor[] wsInterceptors, // NOSONAR do NOT encapsulate params just to reduce the number
+			final Resource keystore, // NOSONAR do NOT encapsulate params just to reduce the number
+			final String keystorePass, // NOSONAR do NOT encapsulate params just to reduce the number
+			final Resource truststore, // NOSONAR do NOT encapsulate params just to reduce the number
+			final String truststorePass) { // NOSONAR do NOT encapsulate params just to reduce the number
+
+		// create axiom message factory
+		final AxiomSoapMessageFactory axiomSoapMessageFactory = new AxiomSoapMessageFactory();
+		axiomSoapMessageFactory.setAttachmentCacheDir(new File(System.getProperty(BaseWsClientConfig.JAVA_IO_TMPDIR)));
+
+		return this
+				.createWebServiceTemplate(endpoint, readTimeout, connectionTimeout, marshaller, unmarshaller, httpRequestInterceptors,
+						httpResponseInterceptors, wsInterceptors, axiomSoapMessageFactory, keystore, keystorePass, truststore,
+						truststorePass);
+	}
+
+	/**
+	 * Creates the SAAJ SSL web service template using the the default audit request/response interceptors and the provided web service
+	 * interceptors with saaj message factory.
+	 *
+	 * @param endpoint the endpoint
+	 * @param readTimeout the read timeout
+	 * @param connectionTimeout the connection timeout
+	 * @param marshaller the marshaller
+	 * @param unmarshaller the unmarshaller
+	 * @param wsInterceptors the ws interceptors
+	 * @param keystore the path to the client ssl keystore
+	 * @param keystorePass the password for the client ssl keystore
+	 * @param truststore the path to the client ssl truststore
+	 * @param truststorePass the password for the client ssl truststore
+	 * @return the web service template
+	 * @throws KeyManagementException the key management exception
+	 * @throws UnrecoverableKeyException the unrecoverable key exception
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @throws KeyStoreException the key store exception
+	 * @throws CertificateException the certificate exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws SOAPException error creating message factory
+	 */
+	protected final WebServiceTemplate createSaajSslWebServiceTemplate( // NOSONAR do NOT encapsulate params just to reduce the number
+			final String endpoint,  // NOSONAR do NOT encapsulate params just to reduce the number
+			final int readTimeout, // NOSONAR do NOT encapsulate params just to reduce the number
+			final int connectionTimeout,  // NOSONAR do NOT encapsulate params just to reduce the number
+			final Marshaller marshaller,  // NOSONAR do NOT encapsulate params just to reduce the number
+			final Unmarshaller unmarshaller, // NOSONAR do NOT encapsulate params just to reduce the number
+			final ClientInterceptor[] wsInterceptors,  // NOSONAR do NOT encapsulate params just to reduce the number
+			final Resource keystore, // NOSONAR do NOT encapsulate params just to reduce the number
+			final String keystorePass, // NOSONAR do NOT encapsulate params just to reduce the number
+			final Resource truststore,  // NOSONAR do NOT encapsulate params just to reduce the number
+			final String truststorePass) throws SOAPException { // NOSONAR do NOT encapsulate params just to reduce the number
+		return this.createWebServiceTemplate(endpoint, readTimeout, connectionTimeout, marshaller, unmarshaller,
+				new HttpRequestInterceptor[] { null },
+				new HttpResponseInterceptor[] { null }, wsInterceptors,
+				new SaajSoapMessageFactory(MessageFactory.newInstance()),
+				keystore, keystorePass, truststore, truststorePass);
 	}
 
 	/**
@@ -192,6 +366,10 @@ public class BaseWsClientConfig {
 	 * @param httpResponseInterceptors the http response interceptors
 	 * @param wsInterceptors the ws interceptors
 	 * @param messageFactory webservice message factory
+	 * @param truststore the path to the client ssl truststore
+	 * @param truststorePass the password for the client ssl truststore
+	 * @param keystore the path to the client ssl keystore
+	 * @param keystorePass the password for the client ssl keystore
 	 * @return the web service template
 	 * @throws KeyManagementException the key management exception
 	 * @throws UnrecoverableKeyException the unrecoverable key exception
@@ -209,7 +387,11 @@ public class BaseWsClientConfig {
 			final HttpRequestInterceptor[] httpRequestInterceptors, // NOSONAR do NOT encapsulate params just to reduce the number
 			final HttpResponseInterceptor[] httpResponseInterceptors, // NOSONAR do NOT encapsulate params just to reduce the number
 			final ClientInterceptor[] wsInterceptors, // NOSONAR do NOT encapsulate params just to reduce the number
-			final WebServiceMessageFactory messageFactory) { // NOSONAR do NOT encapsulate params just to reduce the number
+			final WebServiceMessageFactory messageFactory, // NOSONAR do NOT encapsulate params just to reduce the number
+			final Resource keystore, // NOSONAR do NOT encapsulate params just to reduce the number
+			final String keystorePass, // NOSONAR do NOT encapsulate params just to reduce the number
+			final Resource truststore, // NOSONAR do NOT encapsulate params just to reduce the number
+			final String truststorePass) { // NOSONAR do NOT encapsulate params just to reduce the number
 		// configure the message sender
 		final HttpComponentsMessageSender messageSender = new HttpComponentsMessageSender();
 		messageSender.setReadTimeout(readTimeout);
@@ -228,6 +410,8 @@ public class BaseWsClientConfig {
 			}
 		}
 
+		addSslContext(httpClient, keystore, keystorePass, truststore, truststorePass);
+
 		LOGGER.debug("HttpClient Object : %s% {}", ReflectionToStringBuilder.toString(httpClient));
 		LOGGER.debug("Default Uri : %s% {}", endpoint);
 
@@ -242,6 +426,62 @@ public class BaseWsClientConfig {
 		webServiceTemplate.setUnmarshaller(unmarshaller);
 		webServiceTemplate.setInterceptors(wsInterceptors);
 		return webServiceTemplate;
+	}
+
+	/**
+	 * If keystore and truststore are not null, SSL context is added to the httpClient.
+	 *
+	 * @param httpClient
+	 * @param keystore
+	 * @param keystorePass
+	 * @param truststore
+	 * @param truststorePass
+	 */
+	protected void addSslContext(final HttpClientBuilder httpClient,
+			final Resource keystore, final String keystorePass, final Resource truststore, final String truststorePass) {
+
+		if (keystore != null && truststore != null) {
+			// Add SSL
+			try {
+				KeyStore keystoreFile = this.keyStore(keystore.getFile().getPath(), keystorePass.toCharArray());
+
+				SSLContext sslContext =
+						SSLContextBuilder.create()
+								.loadKeyMaterial(keystoreFile, keystorePass.toCharArray())
+								.loadTrustMaterial(truststore.getFile(), truststorePass.toCharArray()).build();
+				// use NoopHostnameVerifier to turn off host name verification
+				SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
+				httpClient.setSSLSocketFactory(csf);
+
+			} catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException | CertificateException | IOException
+					| UnrecoverableKeyException e) {
+				String msg = "Could not establish SSL context due to " + e.getClass().getSimpleName() + ": " + e.getMessage();
+				LOGGER.error(msg, e);
+				throw new AscentRuntimeException(msg, e);
+			}
+		}
+	}
+
+	/**
+	 * Produce a KeyStore object for a given JKS file and its password.
+	 *
+	 * @param filePath the JKS file path
+	 * @param pass the password
+	 * @return KeyStore
+	 * @throws KeyStoreException
+	 * @throws NoSuchAlgorithmException
+	 * @throws CertificateException
+	 * @throws IOException
+	 */
+	private KeyStore keyStore(String filePath, char[] pass)
+			throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
+		KeyStore keyStore = KeyStore.getInstance("JKS");
+		File key = ResourceUtils.getFile(filePath);
+
+		try (InputStream in = new FileInputStream(key)) {
+			keyStore.load(in, pass);
+		}
+		return keyStore;
 	}
 
 	/**
@@ -344,10 +584,10 @@ public class BaseWsClientConfig {
 	protected final VAServiceWss4jSecurityInterceptor getVAServiceWss4jSecurityInterceptor(final String username,
 			final String password, final String vaApplicationName, final String stationId) {
 		final VAServiceWss4jSecurityInterceptor interceptor = new VAServiceWss4jSecurityInterceptor();
-		interceptor.setSecurementActions("UsernameToken");
+		interceptor.setSecurementActions(WSConstants.USERNAME_TOKEN_LN);
 		interceptor.setSecurementUsername(username);
 		interceptor.setSecurementPassword(password);
-		interceptor.setSecurementPasswordType("PasswordText");
+		interceptor.setSecurementPasswordType(WSConstants.PW_TEXT);
 		interceptor.setVaApplicationName(vaApplicationName);
 		interceptor.setSecurementMustUnderstand(false);
 		if (!StringUtils.isEmpty(stationId)) {
