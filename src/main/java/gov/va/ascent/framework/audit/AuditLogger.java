@@ -14,7 +14,7 @@ public class AuditLogger {
 
 	static final Logger LOGGER = LoggerFactory.getLogger(AuditLogger.class);
 
-	/** Maximum length we are allowing for the "message" part of the log */
+	/** Maximum length we are allowing for the "message" part of the log, leaving room for AuditEventData and JSON formatting */
 	private static final int MAX_MSG_LEN = 14336;
 	/** The string to prepend when a message must be split */
 	private static final String PREPEND = "SPLIT LOG SEQ#";
@@ -93,6 +93,7 @@ public class AuditLogger {
 
 	/**
 	 * Perform actions to split logs into 14 KB chunks and log separately.
+	 * A 14 KB message leaves room for AuditEventData and JSON formatting.
 	 * <p>
 	 * This is a temporary measure, until a way is found to mitigate the 16 KB log size limit imposed by Docker.
 	 *
