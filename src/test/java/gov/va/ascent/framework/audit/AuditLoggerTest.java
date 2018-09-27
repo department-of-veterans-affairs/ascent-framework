@@ -1,11 +1,18 @@
 package gov.va.ascent.framework.audit;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.Appender;
-import gov.va.ascent.framework.security.PersonTraits;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.List;
+
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.codehaus.plexus.util.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,14 +29,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.Appender;
+import gov.va.ascent.framework.security.PersonTraits;
 
 /**
  * Audit Logger Test class that shows how to hook logback with mockito to see
@@ -99,7 +103,7 @@ public class AuditLoggerTest {
 		// given
 		Method method = AuditLoggerTest.class.getMethod("auditInfo", null);
 		AuditLogger.info(
-				new AuditEventData(AuditEvents.REQUEST_RESPONSE,method.getName(), method.getDeclaringClass().getName()),
+				new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
 				"Audit INFO Activity Detail");
 
 		// Now verify our logging interactions
@@ -174,5 +178,26 @@ public class AuditLoggerTest {
 		assertThat(loggingEvent.getLevel(), is(Level.ERROR));
 		// Check the message being logged is correct
 		assertThat(loggingEvent.getFormattedMessage(), is("Audit ERROR Activity Detail"));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void largeMessage() throws NoSuchMethodException, SecurityException {
+		// docker max message size including JSON formatting and AuditEventData is 16374
+		String largeMessage = StringUtils.repeat("test ", 3275); // 16 KB message
+
+		Method method = AuditLoggerTest.class.getMethod("largeMessage", null);
+		AuditEventData eventData =
+				new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName());
+		AuditLogger.info(eventData, largeMessage);
+
+		// Now verify our logging interactions
+		verify(mockAppender, times(2)).doAppend(captorLoggingEvent.capture());
+
+		List<LoggingEvent> events = captorLoggingEvent.getAllValues();
+		for (LoggingEvent event : events) {
+			assertThat(event.getFormattedMessage(), org.hamcrest.CoreMatchers.startsWith("SPLIT LOG SEQ#"));
+			assertTrue(event.getFormattedMessage().length() < 16374);
+		}
 	}
 }
