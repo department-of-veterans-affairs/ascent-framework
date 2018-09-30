@@ -49,6 +49,7 @@ import gov.va.ascent.framework.exception.InterceptingExceptionTranslator;
 import gov.va.ascent.framework.log.PerformanceLogMethodInterceptor;
 import gov.va.ascent.framework.security.VAServiceWss4jSecurityInterceptor;
 import gov.va.ascent.framework.util.Defense;
+import gov.va.ascent.framework.ws.client.remote.RemoteServiceCallInterceptor;
 
 /**
  * Base WebService Client configuration, consolidates core/common web service configuration operations used across the applications.
@@ -571,6 +572,17 @@ public class BaseWsClientConfig {
 		performanceLogMethodInteceptor.setWarningThreshhold(methodWarningThreshhold);
 		return performanceLogMethodInteceptor;
 	}
+	
+	/**
+	 * Gets the RemoteServiceCallInterceptor interceptor.
+	 *
+	 * @return the performance interceptor
+	 */
+	public final RemoteServiceCallInterceptor getRemoteServiceCallInterceptor() {
+		final RemoteServiceCallInterceptor remoteServiceCallInterceptor = new RemoteServiceCallInterceptor();
+		return remoteServiceCallInterceptor;
+	}
+
 
 	/**
 	 * Gets the security interceptor.

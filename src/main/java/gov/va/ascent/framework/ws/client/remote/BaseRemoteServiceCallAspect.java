@@ -2,10 +2,7 @@ package gov.va.ascent.framework.ws.client.remote;
 
 import java.lang.reflect.Method;
 
-import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.core.annotation.Order;
-
 import gov.va.ascent.framework.audit.AuditEventData;
 import gov.va.ascent.framework.audit.AuditEvents;
 
@@ -14,13 +11,15 @@ import gov.va.ascent.framework.audit.AuditEvents;
  *
  * @author aburkholder
  */
-@Aspect
-@Order(-9999)
-public class BaseRemoteServiceCallAspect {
 
-	protected BaseRemoteServiceCallAspect() {
+public class BaseRemoteServiceCallAspect{
+
+
+	public BaseRemoteServiceCallAspect() {
+		// TODO Auto-generated constructor stub
 		super();
 	}
+
 
 	/**
 	 * This pointcut reflects a standard remote partner service call.
@@ -28,6 +27,16 @@ public class BaseRemoteServiceCallAspect {
 	 */
 	@Pointcut("execution(* gov.va.ascent.framework.ws.client.remote.RemoteServiceCall.*(..))")
 	protected static final void standardRemoteServiceCallMethod() {
+		//Do Nothing
+	}
+	
+	
+	/**
+	 * This pointcut reflects a standard remote partner service call.
+	 * A partner service call is identified by implementation of the RemoteServiceCall interface.
+	 */
+	@Pointcut("execution(* gov.va.ascent.framework.ws.client.remote.AbstractRemoteServiceCallMock+.*(..))")
+	protected static final void standardRemoteServiceCallMockMethod() {
 		//Do Nothing
 	}
 
