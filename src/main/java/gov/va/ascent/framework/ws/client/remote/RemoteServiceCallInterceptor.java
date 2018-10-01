@@ -63,7 +63,7 @@ public class RemoteServiceCallInterceptor implements MethodInterceptor {
 		}
 
 		Object[] args = methodInvocation.getArguments();
-		AuditEventData auditEventData = new AuditEventData(AuditEvents.REQUEST_RESPONSE, methodInvocation.getMethod().getName(),
+		AuditEventData auditEventData = new AuditEventData(AuditEvents.PARTNER_REQUEST_RESPONSE, methodInvocation.getMethod().getName(),
 				methodInvocation.getMethod().getDeclaringClass().getSimpleName());
 	    LOGGER.info("Number of Arguments : " + args.length);
 	    for(int i=0; i < args.length; i++) {
