@@ -5,10 +5,12 @@ import java.util.Arrays;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.ws.client.core.WebServiceTemplate;
 
 import gov.va.ascent.framework.audit.RequestResponseAuditData;
@@ -17,7 +19,10 @@ import gov.va.ascent.framework.messages.MessageSeverity;
 import gov.va.ascent.framework.transfer.PartnerTransferObjectMarker;
 import gov.va.ascent.framework.util.Defense;
 
+@Aspect
+@Order(-9999)
 public class RemoteServiceCallAspect extends BaseRemoteServiceCallAspect {
+
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RemoteServiceCallAspect.class);
 
@@ -31,6 +36,7 @@ public class RemoteServiceCallAspect extends BaseRemoteServiceCallAspect {
 	RequestResponseLogSerializer getRequestResponseLogSerializer() {
 		return requestResponseLogSerializer;
 	}
+
 
 	/**
 	 * Around advice for partner service calls to audit the request and response.
