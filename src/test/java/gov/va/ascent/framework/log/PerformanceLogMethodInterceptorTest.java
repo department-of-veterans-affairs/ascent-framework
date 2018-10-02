@@ -22,7 +22,8 @@ import gov.va.ascent.framework.AbstractBaseLogTester;
 @RunWith(MockitoJUnitRunner.class)
 public class PerformanceLogMethodInterceptorTest extends AbstractBaseLogTester {
 
-	private Logger LOG = super.getLogger(PerformanceLogMethodInterceptorTest.class);
+	/** The underlying logger of AscentLogger */
+	private Logger LOG = super.getLogger(PerformanceLogMethodInterceptorTest.class).getLoggerBoundImpl();
 
 	@Mock
 	MethodInvocation invocation;

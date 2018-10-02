@@ -30,11 +30,11 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import gov.va.ascent.framework.AbstractBaseLogTester;
 import gov.va.ascent.framework.audit.AuditEvents;
 import gov.va.ascent.framework.audit.Auditable;
 import gov.va.ascent.framework.exception.AscentRuntimeException;
+import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.messages.Message;
 import gov.va.ascent.framework.messages.MessageSeverity;
 import gov.va.ascent.framework.service.ServiceRequest;
@@ -43,7 +43,7 @@ import gov.va.ascent.framework.service.ServiceResponse;
 @RunWith(MockitoJUnitRunner.class)
 public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTester {
 
-	private final Logger restProviderLog = super.getLogger(RestProviderHttpResponseCodeAspect.class);
+	private final AscentLogger restProviderLog = super.getLogger(RestProviderHttpResponseCodeAspect.class);
 
 	private RestProviderHttpResponseCodeAspect restProviderHttpResponseCodeAspect;
 	@Mock
@@ -81,7 +81,7 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest, httpServletResponse));
 
 		super.getAppender().clear();
-		restProviderLog.setLevel(Level.DEBUG);
+		restProviderLog.getLoggerBoundImpl().setLevel(Level.DEBUG);
 		try {
 			when(proceedingJoinPoint.getArgs()).thenReturn(mockArray);
 			when(proceedingJoinPoint.getSignature()).thenReturn(mockSignature);
@@ -218,7 +218,7 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 	public void testAroundAdviceCatchAscentExceptionLogging() {
 		super.getAppender().clear();
 
-		restProviderLog.setLevel(Level.ERROR);
+		restProviderLog.getLoggerBoundImpl().setLevel(Level.ERROR);
 		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
 		Object returnObject = null;
 		try {
@@ -239,7 +239,7 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 	@Test
 	public void testAroundAdviceCatchExceptionLogging() {
 		super.getAppender().clear();
-		restProviderLog.setLevel(Level.ERROR);
+		restProviderLog.getLoggerBoundImpl().setLevel(Level.ERROR);
 
 		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
 		Object returnObject = null;

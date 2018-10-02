@@ -184,7 +184,7 @@ public class AuditLoggerTest {
 	@Test
 	public void largeMessage() throws NoSuchMethodException, SecurityException {
 		// docker max message size including JSON formatting and AuditEventData is 16374
-		String largeMessage = StringUtils.repeat("test ", 3275); // 16 KB message
+		String largeMessage = StringUtils.repeat("test ", 3275); // 5 * 3275 = 16 KB message
 
 		Method method = AuditLoggerTest.class.getMethod("largeMessage", null);
 		AuditEventData eventData =

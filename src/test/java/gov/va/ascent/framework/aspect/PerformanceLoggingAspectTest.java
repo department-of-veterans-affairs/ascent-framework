@@ -26,8 +26,10 @@ import gov.va.ascent.framework.AbstractBaseLogTester;
 @RunWith(MockitoJUnitRunner.class)
 public class PerformanceLoggingAspectTest extends AbstractBaseLogTester {
 
-	private Logger AspectLoggingLOG = super.getLogger(PerformanceLoggingAspect.class);
-	private Logger AspectLoggingTestLOG = super.getLogger(PerformanceLoggingAspectTest.class);
+	/** Underlying logger implementation of AscentLogger */
+	private Logger AspectLoggingLOG = super.getLogger(PerformanceLoggingAspect.class).getLoggerBoundImpl();
+	/** Underlying logger implementation of AscentLogger */
+	private Logger AspectLoggingTestLOG = super.getLogger(PerformanceLoggingAspectTest.class).getLoggerBoundImpl();
 
 	@Mock
 	private ProceedingJoinPoint proceedingJoinPoint;
@@ -57,7 +59,7 @@ public class PerformanceLoggingAspectTest extends AbstractBaseLogTester {
 		try {
 			Constructor<?> constructor = PerformanceLoggingAspect.class.getDeclaredConstructors()[0];
 			constructor.setAccessible(true);
-			constructor.newInstance(null);
+			constructor.newInstance((Object[]) null);
 			fail("Should have thrown InvocationTargetException.");
 		} catch (IllegalAccessError | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {

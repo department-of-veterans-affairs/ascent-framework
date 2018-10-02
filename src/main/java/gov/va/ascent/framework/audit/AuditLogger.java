@@ -1,10 +1,10 @@
 package gov.va.ascent.framework.audit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.slf4j.event.Level;
 
-import gov.va.ascent.framework.messages.MessageSeverity;
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 import gov.va.ascent.framework.util.SanitizationUtil;
 
 /**
@@ -12,7 +12,7 @@ import gov.va.ascent.framework.util.SanitizationUtil;
  */
 public class AuditLogger {
 
-	static final Logger LOGGER = LoggerFactory.getLogger(AuditLogger.class);
+	static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(AuditLogger.class);
 
 	/** Maximum length we are allowing for the "message" part of the log, leaving room for AuditEventData and JSON formatting */
 	private static final int MAX_MSG_LEN = 14336;
@@ -34,7 +34,7 @@ public class AuditLogger {
 	 */
 	public static void debug(AuditEventData auditable, String activityDetail) {
 		addMdcSecurityEntries(auditable);
-		logMessage(null, SanitizationUtil.stripXSS(activityDetail));
+		logMessage(Level.DEBUG, SanitizationUtil.stripXSS(activityDetail));
 		MDC.clear();
 	}
 
@@ -46,7 +46,7 @@ public class AuditLogger {
 	 */
 	public static void info(AuditEventData auditable, String activityDetail) {
 		addMdcSecurityEntries(auditable);
-		logMessage(MessageSeverity.INFO, SanitizationUtil.stripXSS(activityDetail));
+		logMessage(Level.INFO, SanitizationUtil.stripXSS(activityDetail));
 		MDC.clear();
 
 	}
@@ -59,7 +59,7 @@ public class AuditLogger {
 	 */
 	public static void warn(AuditEventData auditable, String activityDetail) {
 		addMdcSecurityEntries(auditable);
-		logMessage(MessageSeverity.WARN, SanitizationUtil.stripXSS(activityDetail));
+		logMessage(Level.WARN, SanitizationUtil.stripXSS(activityDetail));
 		MDC.clear();
 
 	}
@@ -72,7 +72,7 @@ public class AuditLogger {
 	 */
 	public static void error(AuditEventData auditable, String activityDetail) {
 		addMdcSecurityEntries(auditable);
-		logMessage(MessageSeverity.ERROR, SanitizationUtil.stripXSS(activityDetail));
+		logMessage(Level.ERROR, SanitizationUtil.stripXSS(activityDetail));
 		MDC.clear();
 
 	}
@@ -100,7 +100,7 @@ public class AuditLogger {
 	 * @param severity
 	 * @param message
 	 */
-	private static void logMessage(MessageSeverity severity, String message) {
+	private static void logMessage(Level severity, String message) {
 		if (message != null && message.length() <= MAX_MSG_LEN) {
 			doLog(severity, message);
 		} else {
@@ -117,23 +117,23 @@ public class AuditLogger {
 	/**
 	 * Perform the logging.
 	 * <p>
-	 * If severity is {@code null}, DEBUG is assumed. Otherwise the lowest log level is INFO.
+	 * If severity is {@code null} or {@code TRACE}, DEBUG is assumed.
 	 *
 	 * @param severity
 	 * @param part
 	 */
-	private static void doLog(MessageSeverity severity, String part) {
+	private static void doLog(Level severity, String part) {
 		if (severity == null) {
 			LOGGER.debug(part);
 		} else {
-			if (MessageSeverity.FATAL.equals(severity)) {
-				LOGGER.error("[FATAL] " + part);
-			} else if (MessageSeverity.ERROR.equals(severity)) {
+			if (Level.ERROR.equals(severity)) {
 				LOGGER.error(part);
-			} else if (MessageSeverity.WARN.equals(severity)) {
+			} else if (Level.WARN.equals(severity)) {
 				LOGGER.warn(part);
-			} else {
+			} else if (Level.INFO.equals(severity)) {
 				LOGGER.info(part);
+			} else {
+				LOGGER.debug(part);
 			}
 		}
 	}

@@ -60,7 +60,7 @@ public class DateAdapterTest extends AbstractBaseLogTester {
 		assertEquals("Error parsing date, returning null:1970-0101T00:00:00", super.getAppender().get(0).getMessage());
 		assertEquals(null, dt);
 	}
-	
+
 	@Test
 	public void testGetDateFormat() {
 		DateFormat dateFormat = DateAdapter.getDateFormat();

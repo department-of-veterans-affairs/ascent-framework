@@ -20,7 +20,8 @@ public class InterceptingExceptionTranslatorTest extends AbstractBaseLogTester {
 	@Rule
 	public ExpectedException exceptions = ExpectedException.none();
 
-	private Logger LOG = super.getLogger(InterceptingExceptionTranslator.class);
+	/** Underlying logger implementation of AscentLogger */
+	private Logger LOG = super.getLogger(InterceptingExceptionTranslator.class).getLoggerBoundImpl();
 
 	@Test
 	public void testAscentRunTimeExceptionDefault() throws Exception {

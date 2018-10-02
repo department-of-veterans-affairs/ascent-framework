@@ -23,8 +23,10 @@ import gov.va.ascent.framework.rest.provider.RestProviderTimerAspect;
 @RunWith(MockitoJUnitRunner.class)
 public class RestProviderTimerAspectTest extends AbstractBaseLogTester {
 
-	private Logger AspectLoggingLOG = super.getLogger(RestProviderTimerAspectTest.class);
-	private Logger AspectLoggingTestLOG = super.getLogger(RestProviderTimerAspectTest.class);
+	/** Underlying implementation of AscentLogger */
+	private Logger AspectLoggingLOG = super.getLogger(RestProviderTimerAspectTest.class).getLoggerBoundImpl();
+	/** Underlying implementation of AscentLogger */
+	private Logger AspectLoggingTestLOG = super.getLogger(RestProviderTimerAspectTest.class).getLoggerBoundImpl();
 
 	@Mock
 	private ProceedingJoinPoint proceedingJoinPoint;
