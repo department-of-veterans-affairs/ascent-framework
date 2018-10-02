@@ -6,6 +6,8 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import gov.va.ascent.framework.audit.AuditEventData;
 import gov.va.ascent.framework.audit.AuditEvents;
 import gov.va.ascent.framework.audit.RequestResponseAuditData;
@@ -25,6 +27,7 @@ import gov.va.ascent.framework.messages.MessageSeverity;
  * 
  * @author vanapalliv
  */
+@Component
 public class RemoteServiceCallInterceptor implements MethodInterceptor {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(RemoteServiceCallInterceptor.class);
