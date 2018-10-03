@@ -31,20 +31,9 @@ import gov.va.ascent.framework.messages.MessageSeverity;
 public class RemoteServiceCallInterceptor implements MethodInterceptor {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(RemoteServiceCallInterceptor.class);
-
 	
 	@Autowired
 	RequestResponseLogSerializer asyncLogging;
-
-	/** NOTE: Do not reference this member directly. Use getRequestResponseLogSerializer() */
-	@Autowired
-	private RequestResponseLogSerializer requestResponseLogSerializer;
-
-	/** Getter for the Autowired member variable. This getter must be used, and is required to facilitate unit testing */
-	RequestResponseLogSerializer getRequestResponseLogSerializer() {
-		return requestResponseLogSerializer;
-	}
-	
 
 
 	/*
