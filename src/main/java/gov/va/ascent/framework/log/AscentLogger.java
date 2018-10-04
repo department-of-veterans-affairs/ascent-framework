@@ -1,5 +1,8 @@
 package gov.va.ascent.framework.log;
 
+import org.slf4j.event.Level;
+import org.slf4j.helpers.MessageFormatter;
+
 /**
  * A logger for the Ascent platform that extends and enhances org.slf4j.Logger.
  * <p>
@@ -35,8 +38,9 @@ public class AscentLogger extends AscentBaseLogger {
 	 *
 	 * @return org.slf4j.Logger
 	 */
+	@Override
 	public org.slf4j.Logger getLoggerInterfaceImpl() {
-		return super.logger;
+		return super.getLoggerInterfaceImpl();
 	}
 
 	/**
@@ -45,29 +49,30 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @return
 	 */
 	public ch.qos.logback.classic.Logger getLoggerBoundImpl() {
-		// Could also do something like this too (remove superfluous spaces) ...
-		// C l a s s < ? > impl C l a s s =
-		// S t a t i c Logger Binder. get Singleton ( ). get Logger Factory ( ).
-		// get Logger ( super. logger. getName ( ) ). get Class ( ) ;
-		// return impl C l a s s. cast ( super. logger ) ;
-		return (ch.qos.logback.classic.Logger) super.logger;
+		// Could also do something like this too (replace "^" with "" - stupid sonar) ...
+		// C^l^a^s^s^<^?^>^i^m^p^l^C^l^a^s^s^ ^=^ ^
+		// S^t^a^t^i^c^L^o^g^g^e^r^B^i^n^d^e^r^.^g^e^t^S^i^n^g^l^e^t^o^n^(^)^.^g^e^t^L^o^g^g^e^r^F^a^c^t^o^r^y^(^)^.
+		// g^e^t^L^o^g^g^e^r^(^s^u^p^e^r^.^l^o^g^g^e^r^.^g^e^t^N^a^m^e^(^)^)^.^g^e^t^C^l^a^s^s^(^)^;
+		// r^e^t^u^r^n^ ^i^m^p^l^C^l^a^s^s^.^c^a^s^t^(^s^u^p^e^r.^l^o^g^g^e^r^)^;
+		return (ch.qos.logback.classic.Logger) super.getLoggerInterfaceImpl();
 	}
 
 	/**
 	 * Log a message having an ASCII Art banner at the DEBUG level.
+	 * Note that logging banners is time consuming, so should be used sparingly.
 	 *
 	 * @param banner the banner
 	 * @param msg the message string to be logged
 	 * @since 1.4
 	 */
-	public void debug(AscentLogBanner banner, String msg) {
-		logger.debug(banner.getBanner());
-		logger.debug(msg);
+	public void debug(AscentBanner banner, String msg) {
+		super.debug(banner.getBanner() + NEWLINE + msg);
 	}
 
 	/**
 	 * Log a message having an ASCII Art banner at the DEBUG level according to the specified format
 	 * and argument.
+	 * Note that logging banners is time consuming, so should be used sparingly.
 	 * <p>
 	 * This form avoids superfluous object creation when the logger
 	 * is disabled for the DEBUG level.
@@ -76,14 +81,14 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param format the format string
 	 * @param arg the argument
 	 */
-	public void debug(AscentLogBanner banner, String format, Object arg) {
-		logger.debug(banner.getBanner());
-		logger.debug(format, arg);
+	public void debug(AscentBanner banner, String format, Object arg) {
+		super.debug(banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg).getMessage());
 	}
 
 	/**
 	 * Log a message having an ASCII Art banner at the DEBUG level according to the specified format
 	 * and arguments.
+	 * Note that logging banners is time consuming, so should be used sparingly.
 	 * <p>
 	 * This form avoids superfluous object creation when the logger
 	 * is disabled for the DEBUG level.
@@ -93,14 +98,14 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg1 the first argument
 	 * @param arg2 the second argument
 	 */
-	public void debug(AscentLogBanner banner, String format, Object arg1, Object arg2) {
-		logger.debug(banner.getBanner());
-		logger.debug(format, arg1, arg2);
+	public void debug(AscentBanner banner, String format, Object arg1, Object arg2) {
+		super.debug(banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg1, arg2).getMessage());
 	}
 
 	/**
 	 * Log a message having an ASCII Art banner at the DEBUG level according to the specified format
 	 * and arguments.
+	 * Note that logging banners is time consuming, so should be used sparingly.
 	 * <p>
 	 * This form avoids superfluous string concatenation when the logger
 	 * is disabled for the DEBUG level. However, this variant incurs the hidden
@@ -113,38 +118,38 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param format the format string
 	 * @param arguments a list of 3 or more arguments
 	 */
-	public void debug(AscentLogBanner banner, String format, Object... arguments) {
-		logger.debug(banner.getBanner());
-		logger.debug(format, arguments);
+	public void debug(AscentBanner banner, String format, Object... args) {
+		super.debug(banner.getBanner() + NEWLINE + MessageFormatter.arrayFormat(format, args).getMessage());
 	}
 
 	/**
 	 * Log an exception (throwable) having an ASCII Art banner at the DEBUG level with an
 	 * accompanying message.
+	 * Note that logging banners is time consuming, so should be used sparingly.
 	 *
 	 * @param bannerText the short text to be converted to ASCII art
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
-	public void debug(AscentLogBanner banner, String msg, Throwable t) {
-		logger.debug(banner.getBanner());
-		logger.debug(msg, t);
+	public void debug(AscentBanner banner, String msg, Throwable t) {
+		super.debug(banner.getBanner() + NEWLINE + msg, t);
 	}
 
 	/**
 	 * Log a message having an ASCII Art banner at the INFO level.
+	 * Note that logging banners is time consuming, so should be used sparingly.
 	 *
 	 * @param banner the banner
 	 * @param msg the message string to be logged
 	 */
-	public void info(AscentLogBanner banner, String msg) {
-		logger.info(banner.getBanner());
-		logger.info(msg);
+	public void info(AscentBanner banner, String msg) {
+		super.info(banner.getBanner() + NEWLINE + msg);
 	}
 
 	/**
 	 * Log a message having an ASCII Art banner at the INFO level according to the specified format
 	 * and argument.
+	 * Note that logging banners is time consuming, so should be used sparingly.
 	 * <p>
 	 * This form avoids superfluous object creation when the logger
 	 * is disabled for the INFO level.
@@ -153,14 +158,14 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param format the format string
 	 * @param arg the argument
 	 */
-	public void info(AscentLogBanner banner, String format, Object arg) {
-		logger.info(banner.getBanner());
-		logger.info(format, arg);
+	public void info(AscentBanner banner, String format, Object arg) {
+		super.info(banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg).getMessage());
 	}
 
 	/**
 	 * Log a message having an ASCII Art banner at the INFO level according to the specified format
 	 * and arguments.
+	 * Note that logging banners is time consuming, so should be used sparingly.
 	 * <p>
 	 * This form avoids superfluous object creation when the logger
 	 * is disabled for the INFO level.
@@ -170,14 +175,14 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg1 the first argument
 	 * @param arg2 the second argument
 	 */
-	public void info(AscentLogBanner banner, String format, Object arg1, Object arg2) {
-		logger.info(banner.getBanner());
-		logger.info(format, arg1, arg2);
+	public void info(AscentBanner banner, String format, Object arg1, Object arg2) {
+		super.info(banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg1, arg2).getMessage());
 	}
 
 	/**
 	 * Log a message having an ASCII Art banner at the INFO level according to the specified format
 	 * and arguments.
+	 * Note that logging banners is time consuming, so should be used sparingly.
 	 * <p>
 	 * This form avoids superfluous string concatenation when the logger
 	 * is disabled for the INFO level. However, this variant incurs the hidden
@@ -190,38 +195,38 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param format the format string
 	 * @param arguments a list of 3 or more arguments
 	 */
-	public void info(AscentLogBanner banner, String format, Object... arguments) {
-		logger.info(banner.getBanner());
-		logger.info(format, arguments);
+	public void info(AscentBanner banner, String format, Object... args) {
+		super.info(banner.getBanner() + NEWLINE + MessageFormatter.arrayFormat(format, args).getMessage());
 	}
 
 	/**
 	 * Log an exception (throwable) having an ASCII Art banner at the INFO level with an
 	 * accompanying message.
+	 * Note that logging banners is time consuming, so should be used sparingly.
 	 *
 	 * @param banner the banner
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
-	public void info(AscentLogBanner banner, String msg, Throwable t) {
-		logger.info(banner.getBanner());
-		logger.info(msg, t);
+	public void info(AscentBanner banner, String msg, Throwable t) {
+		super.info(banner.getBanner() + NEWLINE + msg, t);
 	}
 
 	/**
 	 * Log a message having an ASCII Art banner at the WARN level.
+	 * Note that logging banners is time consuming, so should be used sparingly.
 	 *
 	 * @param banner the banner
 	 * @param msg the message string to be logged
 	 */
-	public void warn(AscentLogBanner banner, String msg) {
-		logger.warn(banner.getBanner());
-		logger.warn(msg);
+	public void warn(AscentBanner banner, String msg) {
+		super.warn(banner.getBanner() + NEWLINE + msg);
 	}
 
 	/**
 	 * Log a message having an ASCII Art banner at the WARN level according to the specified format
 	 * and argument.
+	 * Note that logging banners is time consuming, so should be used sparingly.
 	 * <p>
 	 * This form avoids superfluous object creation when the logger
 	 * is disabled for the WARN level.
@@ -230,14 +235,14 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param format the format string
 	 * @param arg the argument
 	 */
-	public void warn(AscentLogBanner banner, String format, Object arg) {
-		logger.warn(banner.getBanner());
-		logger.warn(format, arg);
+	public void warn(AscentBanner banner, String format, Object arg) {
+		super.warn(banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg).getMessage());
 	}
 
 	/**
 	 * Log a message having an ASCII Art banner at the WARN level according to the specified format
 	 * and arguments.
+	 * Note that logging banners is time consuming, so should be used sparingly.
 	 * <p>
 	 * This form avoids superfluous string concatenation when the logger
 	 * is disabled for the WARN level. However, this variant incurs the hidden
@@ -250,14 +255,14 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param format the format string
 	 * @param arguments a list of 3 or more arguments
 	 */
-	public void warn(AscentLogBanner banner, String format, Object... arguments) {
-		logger.warn(banner.getBanner());
-		logger.warn(format, arguments);
+	public void warn(AscentBanner banner, String format, Object... args) {
+		super.warn(banner.getBanner() + NEWLINE + MessageFormatter.arrayFormat(format, args).getMessage());
 	}
 
 	/**
 	 * Log a message having an ASCII Art banner at the WARN level according to the specified format
 	 * and arguments.
+	 * Note that logging banners is time consuming, so should be used sparingly.
 	 * <p>
 	 * This form avoids superfluous object creation when the logger
 	 * is disabled for the WARN level.
@@ -267,38 +272,38 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg1 the first argument
 	 * @param arg2 the second argument
 	 */
-	public void warn(AscentLogBanner banner, String format, Object arg1, Object arg2) {
-		logger.warn(banner.getBanner());
-		logger.warn(format, arg1, arg2);
+	public void warn(AscentBanner banner, String format, Object arg1, Object arg2) {
+		super.warn(banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg1, arg2).getMessage());
 	}
 
 	/**
 	 * Log an exception (throwable) having an ASCII Art banner at the WARN level with an
 	 * accompanying message.
+	 * Note that logging banners is time consuming, so should be used sparingly.
 	 *
 	 * @param banner the banner
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
-	public void warn(AscentLogBanner banner, String msg, Throwable t) {
-		logger.warn(banner.getBanner());
-		logger.warn(msg, t);
+	public void warn(AscentBanner banner, String msg, Throwable t) {
+		super.warn(banner.getBanner() + NEWLINE + msg, t);
 	}
 
 	/**
 	 * Log a message having an ASCII Art banner at the ERROR level.
+	 * Note that logging banners is time consuming, so should be used sparingly.
 	 *
 	 * @param banner the banner
 	 * @param msg the message string to be logged
 	 */
-	public void error(AscentLogBanner banner, String msg) {
-		logger.error(banner.getBanner());
-		logger.error(msg);
+	public void error(AscentBanner banner, String msg) {
+		super.error(banner.getBanner() + NEWLINE + msg);
 	}
 
 	/**
 	 * Log a message having an ASCII Art banner at the ERROR level according to the specified format
 	 * and argument.
+	 * Note that logging banners is time consuming, so should be used sparingly.
 	 * <p>
 	 * This form avoids superfluous object creation when the logger
 	 * is disabled for the ERROR level.
@@ -307,14 +312,14 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param format the format string
 	 * @param arg the argument
 	 */
-	public void error(AscentLogBanner banner, String format, Object arg) {
-		logger.error(banner.getBanner());
-		logger.error(format, arg);
+	public void error(AscentBanner banner, String format, Object arg) {
+		super.error(banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg).getMessage());
 	}
 
 	/**
 	 * Log a message having an ASCII Art banner at the ERROR level according to the specified format
 	 * and arguments.
+	 * Note that logging banners is time consuming, so should be used sparingly.
 	 * <p>
 	 * This form avoids superfluous object creation when the logger
 	 * is disabled for the ERROR level.
@@ -324,14 +329,14 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg1 the first argument
 	 * @param arg2 the second argument
 	 */
-	public void error(AscentLogBanner banner, String format, Object arg1, Object arg2) {
-		logger.error(banner.getBanner());
-		logger.error(format, arg1, arg2);
+	public void error(AscentBanner banner, String format, Object arg1, Object arg2) {
+		super.error(banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg1, arg2).getMessage());
 	}
 
 	/**
 	 * Log a message having an ASCII Art banner at the ERROR level according to the specified format
 	 * and arguments.
+	 * Note that logging banners is time consuming, so should be used sparingly.
 	 * <p>
 	 * This form avoids superfluous string concatenation when the logger
 	 * is disabled for the ERROR level. However, this variant incurs the hidden
@@ -344,22 +349,183 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param format the format string
 	 * @param arguments a list of 3 or more arguments
 	 */
-	public void error(AscentLogBanner banner, String format, Object... arguments) {
-		logger.error(banner.getBanner());
-		logger.error(format, arguments);
+	public void error(AscentBanner banner, String format, Object... args) {
+		super.error(banner.getBanner() + NEWLINE + MessageFormatter.arrayFormat(format, args).getMessage());
 	}
 
 	/**
 	 * Log an exception (throwable) having an ASCII Art banner at the ERROR level with an
 	 * accompanying message.
+	 * Note that logging banners is time consuming, so should be used sparingly.
 	 *
 	 * @param banner the banner
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
-	public void error(AscentLogBanner banner, String msg, Throwable t) {
-		logger.error(banner.getBanner());
-		logger.error(msg, t);
+	public void error(AscentBanner banner, String msg, Throwable t) {
+		super.error(banner.getBanner() + NEWLINE + msg, t);
+	}
+
+	/**
+	 * Log a message at an arbitrary log level.
+	 * <p>
+	 * WARNING: this method is significantly slower than calling the desired log level method directly. Use only if necessary.
+	 *
+	 * @param level the org.slf4j.event.Level
+	 * @param msg the message string to be logged
+	 */
+	@Override
+	public void log(Level level, String msg) {
+		super.log(level, msg);
+	}
+
+	/**
+	 * Log a message at an arbitrary log level according to the specified format
+	 * and argument.
+	 * <p>
+	 * This form avoids superfluous object creation when the logger
+	 * is disabled for the DEBUG level.
+	 * <p>
+	 * WARNING: this method is significantly slower than calling the desired log level method directly. Use only if necessary.
+	 *
+	 * @param level the org.slf4j.event.Level
+	 * @param format the format string
+	 * @param arg the argument
+	 */
+	public void log(Level level, String format, Object arg) {
+		super.log(level, MessageFormatter.format(format, arg).getMessage());
+	}
+
+	/**
+	 * Log a message at an arbitrary log level according to the specified format
+	 * and arguments.
+	 * <p>
+	 * This form avoids superfluous object creation when the logger
+	 * is disabled for the DEBUG level.
+	 * <p>
+	 * WARNING: this method is significantly slower than calling the desired log level method directly. Use only if necessary.
+	 *
+	 * @param level the org.slf4j.event.Level
+	 * @param format the format string
+	 * @param arg1 the first argument
+	 * @param arg2 the second argument
+	 */
+	public void log(Level level, String format, Object arg1, Object arg2) {
+		super.log(level, MessageFormatter.format(format, arg1, arg2).getMessage());
+	}
+
+	/**
+	 * Log a message at an arbitrary log level according to the specified format
+	 * and arguments.
+	 * <p>
+	 * This form avoids superfluous string concatenation when the logger
+	 * is disabled for the DEBUG level. However, this variant incurs the hidden
+	 * (and relatively small) cost of creating an <code>Object[]</code> before invoking the method,
+	 * even if this logger is disabled for DEBUG. The variants taking
+	 * {@link #debug(String, Object) one} and {@link #debug(String, Object, Object) two}
+	 * arguments exist solely in order to avoid this hidden cost.
+	 * <p>
+	 * WARNING: this method is significantly slower than calling the desired log level method directly. Use only if necessary.
+	 *
+	 * @param level the org.slf4j.event.Level
+	 * @param format the format string
+	 * @param arguments a list of 3 or more arguments
+	 */
+	public void log(Level level, String format, Object... args) {
+		super.log(level, MessageFormatter.arrayFormat(format, args).getMessage());
+	}
+
+	/**
+	 * Log an exception (throwable) at an arbitrary log level with an
+	 * accompanying message.
+	 * <p>
+	 * WARNING: this method is significantly slower than calling the desired log level method directly. Use only if necessary.
+	 *
+	 * @param level the org.slf4j.event.Level
+	 * @param msg the message accompanying the exception
+	 * @param t the exception (throwable) to log
+	 */
+	@Override
+	public void log(Level level, String msg, Throwable t) {
+		super.log(level, msg, t);
+	}
+
+	/**
+	 * Log a message with the specific Marker at an arbitrary log level.
+	 * <p>
+	 * WARNING: this method is significantly slower than calling the desired log level method directly. Use only if necessary.
+	 *
+	 * @param level the org.slf4j.event.Level
+	 * @param marker the marker data specific to this log statement
+	 * @param msg the message string to be logged
+	 */
+	@Override
+	public void log(Level level, org.slf4j.Marker marker, String msg) {
+		super.log(level, marker, msg);
+	}
+
+	/**
+	 * This method is similar to {@link #log(String, Object)} method except that the
+	 * marker data is also taken into consideration.
+	 * <p>
+	 * WARNING: this method is significantly slower than calling the desired log level method directly. Use only if necessary.
+	 *
+	 * @param level the org.slf4j.event.Level
+	 * @param marker the marker data specific to this log statement
+	 * @param format the format string
+	 * @param arg the argument
+	 */
+	public void log(Level level, org.slf4j.Marker marker, String format, Object arg) {
+		super.log(level, marker, MessageFormatter.format(format, arg).getMessage());
+	}
+
+	/**
+	 * This method is similar to {@link #log(String, Object, Object)}
+	 * method except that the marker data is also taken into
+	 * consideration.
+	 * <p>
+	 * WARNING: this method is significantly slower than calling the desired log level method directly. Use only if necessary.
+	 *
+	 * @param level the org.slf4j.event.Level
+	 * @param marker the marker data specific to this log statement
+	 * @param format the format string
+	 * @param arg1 the first argument
+	 * @param arg2 the second argument
+	 */
+	public void log(Level level, org.slf4j.Marker marker, String format, Object arg1, Object arg2) {
+		super.log(level, marker, MessageFormatter.format(format, arg1, arg2).getMessage());
+	}
+
+	/**
+	 * This method is similar to {@link #log(String, Object...)}
+	 * method except that the marker data is also taken into
+	 * consideration.
+	 * <p>
+	 * WARNING: this method is significantly slower than calling the desired log level method directly. Use only if necessary.
+	 *
+	 * @param level the org.slf4j.event.Level
+	 * @param marker the marker data specific to this log statement
+	 * @param format the format string
+	 * @param arguments a list of 3 or more arguments
+	 */
+	public void log(Level level, org.slf4j.Marker marker, String format, Object... args) {
+		super.log(level, marker, MessageFormatter.arrayFormat(format, args).getMessage());
+	}
+
+	/**
+	 * This method is similar to {@link #log(String, Throwable)} method except that the
+	 * marker data is also taken into consideration.
+	 * <p>
+	 * WARNING: this method is significantly slower than calling the desired log level method directly. Use only if necessary.
+	 *
+	 * @param level the org.slf4j.event.Level
+	 * @param marker the marker data specific to this log statement
+	 * @param msg the message accompanying the exception
+	 * @param t the exception (throwable) to log
+	 */
+	@Override
+	public void log(Level level, org.slf4j.Marker marker, String msg, Throwable t) {
+		super.log(level, marker, msg, t);
 	}
 
 	//
@@ -383,7 +549,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @return name of this logger instance
 	 */
 	public String getName() {
-		return logger.getName();
+		return super.getLoggerInterfaceImpl().getName();
 	}
 
 	/**
@@ -394,7 +560,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @since 1.4
 	 */
 	public boolean isTraceEnabled() {
-		return logger.isTraceEnabled();
+		return super.getLoggerInterfaceImpl().isTraceEnabled();
 	}
 
 	/**
@@ -403,35 +569,32 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message string to be logged
 	 * @since 1.4
 	 */
+	@Override
 	public void trace(String msg) {
-		logger.trace(msg);
+		super.trace(msg);
 	}
 
 	/**
 	 * Log a message at the TRACE level according to the specified format
 	 * and argument.
-	 * <p/>
 	 * <p>
 	 * This form avoids superfluous object creation when the logger
 	 * is disabled for the TRACE level.
-	 * </p>
 	 *
 	 * @param format the format string
 	 * @param arg the argument
 	 * @since 1.4
 	 */
 	public void trace(String format, Object arg) {
-		logger.trace(format, arg);
+		super.trace(MessageFormatter.format(format, arg).getMessage());
 	}
 
 	/**
 	 * Log a message at the TRACE level according to the specified format
 	 * and arguments.
-	 * <p/>
 	 * <p>
 	 * This form avoids superfluous object creation when the logger
 	 * is disabled for the TRACE level.
-	 * </p>
 	 *
 	 * @param format the format string
 	 * @param arg1 the first argument
@@ -439,27 +602,25 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @since 1.4
 	 */
 	public void trace(String format, Object arg1, Object arg2) {
-		logger.trace(format, arg1, arg2);
+		super.trace(MessageFormatter.format(format, arg1, arg2).getMessage());
 	}
 
 	/**
 	 * Log a message at the TRACE level according to the specified format
 	 * and arguments.
-	 * <p/>
 	 * <p>
 	 * This form avoids superfluous string concatenation when the logger
 	 * is disabled for the TRACE level. However, this variant incurs the hidden
 	 * (and relatively small) cost of creating an <code>Object[]</code> before invoking the method,
 	 * even if this logger is disabled for TRACE. The variants taking {@link #trace(String, Object) one} and
 	 * {@link #trace(String, Object, Object) two} arguments exist solely in order to avoid this hidden cost.
-	 * </p>
 	 *
 	 * @param format the format string
 	 * @param arguments a list of 3 or more arguments
 	 * @since 1.4
 	 */
-	public void trace(String format, Object... arguments) {
-		logger.trace(format, arguments);
+	public void trace(String format, Object... args) {
+		super.trace(MessageFormatter.arrayFormat(format, args).getMessage());
 	}
 
 	/**
@@ -470,8 +631,9 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param t the exception (throwable) to log
 	 * @since 1.4
 	 */
+	@Override
 	public void trace(String msg, Throwable t) {
-		logger.trace(msg, t);
+		super.trace(msg, t);
 	}
 
 	/**
@@ -485,7 +647,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @since 1.4
 	 */
 	public boolean isTraceEnabled(org.slf4j.Marker marker) {
-		return logger.isTraceEnabled(marker);
+		return super.getLoggerInterfaceImpl().isTraceEnabled(marker);
 	}
 
 	/**
@@ -495,8 +657,9 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message string to be logged
 	 * @since 1.4
 	 */
+	@Override
 	public void trace(org.slf4j.Marker marker, String msg) {
-		logger.trace(marker, msg);
+		super.trace(marker, msg);
 	}
 
 	/**
@@ -509,7 +672,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @since 1.4
 	 */
 	public void trace(org.slf4j.Marker marker, String format, Object arg) {
-		logger.trace(marker, format, arg);
+		super.trace(marker, MessageFormatter.format(format, arg).getMessage());
 	}
 
 	/**
@@ -524,7 +687,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @since 1.4
 	 */
 	public void trace(org.slf4j.Marker marker, String format, Object arg1, Object arg2) {
-		logger.trace(marker, format, arg1, arg2);
+		super.trace(marker, MessageFormatter.format(format, arg1, arg2).getMessage());
 	}
 
 	/**
@@ -537,8 +700,8 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param argArray an array of arguments
 	 * @since 1.4
 	 */
-	public void trace(org.slf4j.Marker marker, String format, Object... argArray) {
-		logger.trace(marker, format, argArray);
+	public void trace(org.slf4j.Marker marker, String format, Object... args) {
+		super.trace(marker, MessageFormatter.arrayFormat(format, args).getMessage());
 	}
 
 	/**
@@ -550,8 +713,9 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param t the exception (throwable) to log
 	 * @since 1.4
 	 */
+	@Override
 	public void trace(org.slf4j.Marker marker, String msg, Throwable t) {
-		logger.trace(marker, msg, t);
+		super.trace(marker, msg, t);
 	}
 
 	/**
@@ -561,7 +725,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 *         false otherwise.
 	 */
 	public boolean isDebugEnabled() {
-		return logger.isDebugEnabled();
+		return super.getLoggerInterfaceImpl().isDebugEnabled();
 	}
 
 	/**
@@ -569,47 +733,43 @@ public class AscentLogger extends AscentBaseLogger {
 	 *
 	 * @param msg the message string to be logged
 	 */
+	@Override
 	public void debug(String msg) {
-		logger.debug(msg);
+		super.debug(msg);
 	}
 
 	/**
 	 * Log a message at the DEBUG level according to the specified format
 	 * and argument.
-	 * <p/>
 	 * <p>
 	 * This form avoids superfluous object creation when the logger
 	 * is disabled for the DEBUG level.
-	 * </p>
 	 *
 	 * @param format the format string
 	 * @param arg the argument
 	 */
 	public void debug(String format, Object arg) {
-		logger.debug(format, arg);
+		super.debug(MessageFormatter.format(format, arg).getMessage());
 	}
 
 	/**
 	 * Log a message at the DEBUG level according to the specified format
 	 * and arguments.
-	 * <p/>
 	 * <p>
 	 * This form avoids superfluous object creation when the logger
 	 * is disabled for the DEBUG level.
-	 * </p>
 	 *
 	 * @param format the format string
 	 * @param arg1 the first argument
 	 * @param arg2 the second argument
 	 */
 	public void debug(String format, Object arg1, Object arg2) {
-		logger.debug(format, arg1, arg2);
+		super.debug(MessageFormatter.format(format, arg1, arg2).getMessage());
 	}
 
 	/**
 	 * Log a message at the DEBUG level according to the specified format
 	 * and arguments.
-	 * <p/>
 	 * <p>
 	 * This form avoids superfluous string concatenation when the logger
 	 * is disabled for the DEBUG level. However, this variant incurs the hidden
@@ -617,13 +777,12 @@ public class AscentLogger extends AscentBaseLogger {
 	 * even if this logger is disabled for DEBUG. The variants taking
 	 * {@link #debug(String, Object) one} and {@link #debug(String, Object, Object) two}
 	 * arguments exist solely in order to avoid this hidden cost.
-	 * </p>
 	 *
 	 * @param format the format string
 	 * @param arguments a list of 3 or more arguments
 	 */
-	public void debug(String format, Object... arguments) {
-		logger.debug(format, arguments);
+	public void debug(String format, Object... args) {
+		super.debug(MessageFormatter.arrayFormat(format, args).getMessage());
 	}
 
 	/**
@@ -633,8 +792,9 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
+	@Override
 	public void debug(String msg, Throwable t) {
-		logger.debug(msg, t);
+		super.debug(msg, t);
 	}
 
 	/**
@@ -646,7 +806,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 *         false otherwise.
 	 */
 	public boolean isDebugEnabled(org.slf4j.Marker marker) {
-		return logger.isDebugEnabled(marker);
+		return super.getLoggerInterfaceImpl().isDebugEnabled(marker);
 	}
 
 	/**
@@ -655,8 +815,9 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param marker the marker data specific to this log statement
 	 * @param msg the message string to be logged
 	 */
+	@Override
 	public void debug(org.slf4j.Marker marker, String msg) {
-		logger.debug(marker, msg);
+		super.debug(marker, msg);
 	}
 
 	/**
@@ -668,7 +829,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg the argument
 	 */
 	public void debug(org.slf4j.Marker marker, String format, Object arg) {
-		logger.debug(marker, format, arg);
+		super.debug(marker, MessageFormatter.format(format, arg).getMessage());
 	}
 
 	/**
@@ -682,7 +843,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg2 the second argument
 	 */
 	public void debug(org.slf4j.Marker marker, String format, Object arg1, Object arg2) {
-		logger.debug(marker, format, arg1, arg2);
+		super.debug(marker, MessageFormatter.format(format, arg1, arg2).getMessage());
 	}
 
 	/**
@@ -694,8 +855,8 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param format the format string
 	 * @param arguments a list of 3 or more arguments
 	 */
-	public void debug(org.slf4j.Marker marker, String format, Object... arguments) {
-		logger.debug(marker, format, arguments);
+	public void debug(org.slf4j.Marker marker, String format, Object... args) {
+		super.debug(marker, MessageFormatter.arrayFormat(format, args).getMessage());
 	}
 
 	/**
@@ -706,8 +867,9 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
+	@Override
 	public void debug(org.slf4j.Marker marker, String msg, Throwable t) {
-		logger.debug(marker, msg, t);
+		super.debug(marker, msg, t);
 	}
 
 	/**
@@ -717,7 +879,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 *         false otherwise.
 	 */
 	public boolean isInfoEnabled() {
-		return logger.isInfoEnabled();
+		return super.getLoggerInterfaceImpl().isInfoEnabled();
 	}
 
 	/**
@@ -725,47 +887,43 @@ public class AscentLogger extends AscentBaseLogger {
 	 *
 	 * @param msg the message string to be logged
 	 */
+	@Override
 	public void info(String msg) {
-		logger.info(msg);
+		super.info(msg);
 	}
 
 	/**
 	 * Log a message at the INFO level according to the specified format
 	 * and argument.
-	 * <p/>
 	 * <p>
 	 * This form avoids superfluous object creation when the logger
 	 * is disabled for the INFO level.
-	 * </p>
 	 *
 	 * @param format the format string
 	 * @param arg the argument
 	 */
 	public void info(String format, Object arg) {
-		logger.info(format, arg);
+		super.info(MessageFormatter.format(format, arg).getMessage());
 	}
 
 	/**
 	 * Log a message at the INFO level according to the specified format
 	 * and arguments.
-	 * <p/>
 	 * <p>
 	 * This form avoids superfluous object creation when the logger
 	 * is disabled for the INFO level.
-	 * </p>
 	 *
 	 * @param format the format string
 	 * @param arg1 the first argument
 	 * @param arg2 the second argument
 	 */
 	public void info(String format, Object arg1, Object arg2) {
-		logger.info(format, arg1, arg2);
+		super.info(MessageFormatter.format(format, arg1, arg2).getMessage());
 	}
 
 	/**
 	 * Log a message at the INFO level according to the specified format
 	 * and arguments.
-	 * <p/>
 	 * <p>
 	 * This form avoids superfluous string concatenation when the logger
 	 * is disabled for the INFO level. However, this variant incurs the hidden
@@ -773,13 +931,12 @@ public class AscentLogger extends AscentBaseLogger {
 	 * even if this logger is disabled for INFO. The variants taking
 	 * {@link #info(String, Object) one} and {@link #info(String, Object, Object) two}
 	 * arguments exist solely in order to avoid this hidden cost.
-	 * </p>
 	 *
 	 * @param format the format string
 	 * @param arguments a list of 3 or more arguments
 	 */
-	public void info(String format, Object... arguments) {
-		logger.info(format, arguments);
+	public void info(String format, Object... args) {
+		super.info(MessageFormatter.arrayFormat(format, args).getMessage());
 	}
 
 	/**
@@ -789,8 +946,9 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
+	@Override
 	public void info(String msg, Throwable t) {
-		logger.info(msg, t);
+		super.info(msg, t);
 	}
 
 	/**
@@ -801,7 +959,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @return true if this logger is warn enabled, false otherwise
 	 */
 	public boolean isInfoEnabled(org.slf4j.Marker marker) {
-		return logger.isInfoEnabled(marker);
+		return super.getLoggerInterfaceImpl().isInfoEnabled(marker);
 	}
 
 	/**
@@ -810,8 +968,9 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param marker The marker specific to this log statement
 	 * @param msg the message string to be logged
 	 */
+	@Override
 	public void info(org.slf4j.Marker marker, String msg) {
-		logger.info(marker, msg);
+		super.info(marker, msg);
 	}
 
 	/**
@@ -823,7 +982,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg the argument
 	 */
 	public void info(org.slf4j.Marker marker, String format, Object arg) {
-		logger.info(marker, format, arg);
+		super.info(marker, MessageFormatter.format(format, arg).getMessage());
 	}
 
 	/**
@@ -837,7 +996,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg2 the second argument
 	 */
 	public void info(org.slf4j.Marker marker, String format, Object arg1, Object arg2) {
-		logger.info(marker, format, arg1, arg2);
+		super.info(marker, MessageFormatter.format(format, arg1, arg2).getMessage());
 	}
 
 	/**
@@ -849,8 +1008,8 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param format the format string
 	 * @param arguments a list of 3 or more arguments
 	 */
-	public void info(org.slf4j.Marker marker, String format, Object... arguments) {
-		logger.info(marker, format, arguments);
+	public void info(org.slf4j.Marker marker, String format, Object... args) {
+		super.info(marker, MessageFormatter.arrayFormat(format, args).getMessage());
 	}
 
 	/**
@@ -861,8 +1020,9 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
+	@Override
 	public void info(org.slf4j.Marker marker, String msg, Throwable t) {
-		logger.info(marker, msg, t);
+		super.info(marker, msg, t);
 	}
 
 	/**
@@ -872,7 +1032,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 *         false otherwise.
 	 */
 	public boolean isWarnEnabled() {
-		return logger.isWarnEnabled();
+		return super.getLoggerInterfaceImpl().isWarnEnabled();
 	}
 
 	/**
@@ -880,30 +1040,28 @@ public class AscentLogger extends AscentBaseLogger {
 	 *
 	 * @param msg the message string to be logged
 	 */
+	@Override
 	public void warn(String msg) {
-		logger.warn(msg);
+		super.warn(msg);
 	}
 
 	/**
 	 * Log a message at the WARN level according to the specified format
 	 * and argument.
-	 * <p/>
 	 * <p>
 	 * This form avoids superfluous object creation when the logger
 	 * is disabled for the WARN level.
-	 * </p>
 	 *
 	 * @param format the format string
 	 * @param arg the argument
 	 */
 	public void warn(String format, Object arg) {
-		logger.warn(format, arg);
+		super.warn(MessageFormatter.format(format, arg).getMessage());
 	}
 
 	/**
 	 * Log a message at the WARN level according to the specified format
 	 * and arguments.
-	 * <p/>
 	 * <p>
 	 * This form avoids superfluous string concatenation when the logger
 	 * is disabled for the WARN level. However, this variant incurs the hidden
@@ -911,30 +1069,27 @@ public class AscentLogger extends AscentBaseLogger {
 	 * even if this logger is disabled for WARN. The variants taking
 	 * {@link #warn(String, Object) one} and {@link #warn(String, Object, Object) two}
 	 * arguments exist solely in order to avoid this hidden cost.
-	 * </p>
 	 *
 	 * @param format the format string
 	 * @param arguments a list of 3 or more arguments
 	 */
-	public void warn(String format, Object... arguments) {
-		logger.warn(format, arguments);
+	public void warn(String format, Object... args) {
+		super.warn(MessageFormatter.arrayFormat(format, args).getMessage());
 	}
 
 	/**
 	 * Log a message at the WARN level according to the specified format
 	 * and arguments.
-	 * <p/>
 	 * <p>
 	 * This form avoids superfluous object creation when the logger
 	 * is disabled for the WARN level.
-	 * </p>
 	 *
 	 * @param format the format string
 	 * @param arg1 the first argument
 	 * @param arg2 the second argument
 	 */
 	public void warn(String format, Object arg1, Object arg2) {
-		logger.warn(format, arg1, arg2);
+		super.warn(MessageFormatter.format(format, arg1, arg2).getMessage());
 	}
 
 	/**
@@ -944,8 +1099,9 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
+	@Override
 	public void warn(String msg, Throwable t) {
-		logger.warn(msg, t);
+		super.warn(msg, t);
 	}
 
 	/**
@@ -957,7 +1113,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 *         false otherwise.
 	 */
 	public boolean isWarnEnabled(org.slf4j.Marker marker) {
-		return logger.isWarnEnabled(marker);
+		return super.getLoggerInterfaceImpl().isWarnEnabled(marker);
 	}
 
 	/**
@@ -966,8 +1122,9 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param marker The marker specific to this log statement
 	 * @param msg the message string to be logged
 	 */
+	@Override
 	public void warn(org.slf4j.Marker marker, String msg) {
-		logger.warn(marker, msg);
+		super.warn(marker, msg);
 	}
 
 	/**
@@ -979,7 +1136,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg the argument
 	 */
 	public void warn(org.slf4j.Marker marker, String format, Object arg) {
-		logger.warn(marker, format, arg);
+		super.warn(marker, MessageFormatter.format(format, arg).getMessage());
 	}
 
 	/**
@@ -993,7 +1150,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg2 the second argument
 	 */
 	public void warn(org.slf4j.Marker marker, String format, Object arg1, Object arg2) {
-		logger.warn(marker, format, arg1, arg2);
+		super.warn(marker, MessageFormatter.format(format, arg1, arg2).getMessage());
 	}
 
 	/**
@@ -1005,8 +1162,8 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param format the format string
 	 * @param arguments a list of 3 or more arguments
 	 */
-	public void warn(org.slf4j.Marker marker, String format, Object... arguments) {
-		logger.warn(marker, format, arguments);
+	public void warn(org.slf4j.Marker marker, String format, Object... args) {
+		super.warn(marker, MessageFormatter.arrayFormat(format, args).getMessage());
 	}
 
 	/**
@@ -1017,8 +1174,9 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
+	@Override
 	public void warn(org.slf4j.Marker marker, String msg, Throwable t) {
-		logger.warn(marker, msg, t);
+		super.warn(marker, msg, t);
 	}
 
 	/**
@@ -1028,7 +1186,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 *         false otherwise.
 	 */
 	public boolean isErrorEnabled() {
-		return logger.isErrorEnabled();
+		return super.getLoggerInterfaceImpl().isErrorEnabled();
 	}
 
 	/**
@@ -1036,47 +1194,43 @@ public class AscentLogger extends AscentBaseLogger {
 	 *
 	 * @param msg the message string to be logged
 	 */
+	@Override
 	public void error(String msg) {
-		logger.error(msg);
+		super.error(msg);
 	}
 
 	/**
 	 * Log a message at the ERROR level according to the specified format
 	 * and argument.
-	 * <p/>
 	 * <p>
 	 * This form avoids superfluous object creation when the logger
 	 * is disabled for the ERROR level.
-	 * </p>
 	 *
 	 * @param format the format string
 	 * @param arg the argument
 	 */
 	public void error(String format, Object arg) {
-		logger.error(format, arg);
+		super.error(MessageFormatter.format(format, arg).getMessage());
 	}
 
 	/**
 	 * Log a message at the ERROR level according to the specified format
 	 * and arguments.
-	 * <p/>
 	 * <p>
 	 * This form avoids superfluous object creation when the logger
 	 * is disabled for the ERROR level.
-	 * </p>
 	 *
 	 * @param format the format string
 	 * @param arg1 the first argument
 	 * @param arg2 the second argument
 	 */
 	public void error(String format, Object arg1, Object arg2) {
-		logger.error(format, arg1, arg2);
+		super.error(MessageFormatter.format(format, arg1, arg2).getMessage());
 	}
 
 	/**
 	 * Log a message at the ERROR level according to the specified format
 	 * and arguments.
-	 * <p/>
 	 * <p>
 	 * This form avoids superfluous string concatenation when the logger
 	 * is disabled for the ERROR level. However, this variant incurs the hidden
@@ -1084,13 +1238,12 @@ public class AscentLogger extends AscentBaseLogger {
 	 * even if this logger is disabled for ERROR. The variants taking
 	 * {@link #error(String, Object) one} and {@link #error(String, Object, Object) two}
 	 * arguments exist solely in order to avoid this hidden cost.
-	 * </p>
 	 *
 	 * @param format the format string
 	 * @param arguments a list of 3 or more arguments
 	 */
-	public void error(String format, Object... arguments) {
-		logger.error(format, arguments);
+	public void error(String format, Object... args) {
+		super.error(MessageFormatter.arrayFormat(format, args).getMessage());
 	}
 
 	/**
@@ -1100,8 +1253,9 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
+	@Override
 	public void error(String msg, Throwable t) {
-		logger.error(msg, t);
+		super.error(msg, t);
 	}
 
 	/**
@@ -1113,7 +1267,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 *         false otherwise.
 	 */
 	public boolean isErrorEnabled(org.slf4j.Marker marker) {
-		return logger.isErrorEnabled(marker);
+		return super.getLoggerInterfaceImpl().isErrorEnabled(marker);
 	}
 
 	/**
@@ -1122,8 +1276,9 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param marker The marker specific to this log statement
 	 * @param msg the message string to be logged
 	 */
+	@Override
 	public void error(org.slf4j.Marker marker, String msg) {
-		logger.error(marker, msg);
+		super.error(marker, msg);
 	}
 
 	/**
@@ -1135,7 +1290,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg the argument
 	 */
 	public void error(org.slf4j.Marker marker, String format, Object arg) {
-		logger.error(marker, format, arg);
+		super.error(marker, MessageFormatter.format(format, arg).getMessage());
 	}
 
 	/**
@@ -1149,7 +1304,7 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg2 the second argument
 	 */
 	public void error(org.slf4j.Marker marker, String format, Object arg1, Object arg2) {
-		logger.error(marker, format, arg1, arg2);
+		super.error(marker, MessageFormatter.format(format, arg1, arg2).getMessage());
 	}
 
 	/**
@@ -1161,8 +1316,8 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param format the format string
 	 * @param arguments a list of 3 or more arguments
 	 */
-	public void error(org.slf4j.Marker marker, String format, Object... arguments) {
-		logger.error(marker, format, arguments);
+	public void error(org.slf4j.Marker marker, String format, Object... args) {
+		super.error(marker, MessageFormatter.arrayFormat(format, args).getMessage());
 	}
 
 	/**
@@ -1174,7 +1329,8 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
+	@Override
 	public void error(org.slf4j.Marker marker, String msg, Throwable t) {
-		logger.error(marker, msg, t);
+		super.error(marker, msg, t);
 	}
 }

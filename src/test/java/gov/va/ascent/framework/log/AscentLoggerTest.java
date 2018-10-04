@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
 import org.slf4j.event.Level;
 import org.springframework.boot.test.rule.OutputCapture;
 
@@ -24,9 +23,9 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 
 	private AscentLogger LOGGER = super.getLogger(AscentLoggerTest.class);
 
-	private final AscentLogBanner banner = AscentLogBanner.newBanner("TEST BANNER", Level.INFO);
+	private final AscentBanner banner = AscentBanner.newBanner("TEST BANNER", Level.INFO);
 	private static final String MESSAGE = "Test message";
-	private static final Marker MARKER = MarkerFactory.getMarker(MESSAGE);
+	private static final Marker MARKER = AscentLogMarkers.TEST.getMarker();
 	private static final AscentRuntimeException EXCEPTION = new AscentRuntimeException("TestException");
 
 	/** The output capture. */
@@ -45,13 +44,13 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 	 * @param message the message
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	private void assertConsoleBanner(final Level level, final AscentLogBanner banner, final String message, final Exception e)
+	private void assertConsoleBanner(final Level level, final AscentBanner banner, final String message, final Exception e)
 			throws IOException {
 		final String outString = outputCapture.toString();
 
 		if (banner != null) {
 			String expected =
-					FigletFont.convertOneLine(AscentLogBanner.FONT_FILE, level.name() + ": " + banner.getBannerText());
+					FigletFont.convertOneLine(AscentBanner.FONT_FILE, level.name() + ": " + banner.getBannerText());
 			Assert.assertTrue(StringUtils.contains(StringUtils.normalizeSpace(outString), StringUtils.normalizeSpace(expected)));
 		}
 		// always assert the message
@@ -71,6 +70,20 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 	 */
 	private void assertConsole(final Level level, final String message, final Exception e) throws IOException {
 		assertConsoleBanner(level, null, message, e);
+	}
+
+	/**
+	 * Enable TRACE log level logging. By default TRACE is turned off.
+	 * <p>
+	 * ALWAYS {@link #disableTrace()} when TRACE level testing is done.
+	 */
+	private void enableTrace() {
+		LOGGER.getLoggerBoundImpl().setLevel(ch.qos.logback.classic.Level.TRACE);
+	}
+
+	/** Disable TRACE log level logging. By default TRACE is turned off. */
+	private void disableTrace() {
+		LOGGER.getLoggerBoundImpl().setLevel(ch.qos.logback.classic.Level.DEBUG);
 	}
 
 //	@Test
@@ -274,8 +287,40 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 	@Test
 	public final void testTraceStringThrowable() throws IOException {
 		// trace is disabled
-		LOGGER.trace("{} {}", EXCEPTION);
+		LOGGER.trace(MESSAGE, EXCEPTION);
 		assertTrue("".equals(outputCapture.toString()));
+	}
+
+	@Test
+	public final void testLogString() throws IOException {
+		enableTrace();
+		LOGGER.log(Level.TRACE, MESSAGE);
+		assertConsole(Level.TRACE, MESSAGE, null);
+		disableTrace();
+	}
+
+	@Test
+	public final void testLogStringObject() throws IOException {
+		LOGGER.log(Level.DEBUG, "{}", MESSAGE);
+		assertConsole(Level.DEBUG, MESSAGE, null);
+	}
+
+	@Test
+	public final void testLogStringObjectObject() throws IOException {
+		LOGGER.log(Level.INFO, "{} {}", MESSAGE, MESSAGE);
+		assertConsole(Level.INFO, MESSAGE + " " + MESSAGE, null);
+	}
+
+	@Test
+	public final void testLogStringObjectArray() throws IOException {
+		LOGGER.log(Level.WARN, "{} {}", new Object[] { MESSAGE, MESSAGE });
+		assertConsole(Level.WARN, MESSAGE + " " + MESSAGE, null);
+	}
+
+	@Test
+	public final void testLogStringThrowable() throws IOException {
+		LOGGER.log(Level.ERROR, MESSAGE, EXCEPTION);
+		assertConsole(Level.ERROR, MESSAGE, EXCEPTION);
 	}
 
 	@Test
@@ -604,6 +649,38 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 	@Test
 	public final void testErrorMarkerStringThrowable() throws IOException {
 		LOGGER.error(MARKER, MESSAGE, EXCEPTION);
+		assertConsole(Level.ERROR, MESSAGE, EXCEPTION);
+	}
+
+	@Test
+	public final void testLogMarkerString() throws IOException {
+		enableTrace();
+		LOGGER.log(Level.TRACE, MARKER, MESSAGE);
+		assertConsole(Level.TRACE, MESSAGE, null);
+		disableTrace();
+	}
+
+	@Test
+	public final void testLogMarkerStringObject() throws IOException {
+		LOGGER.log(Level.DEBUG, MARKER, "{}", MESSAGE);
+		assertConsole(Level.DEBUG, MESSAGE, null);
+	}
+
+	@Test
+	public final void testLogMarkerStringObjectObject() throws IOException {
+		LOGGER.log(Level.INFO, MARKER, "{} {}", MESSAGE, MESSAGE);
+		assertConsole(Level.INFO, MESSAGE + " " + MESSAGE, null);
+	}
+
+	@Test
+	public final void testLogMarkerStringObjectArray() throws IOException {
+		LOGGER.log(Level.WARN, MARKER, "{} {}", new Object[] { MESSAGE, MESSAGE });
+		assertConsole(Level.WARN, MESSAGE + " " + MESSAGE, null);
+	}
+
+	@Test
+	public final void testLogMarkerStringThrowable() throws IOException {
+		LOGGER.log(Level.ERROR, MARKER, MESSAGE, EXCEPTION);
 		assertConsole(Level.ERROR, MESSAGE, EXCEPTION);
 	}
 

@@ -196,7 +196,7 @@ public class AuditLoggerTest {
 
 		List<LoggingEvent> events = captorLoggingEvent.getAllValues();
 		for (LoggingEvent event : events) {
-			assertThat(event.getFormattedMessage(), org.hamcrest.CoreMatchers.startsWith("SPLIT LOG SEQ#"));
+			assertThat(event.getFormattedMessage(), org.hamcrest.CoreMatchers.containsString("test "));
 			assertTrue(event.getFormattedMessage().length() < 16374);
 		}
 	}

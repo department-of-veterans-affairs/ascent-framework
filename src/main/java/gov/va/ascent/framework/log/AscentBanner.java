@@ -11,9 +11,9 @@ import com.github.lalyos.jfiglet.FigletFont;
  *
  * @author aburkholder
  */
-public class AscentLogBanner {
+public class AscentBanner {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AscentLogBanner.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AscentBanner.class);
 
 	private String banner;
 	private String bannerText;
@@ -29,7 +29,7 @@ public class AscentLogBanner {
 	 * @param bannerText the banner text
 	 * @param level the log level reported by the banner
 	 */
-	public AscentLogBanner(String bannerText, Level level) {
+	public AscentBanner(String bannerText, Level level) {
 		Level useLevel = getSafeLevel(level);
 		this.bannerText = bannerText == null ? "" : bannerText;
 		this.level = useLevel;
@@ -43,8 +43,8 @@ public class AscentLogBanner {
 	 * @param level the log level reported by the banner
 	 * @return AscentLogBanner
 	 */
-	public static AscentLogBanner newBanner(final String bannerText, final Level level) {
-		return new AscentLogBanner(bannerText, level);
+	public static AscentBanner newBanner(final String bannerText, final Level level) {
+		return new AscentBanner(bannerText, level);
 	}
 
 	/**

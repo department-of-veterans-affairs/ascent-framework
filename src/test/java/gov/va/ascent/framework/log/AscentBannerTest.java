@@ -11,7 +11,7 @@ import org.slf4j.event.Level;
 
 import com.github.lalyos.jfiglet.FigletFont;
 
-public class AscentLogBannerTest {
+public class AscentBannerTest {
 
 	private static final String TEXT = "TEST BANNER";
 
@@ -21,16 +21,16 @@ public class AscentLogBannerTest {
 
 	@Test
 	public final void testAscentLogBanner() throws IOException {
-		String compare = "\n" + FigletFont.convertOneLine(AscentLogBanner.FONT_FILE, Level.DEBUG.name() + ": " + TEXT.toUpperCase());
-		AscentLogBanner banner = new AscentLogBanner(TEXT, Level.DEBUG);
+		String compare = "\n" + FigletFont.convertOneLine(AscentBanner.FONT_FILE, Level.DEBUG.name() + ": " + TEXT.toUpperCase());
+		AscentBanner banner = new AscentBanner(TEXT, Level.DEBUG);
 		assertNotNull(banner);
 		assertTrue(compare.equals(banner.getBanner()));
 	}
 
 	@Test
 	public final void testAscentLogBannerNullBannerText() throws IOException {
-		String compare = "\n" + FigletFont.convertOneLine(AscentLogBanner.FONT_FILE, Level.DEBUG.name() + ": ");
-		AscentLogBanner banner = new AscentLogBanner(null, Level.DEBUG);
+		String compare = "\n" + FigletFont.convertOneLine(AscentBanner.FONT_FILE, Level.DEBUG.name() + ": ");
+		AscentBanner banner = new AscentBanner(null, Level.DEBUG);
 		assertNotNull(banner);
 		assertTrue(compare.equals(banner.getBanner()));
 	}
@@ -38,9 +38,9 @@ public class AscentLogBannerTest {
 	@Test
 	public final void testGetBannerLevel() throws IOException {
 		// start with DEBUG
-		AscentLogBanner banner = new AscentLogBanner(TEXT, Level.DEBUG);
+		AscentBanner banner = new AscentBanner(TEXT, Level.DEBUG);
 		// verify same level
-		String compare = "\n" + FigletFont.convertOneLine(AscentLogBanner.FONT_FILE, Level.DEBUG.name() + ": " + TEXT.toUpperCase());
+		String compare = "\n" + FigletFont.convertOneLine(AscentBanner.FONT_FILE, Level.DEBUG.name() + ": " + TEXT.toUpperCase());
 		String text = banner.getBanner(Level.DEBUG);
 		assertNotNull(text);
 		assertTrue(compare.equals(text));
@@ -49,9 +49,9 @@ public class AscentLogBannerTest {
 	@Test
 	public final void testGetBannerLevelChanged() throws IOException {
 		// start with DEBUG
-		AscentLogBanner banner = new AscentLogBanner(TEXT, Level.DEBUG);
+		AscentBanner banner = new AscentBanner(TEXT, Level.DEBUG);
 		// verify ERROR
-		String compare = "\n" + FigletFont.convertOneLine(AscentLogBanner.FONT_FILE, Level.ERROR.name() + ": " + TEXT.toUpperCase());
+		String compare = "\n" + FigletFont.convertOneLine(AscentBanner.FONT_FILE, Level.ERROR.name() + ": " + TEXT.toUpperCase());
 		String text = banner.getBanner(Level.ERROR);
 		assertNotNull(text);
 		assertTrue(compare.equals(text));
@@ -59,7 +59,7 @@ public class AscentLogBannerTest {
 
 	@Test
 	public final void testGetLevel() throws IOException {
-		AscentLogBanner banner = new AscentLogBanner(TEXT, Level.DEBUG);
+		AscentBanner banner = new AscentBanner(TEXT, Level.DEBUG);
 		Level level = banner.getLevel();
 		assertNotNull(level);
 		assertTrue(Level.DEBUG.equals(level));
