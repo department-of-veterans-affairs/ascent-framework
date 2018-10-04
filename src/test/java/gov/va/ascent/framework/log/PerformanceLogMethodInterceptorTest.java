@@ -14,16 +14,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.event.Level;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import gov.va.ascent.framework.AbstractBaseLogTester;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PerformanceLogMethodInterceptorTest extends AbstractBaseLogTester {
 
 	/** The underlying logger of AscentLogger */
-	private Logger LOG = super.getLogger(PerformanceLogMethodInterceptorTest.class).getLoggerBoundImpl();
+	private AscentLogger LOG = super.getLogger(PerformanceLogMethodInterceptorTest.class);
 
 	@Mock
 	MethodInvocation invocation;
@@ -46,9 +45,9 @@ public class PerformanceLogMethodInterceptorTest extends AbstractBaseLogTester {
 
 		mockInvocationOf("getString", null);
 		assertEquals("enter [Helper.getString]", super.getAppender().get(0).getMessage());
-		assertEquals(Level.DEBUG, super.getAppender().get(0).getLevel());
+		assertEquals(ch.qos.logback.classic.Level.DEBUG, super.getAppender().get(0).getLevel());
 		assertTrue(super.getAppender().get(1).getMessage().contains("exit [Helper.getString] in elapsed time ["));
-		assertEquals(Level.DEBUG, super.getAppender().get(1).getLevel());
+		assertEquals(ch.qos.logback.classic.Level.DEBUG, super.getAppender().get(1).getLevel());
 		assertTrue(2 == super.getAppender().size());
 
 	}
@@ -60,7 +59,7 @@ public class PerformanceLogMethodInterceptorTest extends AbstractBaseLogTester {
 
 		mockInvocationOf("getString", null);
 		assertTrue(super.getAppender().get(0).getMessage().contains("exit [Helper.getString] in elapsed time ["));
-		assertEquals(Level.INFO, super.getAppender().get(0).getLevel());
+		assertEquals(ch.qos.logback.classic.Level.INFO, super.getAppender().get(0).getLevel());
 		assertTrue(1 == super.getAppender().size());
 
 	}
@@ -74,7 +73,7 @@ public class PerformanceLogMethodInterceptorTest extends AbstractBaseLogTester {
 		mockInvocationOf("getString", null);
 		assertTrue(super.getAppender().get(0).getMessage()
 				.contains("PERFORMANCE WARNING response for [Helper.getString] in elapsed time ["));
-		assertEquals(Level.WARN, super.getAppender().get(0).getLevel());
+		assertEquals(ch.qos.logback.classic.Level.WARN, super.getAppender().get(0).getLevel());
 		assertTrue(1 == super.getAppender().size());
 
 	}
@@ -90,7 +89,7 @@ public class PerformanceLogMethodInterceptorTest extends AbstractBaseLogTester {
 		mockInvocationOf("getString", null);
 		assertTrue(super.getAppender().get(0).getMessage()
 				.contains("PERFORMANCE WARNING response for [Helper.getString] in elapsed time ["));
-		assertEquals(Level.WARN, super.getAppender().get(0).getLevel());
+		assertEquals(ch.qos.logback.classic.Level.WARN, super.getAppender().get(0).getLevel());
 		assertTrue(1 == super.getAppender().size());
 		assertEquals(new Integer(1500), performanceLogMethodInterceptor.getWarningThreshhold());
 

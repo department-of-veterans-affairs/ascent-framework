@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.slf4j.event.Level;
 
-import ch.qos.logback.classic.Level;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
 
@@ -54,13 +54,13 @@ public abstract class AbstractBaseLogTester {
 		for (AscentLogger l : loggers) {
 			if (clazz.getName().equals(l.getName())) {
 				logger = l;
-				logger.getLoggerBoundImpl().setLevel(Level.DEBUG);
+				logger.setLevel(Level.DEBUG);
 				break;
 			}
 		}
 		if (logger == null) {
 			logger = AscentLoggerFactory.getLogger(clazz);
-			logger.getLoggerBoundImpl().setLevel(Level.DEBUG);
+			logger.setLevel(Level.DEBUG);
 			loggers.add(logger);
 		}
 		return logger;
@@ -78,9 +78,8 @@ public abstract class AbstractBaseLogTester {
 		// clean up loggers
 		if (loggers != null && loggers.size() > 0) {
 			for (AscentLogger logger : loggers) {
-				ch.qos.logback.classic.Logger ilog = logger.getLoggerBoundImpl();
-				ilog.setLevel(Level.ERROR);
-				ilog.detachAndStopAllAppenders();
+				logger.setLevel(Level.ERROR);
+				logger.getLoggerBoundImpl().detachAndStopAllAppenders();
 			}
 		}
 		loggers.clear();

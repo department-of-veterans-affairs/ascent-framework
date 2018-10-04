@@ -7,8 +7,9 @@ import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.CharEncoding;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 
 /**
  * The base class for Web Service client simulations, containing utility operations, etc. that are likely reusable across such
@@ -19,8 +20,7 @@ import org.slf4j.LoggerFactory;
 public class BaseWsClientSimulator {
 
 	/** The Constant LOGGER. */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(BaseWsClientSimulator.class);
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(BaseWsClientSimulator.class);
 
 	/**
 	 * This is not an abstract class, however it is a base class that is not to be instantiated. In this case, it's probably better to

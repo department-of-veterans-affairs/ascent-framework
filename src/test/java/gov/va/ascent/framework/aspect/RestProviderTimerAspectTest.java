@@ -14,19 +14,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.event.Level;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import gov.va.ascent.framework.AbstractBaseLogTester;
+import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.rest.provider.RestProviderTimerAspect;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RestProviderTimerAspectTest extends AbstractBaseLogTester {
 
 	/** Underlying implementation of AscentLogger */
-	private Logger AspectLoggingLOG = super.getLogger(RestProviderTimerAspectTest.class).getLoggerBoundImpl();
+	private AscentLogger AspectLoggingLOG = super.getLogger(RestProviderTimerAspectTest.class);
 	/** Underlying implementation of AscentLogger */
-	private Logger AspectLoggingTestLOG = super.getLogger(RestProviderTimerAspectTest.class).getLoggerBoundImpl();
+	private AscentLogger AspectLoggingTestLOG = super.getLogger(RestProviderTimerAspectTest.class);
 
 	@Mock
 	private ProceedingJoinPoint proceedingJoinPoint;
@@ -64,7 +64,7 @@ public class RestProviderTimerAspectTest extends AbstractBaseLogTester {
 				super.getAppender().get(0).getMessage());
 		assertEquals("enter [RestProviderTimerAspectTest.someMethod]", super.getAppender().get(1).getMessage());
 		assertEquals("PerformanceLoggingAspect after method was called.", super.getAppender().get(2).getMessage());
-		assertEquals(Level.INFO, super.getAppender().get(3).getLevel());
+		assertEquals(ch.qos.logback.classic.Level.INFO, super.getAppender().get(3).getLevel());
 	}
 
 	public Method myMethod() throws NoSuchMethodException {

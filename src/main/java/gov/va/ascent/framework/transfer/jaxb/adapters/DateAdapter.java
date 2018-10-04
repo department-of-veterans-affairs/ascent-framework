@@ -10,8 +10,8 @@ import java.util.Locale;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 
 /**
  * The Class DateAdapter converts from Java date to/from JAXB XML
@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 public final class DateAdapter {
 
 	/** The Constant LOGGER. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(DateAdapter.class);
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(DateAdapter.class);
 
 	/** The Constant DATE_TIME_FORMAT. */
 	private static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
@@ -70,7 +70,7 @@ public final class DateAdapter {
 
 	/**
 	 * Prints the date time.
-	 * 
+	 *
 	 * crazy hack because the 'Z' formatter produces an output incompatible with the xsd:dateTime
 	 *
 	 * @param dateTime the date time
@@ -82,7 +82,7 @@ public final class DateAdapter {
 		final String timezone = tzFormatter.format(dateTime);
 		return formatter.format(dateTime) + timezone.substring(0, 3) + ":" + timezone.substring(3);
 	}
-	
+
 	/**
 	 * Gets the DateFormat.
 	 *

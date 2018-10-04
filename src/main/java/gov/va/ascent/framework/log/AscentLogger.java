@@ -49,11 +49,6 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @return
 	 */
 	public ch.qos.logback.classic.Logger getLoggerBoundImpl() {
-		// Could also do something like this too (replace "^" with "" - stupid sonar) ...
-		// C^l^a^s^s^<^?^>^i^m^p^l^C^l^a^s^s^ ^=^ ^
-		// S^t^a^t^i^c^L^o^g^g^e^r^B^i^n^d^e^r^.^g^e^t^S^i^n^g^l^e^t^o^n^(^)^.^g^e^t^L^o^g^g^e^r^F^a^c^t^o^r^y^(^)^.
-		// g^e^t^L^o^g^g^e^r^(^s^u^p^e^r^.^l^o^g^g^e^r^.^g^e^t^N^a^m^e^(^)^)^.^g^e^t^C^l^a^s^s^(^)^;
-		// r^e^t^u^r^n^ ^i^m^p^l^C^l^a^s^s^.^c^a^s^t^(^s^u^p^e^r.^l^o^g^g^e^r^)^;
 		return (ch.qos.logback.classic.Logger) super.getLoggerInterfaceImpl();
 	}
 
@@ -66,7 +61,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @since 1.4
 	 */
 	public void debug(AscentBanner banner, String msg) {
-		super.debug(banner.getBanner() + NEWLINE + msg);
+		super.sendlog(Level.DEBUG,
+				null,
+				banner.getBanner() + NEWLINE + msg,
+				null);
 	}
 
 	/**
@@ -82,7 +80,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg the argument
 	 */
 	public void debug(AscentBanner banner, String format, Object arg) {
-		super.debug(banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg).getMessage());
+		super.sendlog(Level.DEBUG,
+				null,
+				banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg).getMessage(),
+				null);
 	}
 
 	/**
@@ -99,7 +100,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg2 the second argument
 	 */
 	public void debug(AscentBanner banner, String format, Object arg1, Object arg2) {
-		super.debug(banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg1, arg2).getMessage());
+		super.sendlog(Level.DEBUG,
+				null,
+				banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg1, arg2).getMessage(),
+				null);
 	}
 
 	/**
@@ -119,7 +123,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arguments a list of 3 or more arguments
 	 */
 	public void debug(AscentBanner banner, String format, Object... args) {
-		super.debug(banner.getBanner() + NEWLINE + MessageFormatter.arrayFormat(format, args).getMessage());
+		super.sendlog(Level.DEBUG,
+				null,
+				banner.getBanner() + NEWLINE + MessageFormatter.arrayFormat(format, args).getMessage(),
+				null);
 	}
 
 	/**
@@ -132,7 +139,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param t the exception (throwable) to log
 	 */
 	public void debug(AscentBanner banner, String msg, Throwable t) {
-		super.debug(banner.getBanner() + NEWLINE + msg, t);
+		super.sendlog(Level.DEBUG,
+				null,
+				banner.getBanner() + NEWLINE + msg,
+				t);
 	}
 
 	/**
@@ -143,7 +153,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message string to be logged
 	 */
 	public void info(AscentBanner banner, String msg) {
-		super.info(banner.getBanner() + NEWLINE + msg);
+		super.sendlog(Level.INFO,
+				null,
+				banner.getBanner() + NEWLINE + msg,
+				null);
 	}
 
 	/**
@@ -159,7 +172,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg the argument
 	 */
 	public void info(AscentBanner banner, String format, Object arg) {
-		super.info(banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg).getMessage());
+		super.sendlog(Level.INFO,
+				null,
+				banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg).getMessage(),
+				null);
 	}
 
 	/**
@@ -176,7 +192,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg2 the second argument
 	 */
 	public void info(AscentBanner banner, String format, Object arg1, Object arg2) {
-		super.info(banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg1, arg2).getMessage());
+		super.sendlog(Level.INFO,
+				null,
+				banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg1, arg2).getMessage(),
+				null);
 	}
 
 	/**
@@ -196,7 +215,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arguments a list of 3 or more arguments
 	 */
 	public void info(AscentBanner banner, String format, Object... args) {
-		super.info(banner.getBanner() + NEWLINE + MessageFormatter.arrayFormat(format, args).getMessage());
+		super.sendlog(Level.INFO,
+				null,
+				banner.getBanner() + NEWLINE + MessageFormatter.arrayFormat(format, args).getMessage(),
+				null);
 	}
 
 	/**
@@ -209,7 +231,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param t the exception (throwable) to log
 	 */
 	public void info(AscentBanner banner, String msg, Throwable t) {
-		super.info(banner.getBanner() + NEWLINE + msg, t);
+		super.sendlog(Level.INFO,
+				null,
+				banner.getBanner() + NEWLINE + msg,
+				t);
 	}
 
 	/**
@@ -220,7 +245,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message string to be logged
 	 */
 	public void warn(AscentBanner banner, String msg) {
-		super.warn(banner.getBanner() + NEWLINE + msg);
+		super.sendlog(Level.WARN,
+				null,
+				banner.getBanner() + NEWLINE + msg,
+				null);
 	}
 
 	/**
@@ -236,7 +264,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg the argument
 	 */
 	public void warn(AscentBanner banner, String format, Object arg) {
-		super.warn(banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg).getMessage());
+		super.sendlog(Level.WARN,
+				null,
+				banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg).getMessage(),
+				null);
 	}
 
 	/**
@@ -256,7 +287,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arguments a list of 3 or more arguments
 	 */
 	public void warn(AscentBanner banner, String format, Object... args) {
-		super.warn(banner.getBanner() + NEWLINE + MessageFormatter.arrayFormat(format, args).getMessage());
+		super.sendlog(Level.WARN,
+				null,
+				banner.getBanner() + NEWLINE + MessageFormatter.arrayFormat(format, args).getMessage(),
+				null);
 	}
 
 	/**
@@ -273,7 +307,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg2 the second argument
 	 */
 	public void warn(AscentBanner banner, String format, Object arg1, Object arg2) {
-		super.warn(banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg1, arg2).getMessage());
+		super.sendlog(Level.WARN,
+				null,
+				banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg1, arg2).getMessage(),
+				null);
 	}
 
 	/**
@@ -286,7 +323,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param t the exception (throwable) to log
 	 */
 	public void warn(AscentBanner banner, String msg, Throwable t) {
-		super.warn(banner.getBanner() + NEWLINE + msg, t);
+		super.sendlog(Level.WARN,
+				null,
+				banner.getBanner() + NEWLINE + msg,
+				t);
 	}
 
 	/**
@@ -297,7 +337,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message string to be logged
 	 */
 	public void error(AscentBanner banner, String msg) {
-		super.error(banner.getBanner() + NEWLINE + msg);
+		super.sendlog(Level.ERROR,
+				null,
+				banner.getBanner() + NEWLINE + msg,
+				null);
 	}
 
 	/**
@@ -313,7 +356,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg the argument
 	 */
 	public void error(AscentBanner banner, String format, Object arg) {
-		super.error(banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg).getMessage());
+		super.sendlog(Level.ERROR,
+				null,
+				banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg).getMessage(),
+				null);
 	}
 
 	/**
@@ -330,7 +376,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg2 the second argument
 	 */
 	public void error(AscentBanner banner, String format, Object arg1, Object arg2) {
-		super.error(banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg1, arg2).getMessage());
+		super.sendlog(Level.ERROR,
+				null,
+				banner.getBanner() + NEWLINE + MessageFormatter.format(format, arg1, arg2).getMessage(),
+				null);
 	}
 
 	/**
@@ -350,7 +399,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arguments a list of 3 or more arguments
 	 */
 	public void error(AscentBanner banner, String format, Object... args) {
-		super.error(banner.getBanner() + NEWLINE + MessageFormatter.arrayFormat(format, args).getMessage());
+		super.sendlog(Level.ERROR,
+				null,
+				banner.getBanner() + NEWLINE + MessageFormatter.arrayFormat(format, args).getMessage(),
+				null);
 	}
 
 	/**
@@ -363,7 +415,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param t the exception (throwable) to log
 	 */
 	public void error(AscentBanner banner, String msg, Throwable t) {
-		super.error(banner.getBanner() + NEWLINE + msg, t);
+		super.sendlog(Level.ERROR,
+				null,
+				banner.getBanner() + NEWLINE + msg,
+				t);
 	}
 
 	/**
@@ -374,9 +429,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param level the org.slf4j.event.Level
 	 * @param msg the message string to be logged
 	 */
-	@Override
 	public void log(Level level, String msg) {
-		super.log(level, msg);
+		super.sendlog(level,
+				null,
+				msg,
+				null);
 	}
 
 	/**
@@ -393,7 +450,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg the argument
 	 */
 	public void log(Level level, String format, Object arg) {
-		super.log(level, MessageFormatter.format(format, arg).getMessage());
+		super.sendlog(level,
+				null,
+				MessageFormatter.format(format, arg).getMessage(),
+				null);
 	}
 
 	/**
@@ -411,7 +471,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg2 the second argument
 	 */
 	public void log(Level level, String format, Object arg1, Object arg2) {
-		super.log(level, MessageFormatter.format(format, arg1, arg2).getMessage());
+		super.sendlog(level,
+				null,
+				MessageFormatter.format(format, arg1, arg2).getMessage(),
+				null);
 	}
 
 	/**
@@ -432,7 +495,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arguments a list of 3 or more arguments
 	 */
 	public void log(Level level, String format, Object... args) {
-		super.log(level, MessageFormatter.arrayFormat(format, args).getMessage());
+		super.sendlog(level,
+				null,
+				MessageFormatter.arrayFormat(format, args).getMessage(),
+				null);
 	}
 
 	/**
@@ -445,9 +511,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
-	@Override
 	public void log(Level level, String msg, Throwable t) {
-		super.log(level, msg, t);
+		super.sendlog(level,
+				null,
+				msg,
+				t);
 	}
 
 	/**
@@ -459,9 +527,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param marker the marker data specific to this log statement
 	 * @param msg the message string to be logged
 	 */
-	@Override
 	public void log(Level level, org.slf4j.Marker marker, String msg) {
-		super.log(level, marker, msg);
+		super.sendlog(level,
+				marker,
+				msg,
+				null);
 	}
 
 	/**
@@ -476,7 +546,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg the argument
 	 */
 	public void log(Level level, org.slf4j.Marker marker, String format, Object arg) {
-		super.log(level, marker, MessageFormatter.format(format, arg).getMessage());
+		super.sendlog(level,
+				marker,
+				MessageFormatter.format(format, arg).getMessage(),
+				null);
 	}
 
 	/**
@@ -493,7 +566,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg2 the second argument
 	 */
 	public void log(Level level, org.slf4j.Marker marker, String format, Object arg1, Object arg2) {
-		super.log(level, marker, MessageFormatter.format(format, arg1, arg2).getMessage());
+		super.sendlog(level,
+				marker,
+				MessageFormatter.format(format, arg1, arg2).getMessage(),
+				null);
 	}
 
 	/**
@@ -509,7 +585,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arguments a list of 3 or more arguments
 	 */
 	public void log(Level level, org.slf4j.Marker marker, String format, Object... args) {
-		super.log(level, marker, MessageFormatter.arrayFormat(format, args).getMessage());
+		super.sendlog(level,
+				marker,
+				MessageFormatter.arrayFormat(format, args).getMessage(),
+				null);
 	}
 
 	/**
@@ -523,9 +602,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
-	@Override
 	public void log(Level level, org.slf4j.Marker marker, String msg, Throwable t) {
-		super.log(level, marker, msg, t);
+		super.sendlog(level,
+				marker,
+				msg,
+				t);
 	}
 
 	//
@@ -569,9 +650,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message string to be logged
 	 * @since 1.4
 	 */
-	@Override
 	public void trace(String msg) {
-		super.trace(msg);
+		super.sendlog(Level.TRACE,
+				null,
+				msg,
+				null);
 	}
 
 	/**
@@ -586,7 +669,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @since 1.4
 	 */
 	public void trace(String format, Object arg) {
-		super.trace(MessageFormatter.format(format, arg).getMessage());
+		super.sendlog(Level.TRACE,
+				null,
+				MessageFormatter.format(format, arg).getMessage(),
+				null);
 	}
 
 	/**
@@ -602,7 +688,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @since 1.4
 	 */
 	public void trace(String format, Object arg1, Object arg2) {
-		super.trace(MessageFormatter.format(format, arg1, arg2).getMessage());
+		super.sendlog(Level.TRACE,
+				null,
+				MessageFormatter.format(format, arg1, arg2).getMessage(),
+				null);
 	}
 
 	/**
@@ -620,7 +709,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @since 1.4
 	 */
 	public void trace(String format, Object... args) {
-		super.trace(MessageFormatter.arrayFormat(format, args).getMessage());
+		super.sendlog(Level.TRACE,
+				null,
+				MessageFormatter.arrayFormat(format, args).getMessage(),
+				null);
 	}
 
 	/**
@@ -631,9 +723,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param t the exception (throwable) to log
 	 * @since 1.4
 	 */
-	@Override
 	public void trace(String msg, Throwable t) {
-		super.trace(msg, t);
+		super.sendlog(Level.TRACE,
+				null,
+				msg,
+				t);
 	}
 
 	/**
@@ -657,9 +751,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message string to be logged
 	 * @since 1.4
 	 */
-	@Override
 	public void trace(org.slf4j.Marker marker, String msg) {
-		super.trace(marker, msg);
+		super.sendlog(Level.TRACE,
+				marker,
+				msg,
+				null);
 	}
 
 	/**
@@ -672,7 +768,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @since 1.4
 	 */
 	public void trace(org.slf4j.Marker marker, String format, Object arg) {
-		super.trace(marker, MessageFormatter.format(format, arg).getMessage());
+		super.sendlog(Level.TRACE,
+				marker,
+				MessageFormatter.format(format, arg).getMessage(),
+				null);
 	}
 
 	/**
@@ -687,7 +786,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @since 1.4
 	 */
 	public void trace(org.slf4j.Marker marker, String format, Object arg1, Object arg2) {
-		super.trace(marker, MessageFormatter.format(format, arg1, arg2).getMessage());
+		super.sendlog(Level.TRACE,
+				marker,
+				MessageFormatter.format(format, arg1, arg2).getMessage(),
+				null);
 	}
 
 	/**
@@ -701,7 +803,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @since 1.4
 	 */
 	public void trace(org.slf4j.Marker marker, String format, Object... args) {
-		super.trace(marker, MessageFormatter.arrayFormat(format, args).getMessage());
+		super.sendlog(Level.TRACE,
+				marker,
+				MessageFormatter.arrayFormat(format, args).getMessage(),
+				null);
 	}
 
 	/**
@@ -713,9 +818,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param t the exception (throwable) to log
 	 * @since 1.4
 	 */
-	@Override
 	public void trace(org.slf4j.Marker marker, String msg, Throwable t) {
-		super.trace(marker, msg, t);
+		super.sendlog(Level.TRACE,
+				marker,
+				msg,
+				t);
 	}
 
 	/**
@@ -733,9 +840,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 *
 	 * @param msg the message string to be logged
 	 */
-	@Override
 	public void debug(String msg) {
-		super.debug(msg);
+		super.sendlog(Level.DEBUG,
+				null,
+				msg,
+				null);
 	}
 
 	/**
@@ -749,7 +858,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg the argument
 	 */
 	public void debug(String format, Object arg) {
-		super.debug(MessageFormatter.format(format, arg).getMessage());
+		super.sendlog(Level.DEBUG,
+				null,
+				MessageFormatter.format(format, arg).getMessage(),
+				null);
 	}
 
 	/**
@@ -764,7 +876,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg2 the second argument
 	 */
 	public void debug(String format, Object arg1, Object arg2) {
-		super.debug(MessageFormatter.format(format, arg1, arg2).getMessage());
+		super.sendlog(Level.DEBUG,
+				null,
+				MessageFormatter.format(format, arg1, arg2).getMessage(),
+				null);
 	}
 
 	/**
@@ -782,7 +897,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arguments a list of 3 or more arguments
 	 */
 	public void debug(String format, Object... args) {
-		super.debug(MessageFormatter.arrayFormat(format, args).getMessage());
+		super.sendlog(Level.DEBUG,
+				null,
+				MessageFormatter.arrayFormat(format, args).getMessage(),
+				null);
 	}
 
 	/**
@@ -792,9 +910,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
-	@Override
 	public void debug(String msg, Throwable t) {
-		super.debug(msg, t);
+		super.sendlog(Level.DEBUG,
+				null,
+				msg,
+				t);
 	}
 
 	/**
@@ -815,9 +935,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param marker the marker data specific to this log statement
 	 * @param msg the message string to be logged
 	 */
-	@Override
 	public void debug(org.slf4j.Marker marker, String msg) {
-		super.debug(marker, msg);
+		super.sendlog(Level.DEBUG,
+				marker,
+				msg,
+				null);
 	}
 
 	/**
@@ -829,7 +951,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg the argument
 	 */
 	public void debug(org.slf4j.Marker marker, String format, Object arg) {
-		super.debug(marker, MessageFormatter.format(format, arg).getMessage());
+		super.sendlog(Level.DEBUG,
+				marker,
+				MessageFormatter.format(format, arg).getMessage(),
+				null);
 	}
 
 	/**
@@ -843,7 +968,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg2 the second argument
 	 */
 	public void debug(org.slf4j.Marker marker, String format, Object arg1, Object arg2) {
-		super.debug(marker, MessageFormatter.format(format, arg1, arg2).getMessage());
+		super.sendlog(Level.DEBUG,
+				marker,
+				MessageFormatter.format(format, arg1, arg2).getMessage(),
+				null);
 	}
 
 	/**
@@ -856,7 +984,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arguments a list of 3 or more arguments
 	 */
 	public void debug(org.slf4j.Marker marker, String format, Object... args) {
-		super.debug(marker, MessageFormatter.arrayFormat(format, args).getMessage());
+		super.sendlog(Level.DEBUG,
+				marker,
+				MessageFormatter.arrayFormat(format, args).getMessage(),
+				null);
 	}
 
 	/**
@@ -867,9 +998,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
-	@Override
 	public void debug(org.slf4j.Marker marker, String msg, Throwable t) {
-		super.debug(marker, msg, t);
+		super.sendlog(Level.DEBUG,
+				marker,
+				msg,
+				t);
 	}
 
 	/**
@@ -887,9 +1020,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 *
 	 * @param msg the message string to be logged
 	 */
-	@Override
 	public void info(String msg) {
-		super.info(msg);
+		super.sendlog(Level.INFO,
+				null,
+				msg,
+				null);
 	}
 
 	/**
@@ -903,7 +1038,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg the argument
 	 */
 	public void info(String format, Object arg) {
-		super.info(MessageFormatter.format(format, arg).getMessage());
+		super.sendlog(Level.INFO,
+				null,
+				MessageFormatter.format(format, arg).getMessage(),
+				null);
 	}
 
 	/**
@@ -918,7 +1056,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg2 the second argument
 	 */
 	public void info(String format, Object arg1, Object arg2) {
-		super.info(MessageFormatter.format(format, arg1, arg2).getMessage());
+		super.sendlog(Level.INFO,
+				null,
+				MessageFormatter.format(format, arg1, arg2).getMessage(),
+				null);
 	}
 
 	/**
@@ -936,7 +1077,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arguments a list of 3 or more arguments
 	 */
 	public void info(String format, Object... args) {
-		super.info(MessageFormatter.arrayFormat(format, args).getMessage());
+		super.sendlog(Level.INFO,
+				null,
+				MessageFormatter.arrayFormat(format, args).getMessage(),
+				null);
 	}
 
 	/**
@@ -946,9 +1090,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
-	@Override
 	public void info(String msg, Throwable t) {
-		super.info(msg, t);
+		super.sendlog(Level.INFO,
+				null,
+				msg,
+				t);
 	}
 
 	/**
@@ -968,9 +1114,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param marker The marker specific to this log statement
 	 * @param msg the message string to be logged
 	 */
-	@Override
 	public void info(org.slf4j.Marker marker, String msg) {
-		super.info(marker, msg);
+		super.sendlog(Level.INFO,
+				marker,
+				msg,
+				null);
 	}
 
 	/**
@@ -982,7 +1130,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg the argument
 	 */
 	public void info(org.slf4j.Marker marker, String format, Object arg) {
-		super.info(marker, MessageFormatter.format(format, arg).getMessage());
+		super.sendlog(Level.INFO,
+				marker,
+				MessageFormatter.format(format, arg).getMessage(),
+				null);
 	}
 
 	/**
@@ -996,7 +1147,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg2 the second argument
 	 */
 	public void info(org.slf4j.Marker marker, String format, Object arg1, Object arg2) {
-		super.info(marker, MessageFormatter.format(format, arg1, arg2).getMessage());
+		super.sendlog(Level.INFO,
+				marker,
+				MessageFormatter.format(format, arg1, arg2).getMessage(),
+				null);
 	}
 
 	/**
@@ -1009,7 +1163,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arguments a list of 3 or more arguments
 	 */
 	public void info(org.slf4j.Marker marker, String format, Object... args) {
-		super.info(marker, MessageFormatter.arrayFormat(format, args).getMessage());
+		super.sendlog(Level.INFO,
+				marker,
+				MessageFormatter.arrayFormat(format, args).getMessage(),
+				null);
 	}
 
 	/**
@@ -1020,9 +1177,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
-	@Override
 	public void info(org.slf4j.Marker marker, String msg, Throwable t) {
-		super.info(marker, msg, t);
+		super.sendlog(Level.INFO,
+				marker,
+				msg,
+				t);
 	}
 
 	/**
@@ -1040,9 +1199,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 *
 	 * @param msg the message string to be logged
 	 */
-	@Override
 	public void warn(String msg) {
-		super.warn(msg);
+		super.sendlog(Level.WARN,
+				null,
+				msg,
+				null);
 	}
 
 	/**
@@ -1056,7 +1217,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg the argument
 	 */
 	public void warn(String format, Object arg) {
-		super.warn(MessageFormatter.format(format, arg).getMessage());
+		super.sendlog(Level.WARN,
+				null,
+				MessageFormatter.format(format, arg).getMessage(),
+				null);
 	}
 
 	/**
@@ -1074,7 +1238,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arguments a list of 3 or more arguments
 	 */
 	public void warn(String format, Object... args) {
-		super.warn(MessageFormatter.arrayFormat(format, args).getMessage());
+		super.sendlog(Level.WARN,
+				null,
+				MessageFormatter.arrayFormat(format, args).getMessage(),
+				null);
 	}
 
 	/**
@@ -1089,7 +1256,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg2 the second argument
 	 */
 	public void warn(String format, Object arg1, Object arg2) {
-		super.warn(MessageFormatter.format(format, arg1, arg2).getMessage());
+		super.sendlog(Level.WARN,
+				null,
+				MessageFormatter.format(format, arg1, arg2).getMessage(),
+				null);
 	}
 
 	/**
@@ -1099,9 +1269,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
-	@Override
 	public void warn(String msg, Throwable t) {
-		super.warn(msg, t);
+		super.sendlog(Level.WARN,
+				null,
+				msg,
+				t);
 	}
 
 	/**
@@ -1122,9 +1294,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param marker The marker specific to this log statement
 	 * @param msg the message string to be logged
 	 */
-	@Override
 	public void warn(org.slf4j.Marker marker, String msg) {
-		super.warn(marker, msg);
+		super.sendlog(Level.WARN,
+				marker,
+				msg,
+				null);
 	}
 
 	/**
@@ -1136,7 +1310,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg the argument
 	 */
 	public void warn(org.slf4j.Marker marker, String format, Object arg) {
-		super.warn(marker, MessageFormatter.format(format, arg).getMessage());
+		super.sendlog(Level.WARN,
+				marker,
+				MessageFormatter.format(format, arg).getMessage(),
+				null);
 	}
 
 	/**
@@ -1150,7 +1327,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg2 the second argument
 	 */
 	public void warn(org.slf4j.Marker marker, String format, Object arg1, Object arg2) {
-		super.warn(marker, MessageFormatter.format(format, arg1, arg2).getMessage());
+		super.sendlog(Level.WARN,
+				marker,
+				MessageFormatter.format(format, arg1, arg2).getMessage(),
+				null);
 	}
 
 	/**
@@ -1163,7 +1343,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arguments a list of 3 or more arguments
 	 */
 	public void warn(org.slf4j.Marker marker, String format, Object... args) {
-		super.warn(marker, MessageFormatter.arrayFormat(format, args).getMessage());
+		super.sendlog(Level.WARN,
+				marker,
+				MessageFormatter.arrayFormat(format, args).getMessage(),
+				null);
 	}
 
 	/**
@@ -1174,9 +1357,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
-	@Override
 	public void warn(org.slf4j.Marker marker, String msg, Throwable t) {
-		super.warn(marker, msg, t);
+		super.sendlog(Level.WARN,
+				marker,
+				msg,
+				t);
 	}
 
 	/**
@@ -1194,9 +1379,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 *
 	 * @param msg the message string to be logged
 	 */
-	@Override
 	public void error(String msg) {
-		super.error(msg);
+		super.sendlog(Level.ERROR,
+				null,
+				msg,
+				null);
 	}
 
 	/**
@@ -1210,7 +1397,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg the argument
 	 */
 	public void error(String format, Object arg) {
-		super.error(MessageFormatter.format(format, arg).getMessage());
+		super.sendlog(Level.ERROR,
+				null,
+				MessageFormatter.format(format, arg).getMessage(),
+				null);
 	}
 
 	/**
@@ -1225,7 +1415,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg2 the second argument
 	 */
 	public void error(String format, Object arg1, Object arg2) {
-		super.error(MessageFormatter.format(format, arg1, arg2).getMessage());
+		super.sendlog(Level.ERROR,
+				null,
+				MessageFormatter.format(format, arg1, arg2).getMessage(),
+				null);
 	}
 
 	/**
@@ -1243,7 +1436,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arguments a list of 3 or more arguments
 	 */
 	public void error(String format, Object... args) {
-		super.error(MessageFormatter.arrayFormat(format, args).getMessage());
+		super.sendlog(Level.ERROR,
+				null,
+				MessageFormatter.arrayFormat(format, args).getMessage(),
+				null);
 	}
 
 	/**
@@ -1253,9 +1449,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
-	@Override
 	public void error(String msg, Throwable t) {
-		super.error(msg, t);
+		super.sendlog(Level.ERROR,
+				null,
+				msg,
+				t);
 	}
 
 	/**
@@ -1276,9 +1474,11 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param marker The marker specific to this log statement
 	 * @param msg the message string to be logged
 	 */
-	@Override
 	public void error(org.slf4j.Marker marker, String msg) {
-		super.error(marker, msg);
+		super.sendlog(Level.ERROR,
+				marker,
+				msg,
+				null);
 	}
 
 	/**
@@ -1290,7 +1490,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg the argument
 	 */
 	public void error(org.slf4j.Marker marker, String format, Object arg) {
-		super.error(marker, MessageFormatter.format(format, arg).getMessage());
+		super.sendlog(Level.ERROR,
+				marker,
+				MessageFormatter.format(format, arg).getMessage(),
+				null);
 	}
 
 	/**
@@ -1304,7 +1507,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arg2 the second argument
 	 */
 	public void error(org.slf4j.Marker marker, String format, Object arg1, Object arg2) {
-		super.error(marker, MessageFormatter.format(format, arg1, arg2).getMessage());
+		super.sendlog(Level.ERROR,
+				marker,
+				MessageFormatter.format(format, arg1, arg2).getMessage(),
+				null);
 	}
 
 	/**
@@ -1317,7 +1523,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param arguments a list of 3 or more arguments
 	 */
 	public void error(org.slf4j.Marker marker, String format, Object... args) {
-		super.error(marker, MessageFormatter.arrayFormat(format, args).getMessage());
+		super.sendlog(Level.ERROR,
+				marker,
+				MessageFormatter.arrayFormat(format, args).getMessage(),
+				null);
 	}
 
 	/**
@@ -1329,8 +1538,10 @@ public class AscentLogger extends AscentBaseLogger {
 	 * @param msg the message accompanying the exception
 	 * @param t the exception (throwable) to log
 	 */
-	@Override
 	public void error(org.slf4j.Marker marker, String msg, Throwable t) {
-		super.error(marker, msg, t);
+		super.sendlog(Level.ERROR,
+				marker,
+				msg,
+				t);
 	}
 }

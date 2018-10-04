@@ -21,7 +21,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -29,10 +28,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.Appender;
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 import gov.va.ascent.framework.security.PersonTraits;
 
 /**
@@ -45,18 +42,18 @@ public class AuditLoggerTest {
 
 	@SuppressWarnings("rawtypes")
 	@Mock
-	private Appender mockAppender;
+	private ch.qos.logback.core.Appender mockAppender;
+
 	// Captor is genericised with ch.qos.logback.classic.spi.LoggingEvent
 	@Captor
-	private ArgumentCaptor<LoggingEvent> captorLoggingEvent;
+	private ArgumentCaptor<ch.qos.logback.classic.spi.LoggingEvent> captorLoggingEvent;
 
 	// added the mockAppender to the root logger
 	@SuppressWarnings("unchecked")
 	// It's not quite necessary but it also shows you how it can be done
 	@Before
 	public void setup() {
-		final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-		logger.addAppender(mockAppender);
+		AscentLoggerFactory.getLogger(AscentLogger.ROOT_LOGGER_NAME).getLoggerBoundImpl().addAppender(mockAppender);
 	}
 
 	// Always have this teardown otherwise we can stuff up our expectations.
@@ -65,8 +62,7 @@ public class AuditLoggerTest {
 	@SuppressWarnings("unchecked")
 	@After
 	public void teardown() {
-		final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-		logger.detachAppender(mockAppender);
+		AscentLoggerFactory.getLogger(AscentLogger.ROOT_LOGGER_NAME).getLoggerBoundImpl().detachAppender(mockAppender);
 	}
 
 	@Test
@@ -91,9 +87,9 @@ public class AuditLoggerTest {
 		// Now verify our logging interactions
 		verify(mockAppender).doAppend(captorLoggingEvent.capture());
 		// Having a genricised captor means we don't need to cast
-		final LoggingEvent loggingEvent = captorLoggingEvent.getValue();
+		final ch.qos.logback.classic.spi.LoggingEvent loggingEvent = captorLoggingEvent.getValue();
 		// Check log level is correct
-		assertThat(loggingEvent.getLevel(), is(Level.DEBUG));
+		assertThat(loggingEvent.getLevel(), is(ch.qos.logback.classic.Level.DEBUG));
 		assertThat(loggingEvent.getFormattedMessage(), is("Audit DEBUG Activity Detail"));
 	}
 
@@ -109,9 +105,9 @@ public class AuditLoggerTest {
 		// Now verify our logging interactions
 		verify(mockAppender).doAppend(captorLoggingEvent.capture());
 		// Having a genricised captor means we don't need to cast
-		final LoggingEvent loggingEvent = captorLoggingEvent.getValue();
+		final ch.qos.logback.classic.spi.LoggingEvent loggingEvent = captorLoggingEvent.getValue();
 		// Check log level is correct
-		assertThat(loggingEvent.getLevel(), is(Level.INFO));
+		assertThat(loggingEvent.getLevel(), is(ch.qos.logback.classic.Level.INFO));
 		// Check the message being logged is correct
 		assertThat(loggingEvent.getFormattedMessage(), is("Audit INFO Activity Detail"));
 	}
@@ -128,10 +124,10 @@ public class AuditLoggerTest {
 		// Now verify our logging interactions
 		verify(mockAppender).doAppend(captorLoggingEvent.capture());
 		// Having a genricised captor means we don't need to cast
-		final LoggingEvent loggingEvent = captorLoggingEvent.getValue();
+		final ch.qos.logback.classic.spi.LoggingEvent loggingEvent = captorLoggingEvent.getValue();
 		System.out.println(ReflectionToStringBuilder.toString(loggingEvent.getMDCPropertyMap().values()));
 		// Check log level is correct
-		assertThat(loggingEvent.getLevel(), is(Level.WARN));
+		assertThat(loggingEvent.getLevel(), is(ch.qos.logback.classic.Level.WARN));
 		// Check the message being logged is correct
 		assertThat(loggingEvent.getFormattedMessage(), is("Audit WARN Activity Detail"));
 	}
@@ -148,9 +144,9 @@ public class AuditLoggerTest {
 		// Now verify our logging interactions
 		verify(mockAppender).doAppend(captorLoggingEvent.capture());
 		// Having a genricised captor means we don't need to cast
-		final LoggingEvent loggingEvent = captorLoggingEvent.getValue();
+		final ch.qos.logback.classic.spi.LoggingEvent loggingEvent = captorLoggingEvent.getValue();
 		// Check log level is correct
-		assertThat(loggingEvent.getLevel(), is(Level.ERROR));
+		assertThat(loggingEvent.getLevel(), is(ch.qos.logback.classic.Level.ERROR));
 		// Check the message being logged is correct
 		assertThat(loggingEvent.getFormattedMessage(), is("Audit ERROR Activity Detail"));
 	}
@@ -173,9 +169,9 @@ public class AuditLoggerTest {
 		// Now verify our logging interactions
 		verify(mockAppender).doAppend(captorLoggingEvent.capture());
 		// Having a genricised captor means we don't need to cast
-		final LoggingEvent loggingEvent = captorLoggingEvent.getValue();
+		final ch.qos.logback.classic.spi.LoggingEvent loggingEvent = captorLoggingEvent.getValue();
 		// Check log level is correct
-		assertThat(loggingEvent.getLevel(), is(Level.ERROR));
+		assertThat(loggingEvent.getLevel(), is(ch.qos.logback.classic.Level.ERROR));
 		// Check the message being logged is correct
 		assertThat(loggingEvent.getFormattedMessage(), is("Audit ERROR Activity Detail"));
 	}
@@ -194,8 +190,8 @@ public class AuditLoggerTest {
 		// Now verify our logging interactions
 		verify(mockAppender, times(2)).doAppend(captorLoggingEvent.capture());
 
-		List<LoggingEvent> events = captorLoggingEvent.getAllValues();
-		for (LoggingEvent event : events) {
+		List<ch.qos.logback.classic.spi.LoggingEvent> events = captorLoggingEvent.getAllValues();
+		for (ch.qos.logback.classic.spi.LoggingEvent event : events) {
 			assertThat(event.getFormattedMessage(), org.hamcrest.CoreMatchers.containsString("test "));
 			assertTrue(event.getFormattedMessage().length() < 16374);
 		}

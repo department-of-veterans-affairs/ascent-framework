@@ -9,10 +9,10 @@ import java.util.Enumeration;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 import gov.va.ascent.framework.util.Defense;
 import gov.va.ascent.framework.util.HashGenerator;
 
@@ -27,9 +27,9 @@ public final class BEPWebServiceUtil {
 
 	/** The Constant EXTERNALUID_LENGTH. */
 	public static final int EXTERNALUID_LENGTH = 39;
-	
+
 	/** The Constant LOGGER. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(BEPWebServiceUtil.class);
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(BEPWebServiceUtil.class);
 
 	/**
 	 * Private constructor to prevent instantiation.
@@ -98,10 +98,10 @@ public final class BEPWebServiceUtil {
 	 * @return the client machine
 	 */
 	public static String getClientMachine(final String defaultValue) {
-		
+
 		// Holds final computed value
 		String computedVal = defaultValue;
-		
+
 		if (StringUtils.isEmpty(defaultValue)) {
 			try {
 				computedVal = InetAddress.getLocalHost().getHostAddress();
@@ -110,17 +110,17 @@ public final class BEPWebServiceUtil {
 				computedVal = "localhost";
 			}
 		}
-		
+
 		try {
 			for (Enumeration<NetworkInterface> enNetI = NetworkInterface
-	                .getNetworkInterfaces(); enNetI.hasMoreElements(); ) {
-	            NetworkInterface netI = enNetI.nextElement();
-	            for (Enumeration<InetAddress> enumIpAddr = netI
-	                    .getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
-	                InetAddress inetAddress = enumIpAddr.nextElement();
+					.getNetworkInterfaces(); enNetI.hasMoreElements();) {
+				NetworkInterface netI = enNetI.nextElement();
+				for (Enumeration<InetAddress> enumIpAddr = netI
+						.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+					InetAddress inetAddress = enumIpAddr.nextElement();
 					computedVal = computeClientIP(inetAddress, computedVal);
 				}
-	         }
+			}
 		} catch (final SocketException e) {
 			LOGGER.error(e.getMessage(), e);
 			// handled further down

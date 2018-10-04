@@ -57,7 +57,7 @@ public class DateAdapterTest extends AbstractBaseLogTester {
 		super.getAppender().clear();
 
 		Date dt = DateAdapter.parseDateTime("1970-0101T00:00:00");
-		assertEquals("Error parsing date, returning null:1970-0101T00:00:00", super.getAppender().get(0).getMessage());
+		assertTrue(super.getAppender().get(0).getMessage().startsWith("Error parsing date, returning null:1970-0101T00:00:00"));
 		assertEquals(null, dt);
 	}
 

@@ -27,8 +27,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.wss4j.dom.WSConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
@@ -46,6 +44,8 @@ import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 import gov.va.ascent.framework.constants.AnnotationConstants;
 import gov.va.ascent.framework.exception.AscentRuntimeException;
 import gov.va.ascent.framework.exception.InterceptingExceptionTranslator;
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 import gov.va.ascent.framework.log.PerformanceLogMethodInterceptor;
 import gov.va.ascent.framework.security.VAServiceWss4jSecurityInterceptor;
 import gov.va.ascent.framework.util.Defense;
@@ -61,7 +61,7 @@ public class BaseWsClientConfig {
 	/**
 	 * The Constant LOGGER.
 	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(BaseWsClientConfig.class);
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(BaseWsClientConfig.class);
 
 	/**
 	 * The Constant JAVA_IO_TMPDIR.

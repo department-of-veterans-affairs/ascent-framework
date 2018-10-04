@@ -1,7 +1,5 @@
 package gov.va.ascent.framework.log;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
 import com.github.lalyos.jfiglet.FigletFont;
@@ -13,7 +11,8 @@ import com.github.lalyos.jfiglet.FigletFont;
  */
 public class AscentBanner {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AscentBanner.class);
+	/** WARNING - DO NOT USE BANNER LOGGING FROM WITHIN THIS CLASS */
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(AscentBanner.class);
 
 	private String banner;
 	private String bannerText;

@@ -7,6 +7,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Test;
+import org.slf4j.ILoggerFactory;
 
 import gov.va.ascent.framework.exception.AscentRuntimeException;
 
@@ -25,11 +26,22 @@ public class AscentLoggerFactoryTest {
 	}
 
 	@Test
-	public final void testGetLogger() {
+	public final void testGetLoggerClass() {
 		AscentLogger logger = AscentLoggerFactory.getLogger(this.getClass());
 		assertNotNull(logger);
-		System.out.println(logger.getName());
-		assert logger.getName().equals(this.getClass().getName());
+		assertTrue(logger.getName().equals(this.getClass().getName()));
 	}
 
+	@Test
+	public final void testGetLoggerString() {
+		AscentLogger logger = AscentLoggerFactory.getLogger(this.getClass().getName());
+		assertNotNull(logger);
+		assertTrue(logger.getName().equals(this.getClass().getName()));
+	}
+
+	@Test
+	public final void testGetBoundFactory() {
+		ILoggerFactory factory = AscentLoggerFactory.getBoundFactory();
+		assertNotNull(factory);
+	}
 }

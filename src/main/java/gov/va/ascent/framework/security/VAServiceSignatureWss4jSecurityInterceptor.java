@@ -12,12 +12,13 @@ import org.apache.ws.security.components.crypto.CryptoFactory;
 import org.apache.ws.security.message.WSSecHeader;
 import org.apache.ws.security.message.WSSecSignature;
 import org.apache.ws.security.util.WSSecurityUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapMessage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 
 /**
  * A Wss4j2 Security Interceptor to digitally sign a soap message.
@@ -25,9 +26,8 @@ import org.w3c.dom.Element;
 public class VAServiceSignatureWss4jSecurityInterceptor extends AbstractEncryptionWss4jSecurityInterceptor {
 
 	/** The Constant LOGGER. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(VAServiceSignatureWss4jSecurityInterceptor.class);
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(VAServiceSignatureWss4jSecurityInterceptor.class);
 
-	
 	/*
 	 * (non-Javadoc)
 	 *

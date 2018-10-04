@@ -1,24 +1,20 @@
 package gov.va.ascent.framework.log;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.event.Level;
 
 public class AscentBaseLoggerTest {
 
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-
 	@Test
-	public final void testAscentBaseLogger() {
-		assertTrue(true);
+	public final void testGetSetLevel() {
+		AscentLogger logger = AscentLoggerFactory.getLogger(AscentBanner.class);
+		Level level = logger.getLevel();
+		assertNotNull(level);
+		logger.setLevel(Level.INFO);
+		assertTrue(Level.INFO.equals(logger.getLevel()));
 	}
 
 }

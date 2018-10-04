@@ -1,16 +1,16 @@
 package gov.va.ascent.framework.security;
 
-
 import org.apache.ws.security.WSSConfig;
 import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.components.crypto.CryptoFactory;
 import org.apache.ws.security.message.WSSecEncrypt;
 import org.apache.ws.security.message.WSSecHeader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapMessage;
 import org.w3c.dom.Document;
+
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 
 /**
  * A Wss4j2 Security Interceptor to encrypt secure message header and body.
@@ -18,8 +18,7 @@ import org.w3c.dom.Document;
 public class VAServiceEncryptionWss4jSecurityInterceptor extends AbstractEncryptionWss4jSecurityInterceptor {
 
 	/** The Constant LOGGER. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(VAServiceEncryptionWss4jSecurityInterceptor.class);
-
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(VAServiceEncryptionWss4jSecurityInterceptor.class);
 
 	/*
 	 * (non-Javadoc)

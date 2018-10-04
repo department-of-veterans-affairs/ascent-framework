@@ -15,10 +15,10 @@ import javax.xml.transform.stream.StreamResult;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 import gov.va.ascent.framework.util.Defense;
 
 /**
@@ -26,18 +26,17 @@ import gov.va.ascent.framework.util.Defense;
  * a marshaller onto the input and output objects to ensure we are able to
  * marshall requests and responses to XML. This is to helping prevent issues
  * transitioning to/from web services to simulators.
- * 
+ *
  * @author jshrader
  */
 public class WsClientSimulatorMarshallingInterceptor implements
 		MethodInterceptor {
 
 	/** The Constant LOGGER. */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(WsClientSimulatorMarshallingInterceptor.class);
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(WsClientSimulatorMarshallingInterceptor.class);
 
 	/** Error message constant */
-	private static final String XML_ROOT_ERROR = 
+	private static final String XML_ROOT_ERROR =
 			" is not an @XmlRootElement, and no ObjectFactory method was found to construct it.";
 
 	/** The map which maps packages to their respective marshallers */
@@ -48,7 +47,7 @@ public class WsClientSimulatorMarshallingInterceptor implements
 
 	/**
 	 * Instantiates a new ws client simulator marshalling interceptor.
-	 * 
+	 *
 	 * @param marshallerForPackageMap
 	 *            the marshaller for package map
 	 */
@@ -61,7 +60,7 @@ public class WsClientSimulatorMarshallingInterceptor implements
 
 	/**
 	 * Instantiates a new ws client simulator marshalling interceptor.
-	 * 
+	 *
 	 * @param marshallerForPackageMap
 	 *            the marshaller for package map
 	 * @param objectFactoryForPackageMap
@@ -90,6 +89,7 @@ public class WsClientSimulatorMarshallingInterceptor implements
 	 */
 	// JSHRADER throws throwable part of the interface, unavoidable
 	// CHECKSTYLE:OFF
+	@Override
 	public final Object invoke(final MethodInvocation methodInvocation)
 			throws Throwable {
 		// CHECKSTYLE:ON
@@ -139,7 +139,7 @@ public class WsClientSimulatorMarshallingInterceptor implements
 
 	/**
 	 * Gets the jaxb marshaller for the request or response object.
-	 * 
+	 *
 	 * @param obj
 	 *            the obj
 	 * @return the jaxb marshaller
@@ -161,7 +161,7 @@ public class WsClientSimulatorMarshallingInterceptor implements
 	/**
 	 * Get the ObjectFactory class associated with the given request/response
 	 * object.
-	 * 
+	 *
 	 * @param obj
 	 *            request/response object
 	 * @return ObjectFactory instance
@@ -185,13 +185,13 @@ public class WsClientSimulatorMarshallingInterceptor implements
 	 * to make sure that we don't encounter major surprises when we stop using
 	 * simulators and start using XML based web services. All of our requests
 	 * and faked responses should adhere to schemas, this will ensure adherence.
-	 * 
+	 *
 	 * If marshalling of the given object fails, the method will attempt to use
 	 * an associated ObjectFactory class to construct the bound object using a
 	 * method with the signature create<obj.getClass().getName()>. This there is
 	 * an associated ObjectFactory method, the result of the method will be
 	 * attempt to be marshalled instead.
-	 * 
+	 *
 	 * @param marshaller
 	 *            the marshaller to use for the object
 	 * @param obj
@@ -214,7 +214,8 @@ public class WsClientSimulatorMarshallingInterceptor implements
 					final Method createMethod = objectFactory.getClass()
 							.getMethod(methodName, obj.getClass());
 					objectToMarshal = createMethod.invoke(objectFactory, obj);
-				} catch (NoSuchMethodException | IllegalArgumentException | IllegalAccessException|InvocationTargetException methodEx) {
+				} catch (NoSuchMethodException | IllegalArgumentException | IllegalAccessException
+						| InvocationTargetException methodEx) {
 					LOGGER.info(methodEx.getMessage(), methodEx);
 					LOGGER.warn(obj.getClass().getName() + XML_ROOT_ERROR);
 				}
@@ -231,7 +232,7 @@ public class WsClientSimulatorMarshallingInterceptor implements
 			}
 		} catch (Exception ex) {
 			LOGGER.info(ex.getMessage(), ex);
-		} finally  {
+		} finally {
 			IOUtils.closeQuietly(outputStream);
 		}
 		return ret;

@@ -14,9 +14,9 @@ import javax.validation.groups.Default;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 import gov.va.ascent.framework.util.Defense;
 
 /**
@@ -32,7 +32,7 @@ public class ModelValidator implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -6019704406389010935L;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ModelValidator.class);
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(ModelValidator.class);
 
 	/** The factory. */
 	private transient ValidatorFactory factory = Validation

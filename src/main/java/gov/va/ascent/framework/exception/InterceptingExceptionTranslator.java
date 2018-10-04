@@ -1,29 +1,30 @@
 package gov.va.ascent.framework.exception;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.aop.ThrowsAdvice;
-
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
+
+import org.springframework.aop.ThrowsAdvice;
+
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 
 /**
  * This is a configurable interceptor which will catch and translate one exception type into another. This is useful if
  * you wish to &quot;wrap&quot; 3rd party framework exceptions for a &quot;suite&quot; of beans, and/or if you wish to
  * make sure every exception coming from a tier in your application is of a specific exception type.
- * 
+ *
  * In general, exceptions will be converted to some application specific equivalent.
- * 
- * 
+ *
+ *
  * @see org.aopalliance.intercept.MethodInterceptor
- * 
+ *
  * @author Jon Shrader
  */
 public class InterceptingExceptionTranslator implements ThrowsAdvice {
 
 	/** logger for this class. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(InterceptingExceptionTranslator.class);
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(InterceptingExceptionTranslator.class);
 
 	/**
 	 * A map to tell us what keys to handle and convert into more specific exception types.
@@ -42,9 +43,9 @@ public class InterceptingExceptionTranslator implements ThrowsAdvice {
 
 	/**
 	 * Log the exception, and rethrow a some sort of application exception.
-	 * 
-	 * DO NOT REMOVE "target" ARGUMENT IN THE METHOD, AS REMOVING IT BREAKS END POINT CALLS 
-	 * 
+	 *
+	 * DO NOT REMOVE "target" ARGUMENT IN THE METHOD, AS REMOVING IT BREAKS END POINT CALLS
+	 *
 	 * @param method the method
 	 * @param args the args
 	 * @param target the args
@@ -86,7 +87,7 @@ public class InterceptingExceptionTranslator implements ThrowsAdvice {
 
 	/**
 	 * Resolve the runtime exception for the throwable
-	 * 
+	 *
 	 * @param throwable the throwable
 	 * @return the runtime exception
 	 * @throws InstantiationException the instantiation exception
@@ -110,7 +111,7 @@ public class InterceptingExceptionTranslator implements ThrowsAdvice {
 
 	/**
 	 * Sets the exception map.
-	 * 
+	 *
 	 * @param exceptionMap the exceptionMap to set
 	 */
 	public final void setExceptionMap(final Map<String, Class<? extends RuntimeException>> exceptionMap) {
@@ -119,7 +120,7 @@ public class InterceptingExceptionTranslator implements ThrowsAdvice {
 
 	/**
 	 * Sets the default exception type.
-	 * 
+	 *
 	 * @param defaultExceptionType the defaultExceptionType to set
 	 */
 	public final void setDefaultExceptionType(final Class<? extends RuntimeException> defaultExceptionType) {
@@ -128,7 +129,7 @@ public class InterceptingExceptionTranslator implements ThrowsAdvice {
 
 	/**
 	 * Sets the exclusion set.
-	 * 
+	 *
 	 * @param exclusionSet the exclusionSet to set
 	 */
 	public final void setExclusionSet(final Set<String> exclusionSet) {

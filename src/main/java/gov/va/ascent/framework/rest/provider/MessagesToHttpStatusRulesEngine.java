@@ -5,10 +5,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 import gov.va.ascent.framework.messages.Message;
 
 /**
@@ -21,7 +21,7 @@ import gov.va.ascent.framework.messages.Message;
 public final class MessagesToHttpStatusRulesEngine {
 
 	/** The Constant LOGGER. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(MessagesToHttpStatusRulesEngine.class);
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(MessagesToHttpStatusRulesEngine.class);
 
 	/** The Constant NUMBER_OF_MILLIS_N_A_SECOND. */
 	private static final int NUMBER_OF_MILLIS_N_A_SECOND = 1000;
@@ -64,13 +64,14 @@ public final class MessagesToHttpStatusRulesEngine {
 	}
 
 	/**
-	 * Eval messages against rules.  Broken into separate method to appease Sonar.
+	 * Eval messages against rules. Broken into separate method to appease Sonar.
 	 *
 	 * @param messagesInResponse the messages in response
 	 * @param rules the rules
 	 * @return the HttpStatus
 	 */
-	private static HttpStatus evalMessagesAgainstRules(final List<Message> messagesInResponse, final Set<MessagesToHttpStatusRule> rules) {
+	private static HttpStatus evalMessagesAgainstRules(final List<Message> messagesInResponse,
+			final Set<MessagesToHttpStatusRule> rules) {
 		HttpStatus returnResponse = null;
 		// convert current messages into Set of Message objects for quicker matching
 		final Set<Message> messagesToEval = new HashSet<>();

@@ -7,11 +7,11 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import gov.va.ascent.framework.exception.AscentRuntimeException;
 import gov.va.ascent.framework.exception.ExceptionToExceptionTranslationHandler;
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 import gov.va.ascent.framework.util.Defense;
 
 /**
@@ -26,7 +26,7 @@ import gov.va.ascent.framework.util.Defense;
 @Aspect
 public class ServiceExceptionHandlerAspect extends BaseServiceAspect {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ServiceExceptionHandlerAspect.class);
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(ServiceExceptionHandlerAspect.class);
 
 	private ExceptionToExceptionTranslationHandler exceptionToExceptionTranslator;
 

@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -29,7 +30,6 @@ import org.springframework.mock.web.MockPart;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import ch.qos.logback.classic.Level;
 import gov.va.ascent.framework.AbstractBaseLogTester;
 import gov.va.ascent.framework.audit.AuditEvents;
 import gov.va.ascent.framework.audit.Auditable;
@@ -81,7 +81,7 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpServletRequest, httpServletResponse));
 
 		super.getAppender().clear();
-		restProviderLog.getLoggerBoundImpl().setLevel(Level.DEBUG);
+		restProviderLog.setLevel(Level.DEBUG);
 		try {
 			when(proceedingJoinPoint.getArgs()).thenReturn(mockArray);
 			when(proceedingJoinPoint.getSignature()).thenReturn(mockSignature);
@@ -218,7 +218,7 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 	public void testAroundAdviceCatchAscentExceptionLogging() {
 		super.getAppender().clear();
 
-		restProviderLog.getLoggerBoundImpl().setLevel(Level.ERROR);
+		restProviderLog.setLevel(Level.ERROR);
 		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
 		Object returnObject = null;
 		try {
@@ -232,14 +232,14 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 
 		}
 		assertTrue(((ServiceResponse) returnObject).getMessages().size() > 0);
-		assertEquals("Error while executing RestProviderHttpResponseCodeAspect.aroundAdvice around restController",
-				super.getAppender().get(0).getMessage());
+		assertTrue(super.getAppender().get(0).getMessage().startsWith(
+				"Error while executing RestProviderHttpResponseCodeAspect.aroundAdvice around restController"));
 	}
 
 	@Test
 	public void testAroundAdviceCatchExceptionLogging() {
 		super.getAppender().clear();
-		restProviderLog.getLoggerBoundImpl().setLevel(Level.ERROR);
+		restProviderLog.setLevel(Level.ERROR);
 
 		restProviderHttpResponseCodeAspect = new RestProviderHttpResponseCodeAspect();
 		Object returnObject = null;
@@ -254,8 +254,8 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 		}
 
 		assertTrue(((ServiceResponse) returnObject).getMessages().size() > 0);
-		assertEquals("Throwable while executing RestProviderHttpResponseCodeAspect.aroundAdvice around restController",
-				super.getAppender().get(0).getMessage());
+		assertTrue(super.getAppender().get(0).getMessage().startsWith(
+				"Throwable while executing RestProviderHttpResponseCodeAspect.aroundAdvice around restController"));
 		assertEquals("java.lang.Throwable",
 				super.getAppender().get(0).getThrowableProxy().getClassName());
 	}

@@ -10,10 +10,10 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.slf4j.event.Level;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import gov.va.ascent.framework.AbstractBaseLogTester;
+import gov.va.ascent.framework.log.AscentLogger;
 
 public class InterceptingExceptionTranslatorTest extends AbstractBaseLogTester {
 
@@ -21,7 +21,7 @@ public class InterceptingExceptionTranslatorTest extends AbstractBaseLogTester {
 	public ExpectedException exceptions = ExpectedException.none();
 
 	/** Underlying logger implementation of AscentLogger */
-	private Logger LOG = super.getLogger(InterceptingExceptionTranslator.class).getLoggerBoundImpl();
+	private AscentLogger LOG = super.getLogger(InterceptingExceptionTranslator.class);
 
 	@Test
 	public void testAscentRunTimeExceptionDefault() throws Exception {
@@ -49,10 +49,11 @@ public class InterceptingExceptionTranslatorTest extends AbstractBaseLogTester {
 		interceptingExceptionTranslator.afterThrowing(
 				this.getClass().getMethod("testAscentRunTimeExceptionMapNullAndDefaultExceptionTypeNull"), null, null, throwable);
 
-		Assert.assertEquals("InterceptingExceptionTranslator caught exception, handling it as configured."
-				+ "  Here are details [java.lang.Throwable thrown by gov.va.ascent.framework.exception."
-				+ "InterceptingExceptionTranslatorTest.testAscentRunTimeExceptionMapNullAndDefaultExceptionTypeNull]"
-				+ " args [null].", super.getAppender().get(0).getMessage());
+		Assert.assertTrue(super.getAppender().get(0).getMessage().startsWith(
+				"InterceptingExceptionTranslator caught exception, handling it as configured."
+						+ "  Here are details [java.lang.Throwable thrown by gov.va.ascent.framework.exception."
+						+ "InterceptingExceptionTranslatorTest.testAscentRunTimeExceptionMapNullAndDefaultExceptionTypeNull]"
+						+ " args [null]."));
 	}
 
 	@Test

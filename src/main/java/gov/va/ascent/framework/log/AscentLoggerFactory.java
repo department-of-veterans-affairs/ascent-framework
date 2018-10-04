@@ -1,5 +1,6 @@
 package gov.va.ascent.framework.log;
 
+import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
 
 import gov.va.ascent.framework.exception.AscentRuntimeException;
@@ -25,9 +26,31 @@ public final class AscentLoggerFactory {
 	 *
 	 * @param clazz the Class for which logging is desired
 	 * @return AscentLogger
+	 * @see org.slf4j.LoggerFactory#getLogger(Class)
 	 */
 	public static final AscentLogger getLogger(Class<?> clazz) {
 		return AscentLogger.getLogger(LoggerFactory.getLogger(clazz));
+	}
+
+	/**
+	 * Gets a SLF4J-compliant logger, enhanced for Ascent applications, for the specified name.
+	 *
+	 * @param name the name under which logging is desired
+	 * @return AscentLogger
+	 * @see org.slf4j.LoggerFactory#getLogger(String)
+	 */
+	public static final AscentLogger getLogger(String name) {
+		return AscentLogger.getLogger(LoggerFactory.getLogger(name));
+	}
+
+	/**
+	 * Get the implementation of the logger factory that is bound to SLF4J, that serves as the basis for AscentLoggerFactory.
+	 *
+	 * @return ILoggerFactory an instance of the bound factory implementation
+	 * @see org.slf4j.LoggerFactory#getILoggerFactory()
+	 */
+	public static final ILoggerFactory getBoundFactory() {
+		return LoggerFactory.getILoggerFactory();
 	}
 
 }

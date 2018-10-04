@@ -3,12 +3,13 @@ package gov.va.ascent.framework.security;
 import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.message.WSSecHeader;
 import org.apache.ws.security.message.WSSecTimestamp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapMessage;
 import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
 import org.w3c.dom.Document;
+
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 
 /**
  * A Wss4j2 Security Interceptor to add a timestamp and time-to-live to a soap message.
@@ -16,7 +17,7 @@ import org.w3c.dom.Document;
 public class VAServiceTimeStampWss4jSecurityInterceptor extends Wss4jSecurityInterceptor {
 
 	/** The Constant LOGGER. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(VAServiceTimeStampWss4jSecurityInterceptor.class);
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(VAServiceTimeStampWss4jSecurityInterceptor.class);
 
 	/** The time stamp. */
 	private String timeStamp;
@@ -48,7 +49,6 @@ public class VAServiceTimeStampWss4jSecurityInterceptor extends Wss4jSecurityInt
 		}
 
 	}
-
 
 	/**
 	 * Gets the time stamp.

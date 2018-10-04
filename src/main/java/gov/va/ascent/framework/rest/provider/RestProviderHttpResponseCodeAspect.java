@@ -20,8 +20,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -37,6 +35,8 @@ import gov.va.ascent.framework.audit.Auditable;
 import gov.va.ascent.framework.audit.RequestResponseAuditData;
 import gov.va.ascent.framework.audit.RequestResponseLogSerializer;
 import gov.va.ascent.framework.exception.AscentRuntimeException;
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 import gov.va.ascent.framework.messages.MessageSeverity;
 import gov.va.ascent.framework.service.ServiceResponse;
 import gov.va.ascent.framework.util.SanitizationUtil;
@@ -56,7 +56,7 @@ import gov.va.ascent.framework.util.SanitizationUtil;
 public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 
 	/** The Constant LOGGER. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(RestProviderHttpResponseCodeAspect.class);
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(RestProviderHttpResponseCodeAspect.class);
 
 	private static final int NUMBER_OF_BYTES = 1024;
 
