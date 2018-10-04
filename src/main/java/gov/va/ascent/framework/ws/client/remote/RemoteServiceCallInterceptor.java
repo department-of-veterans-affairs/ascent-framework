@@ -45,15 +45,7 @@ public class RemoteServiceCallInterceptor implements MethodInterceptor {
 	// CHECKSTYLE:OFF
 	public final Object invoke(final MethodInvocation methodInvocation) throws Throwable {
 		// CHECKSTYLE:ON
-		final Logger methodLog = LoggerFactory.getLogger(methodInvocation.getMethod().getDeclaringClass());
 		final RequestResponseAuditData requestResponseAuditData = new RequestResponseAuditData();
-		
-		// only log entry at the debug level
-		if (methodLog.isDebugEnabled()) {
-			methodLog.debug("Entered: " + methodInvocation.getMethod().getDeclaringClass().getSimpleName()
-					+ methodInvocation.getMethod().getName());
-		}
-
 		Object[] args = methodInvocation.getArguments();
 		AuditEventData auditEventData = new AuditEventData(AuditEvents.PARTNER_REQUEST_RESPONSE, methodInvocation.getMethod().getName(),
 				methodInvocation.getMethod().getDeclaringClass().getSimpleName());
