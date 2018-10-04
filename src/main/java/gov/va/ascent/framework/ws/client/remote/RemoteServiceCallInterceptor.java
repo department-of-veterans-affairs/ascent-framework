@@ -31,20 +31,9 @@ import gov.va.ascent.framework.messages.MessageSeverity;
 public class RemoteServiceCallInterceptor implements MethodInterceptor {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(RemoteServiceCallInterceptor.class);
-
 	
 	@Autowired
 	RequestResponseLogSerializer asyncLogging;
-
-	/** NOTE: Do not reference this member directly. Use getRequestResponseLogSerializer() */
-	@Autowired
-	private RequestResponseLogSerializer requestResponseLogSerializer;
-
-	/** Getter for the Autowired member variable. This getter must be used, and is required to facilitate unit testing */
-	RequestResponseLogSerializer getRequestResponseLogSerializer() {
-		return requestResponseLogSerializer;
-	}
-	
 
 
 	/*
@@ -56,15 +45,7 @@ public class RemoteServiceCallInterceptor implements MethodInterceptor {
 	// CHECKSTYLE:OFF
 	public final Object invoke(final MethodInvocation methodInvocation) throws Throwable {
 		// CHECKSTYLE:ON
-		final Logger methodLog = LoggerFactory.getLogger(methodInvocation.getMethod().getDeclaringClass());
 		final RequestResponseAuditData requestResponseAuditData = new RequestResponseAuditData();
-		
-		// only log entry at the debug level
-		if (methodLog.isDebugEnabled()) {
-			methodLog.debug("Entered: " + methodInvocation.getMethod().getDeclaringClass().getSimpleName()
-					+ methodInvocation.getMethod().getName());
-		}
-
 		Object[] args = methodInvocation.getArguments();
 		AuditEventData auditEventData = new AuditEventData(AuditEvents.PARTNER_REQUEST_RESPONSE, methodInvocation.getMethod().getName(),
 				methodInvocation.getMethod().getDeclaringClass().getSimpleName());

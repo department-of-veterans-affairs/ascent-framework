@@ -579,8 +579,7 @@ public class BaseWsClientConfig {
 	 * @return the performance interceptor
 	 */
 	public final RemoteServiceCallInterceptor getRemoteServiceCallInterceptor() {
-		final RemoteServiceCallInterceptor remoteServiceCallInterceptor = new RemoteServiceCallInterceptor();
-		return remoteServiceCallInterceptor;
+		return new RemoteServiceCallInterceptor();
 	}
 
 
