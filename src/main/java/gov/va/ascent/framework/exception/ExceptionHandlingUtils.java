@@ -3,13 +3,13 @@ package gov.va.ascent.framework.exception;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 
 /**
  * Contains utility ops for logging and handling exceptions consistently. Primarily for usage in interceptors which
  * implement ThrowsAdvice and handle exceptions to ensure these all log then consistently.
- * 
+ *
  * @author jshrader
  */
 public final class ExceptionHandlingUtils {
@@ -38,7 +38,7 @@ public final class ExceptionHandlingUtils {
 
 	/**
 	 * Log exception.
-	 * 
+	 *
 	 * @param catcher the catcher - some descriptive name for whomever caught this exception and wants it logged
 	 * @param method the method
 	 * @param args the args
@@ -46,8 +46,8 @@ public final class ExceptionHandlingUtils {
 	 */
 	public static void logException(final String catcher, final Method method, final Object[] args,
 			final Throwable throwable) {
-		final Logger errorLogger =
-				LoggerFactory.getLogger(method.getDeclaringClass().getName() + LOG_EXCEPTION_DOT + method.getName()
+		final AscentLogger errorLogger =
+				AscentLoggerFactory.getLogger(method.getDeclaringClass().getName() + LOG_EXCEPTION_DOT + method.getName()
 						+ LOG_EXCEPTION_UNDERSCORE + throwable.getClass().getName());
 		final String errorMessage =
 				throwable.getClass().getName() + " thrown by " + method.getDeclaringClass().getName()

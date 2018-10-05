@@ -13,11 +13,11 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 
 import gov.va.ascent.framework.audit.AuditLogger;
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 import gov.va.ascent.framework.messages.Message;
 import gov.va.ascent.framework.messages.MessageSeverity;
 import gov.va.ascent.framework.rest.provider.BaseRestProviderAspect;
@@ -42,7 +42,7 @@ import gov.va.ascent.framework.validation.ViolationMessageParts;
 @Order(-9998)
 public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ServiceValidationToMessageAspect.class);
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(ServiceValidationToMessageAspect.class);
 
 	/**
 	 * Around advice for{@link BaseServiceAspect#serviceImpl()} pointcut.
@@ -114,7 +114,7 @@ public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 
 	/**
 	 * Validate any validatable objects on the serviceRequest list.
-	 * 
+	 *
 	 * @param methodSignature
 	 * @param serviceRequest
 	 * @param messages

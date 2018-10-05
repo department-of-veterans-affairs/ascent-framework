@@ -12,8 +12,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.io.IOUtils;
 import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.message.WSSecHeader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapMessage;
 import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
@@ -23,13 +21,16 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
+
 /**
  * A Wss4j2 Security Interceptor to add a SAML assertion to the secure message header.
  */
 public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityInterceptor {
 
 	/** The Constant LOGGER. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(VAServiceSAMLWss4jSecurityInterceptor.class);
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(VAServiceSAMLWss4jSecurityInterceptor.class);
 
 	/** The Constant ERROR_SAML_ASSERTION. */
 	private static final String ERROR_SAML_ASSERTION = "Error while attempting to convert SAML assertion string to element.";

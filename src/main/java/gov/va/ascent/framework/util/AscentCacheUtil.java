@@ -1,13 +1,12 @@
 /**
- * 
+ *
  */
 package gov.va.ascent.framework.util;
 
 import java.util.UUID;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 import gov.va.ascent.framework.security.SecurityUtils;
 import gov.va.ascent.framework.service.ServiceResponse;
 
@@ -19,7 +18,7 @@ import gov.va.ascent.framework.service.ServiceResponse;
 public final class AscentCacheUtil {
 	/// CHECKSTYLE:ON
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AscentCacheUtil.class);
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(AscentCacheUtil.class);
 	protected static final String SEPARATOR = "_";
 
 	/**
@@ -37,7 +36,7 @@ public final class AscentCacheUtil {
 	 * Generate a unique user based complex cache key. This implementation uses the
 	 * user's unique username and the beneficiary as a prefix for the rest of the
 	 * complex key
-	 * 
+	 *
 	 * @param keyValues
 	 *            the key values
 	 * @return the user based key
@@ -49,7 +48,7 @@ public final class AscentCacheUtil {
 	/**
 	 * Generate a unique user based cache key. This implementation uses the user's
 	 * unique username and the beneficiary
-	 * 
+	 *
 	 * @return the user based key
 	 */
 	public static String getUserBasedKey() {
@@ -83,7 +82,7 @@ public final class AscentCacheUtil {
 
 	/**
 	 * Creates a unique cache key using the given key values.
-	 * 
+	 *
 	 * @param keyValues
 	 *            the key values
 	 * @return the string

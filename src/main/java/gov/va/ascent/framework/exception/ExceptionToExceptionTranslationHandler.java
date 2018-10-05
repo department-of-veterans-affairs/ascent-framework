@@ -1,26 +1,26 @@
 package gov.va.ascent.framework.exception;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
+
 /**
- * The Class ExceptionToExceptionTranslationHandler is an exception handler that does a translation to a 
- * new exception type before rethrowing.  This is useful to quickly log and wrap an exception from a 3rd party 
- * component.  The wrapped exception type should be of a internal exception type that carries forth not only
+ * The Class ExceptionToExceptionTranslationHandler is an exception handler that does a translation to a
+ * new exception type before rethrowing. This is useful to quickly log and wrap an exception from a 3rd party
+ * component. The wrapped exception type should be of a internal exception type that carries forth not only
  * the original exception but also additional diagnostic information that will help us trace down root causes later.
- * 
+ *
  * @author jshrader
  */
 public class ExceptionToExceptionTranslationHandler {
-	
+
 	/** logger for this class. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionToExceptionTranslationHandler.class);
-	
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(ExceptionToExceptionTranslationHandler.class);
+
 	/**
 	 * A map to tell us what keys to handle and convert into more desired exception types.
 	 */
@@ -35,14 +35,14 @@ public class ExceptionToExceptionTranslationHandler {
 	 * The default exception to raise in the event its not a success and also not a mapped exception type.
 	 */
 	private Class<? extends RuntimeException> defaultExceptionType;
-	
+
 	/**
 	 * Instantiates a new exception to exception translation handler.
 	 */
-	public ExceptionToExceptionTranslationHandler(){
+	public ExceptionToExceptionTranslationHandler() {
 		this(null, null, null);
 	}
-	
+
 	/**
 	 * Instantiates a new exception to exception translation handler.
 	 *
@@ -50,34 +50,34 @@ public class ExceptionToExceptionTranslationHandler {
 	 * @param exclusionSet the exclusion set
 	 * @param defaultExceptionType the default exception type
 	 */
-	public ExceptionToExceptionTranslationHandler(Map<Class<? extends Throwable>, Class<? extends RuntimeException>> exceptionMap, 
+	public ExceptionToExceptionTranslationHandler(Map<Class<? extends Throwable>, Class<? extends RuntimeException>> exceptionMap,
 			Set<Class<? extends Throwable>> exclusionSet,
 			Class<? extends RuntimeException> defaultExceptionType) {
 		super();
-		
-		//create reasonable default exception type as our top most runtime exception if none was specified
-		if(defaultExceptionType == null){
+
+		// create reasonable default exception type as our top most runtime exception if none was specified
+		if (defaultExceptionType == null) {
 			this.defaultExceptionType = AscentRuntimeException.class;
 		} else {
 			this.defaultExceptionType = defaultExceptionType;
 		}
-		
-		//create reasonable default exclusion map if none specified
-		if(exclusionSet == null){
+
+		// create reasonable default exclusion map if none specified
+		if (exclusionSet == null) {
 			this.exclusionSet = new HashSet<>();
 		} else {
 			this.exclusionSet = exclusionSet;
 		}
-		//ensure the default type is in the exclusion set to ensure we never "double wrap" exceptions
+		// ensure the default type is in the exclusion set to ensure we never "double wrap" exceptions
 		this.exclusionSet.add(this.defaultExceptionType);
-		
-		//no reason to create a default exception map
+
+		// no reason to create a default exception map
 		this.exceptionMap = exceptionMap;
 	}
 
 	/**
 	 * Log the exception, and rethrow a some sort of application exception we translate into.
-	 * 
+	 *
 	 * @param method the method
 	 * @param args the args
 	 * @param throwable the throwable
@@ -86,14 +86,14 @@ public class ExceptionToExceptionTranslationHandler {
 	// Sonar - ignore throws Throwable because this method could be translating any error.
 	public final void handleViaTranslation(final Method method, final Object[] args, final Throwable throwable) throws Throwable {
 
-		if(method == null || throwable == null){
+		if (method == null || throwable == null) {
 			LOGGER.error(
 					"Invalid invocation of this method, method and/or throwable is null so doing nothing here!", method, throwable);
 			return;
 		}
-		
+
 		try {
-			// 1st check if the throwable is already one we shouldn't translate.  
+			// 1st check if the throwable is already one we shouldn't translate.
 			// If so we don't want to log the exception again or wrap it in another exception
 			if (shouldSkipTranslation(throwable)) {
 				if (LOGGER.isDebugEnabled()) {
@@ -101,11 +101,11 @@ public class ExceptionToExceptionTranslationHandler {
 							+ throwable.getClass() + "] however per configuration not translating this exception.");
 				}
 				throw throwable;
-			
-			// else see if we have something to translate this to, and translate accordingly
+
+				// else see if we have something to translate this to, and translate accordingly
 			} else {
 				ExceptionHandlingUtils.logException(this.getClass().getName(), method, args, throwable);
-				
+
 				RuntimeException resolvedRuntimeException = null;
 
 				// check if our map contains a translation mapping for this data
@@ -115,7 +115,7 @@ public class ExceptionToExceptionTranslationHandler {
 					// otherwise raise the default type of exception
 					resolvedRuntimeException = defaultExceptionType.newInstance();
 				}
-				
+
 				// set the original message as the cause
 				if (resolvedRuntimeException != null) {
 					resolvedRuntimeException.initCause(throwable);
@@ -124,7 +124,6 @@ public class ExceptionToExceptionTranslationHandler {
 
 			}
 
-			
 		} catch (final InstantiationException e) {
 			LOGGER.error(
 					"InstantiationException likely configuration error, review log/configuration to troubleshoot", e);
@@ -134,14 +133,14 @@ public class ExceptionToExceptionTranslationHandler {
 					"IllegalAccessException likely configuration error, review log/configuration to troubleshoot", e);
 		}
 	}
-	
-	private boolean shouldSkipTranslation(Throwable throwable){
+
+	private boolean shouldSkipTranslation(Throwable throwable) {
 		boolean returnVal = false;
 		if (exclusionSet.contains(throwable.getClass())) {
 			returnVal = true;
 		} else {
-			for(Class<? extends Throwable> clazz: exclusionSet){
-				if(clazz.isAssignableFrom(throwable.getClass())){
+			for (Class<? extends Throwable> clazz : exclusionSet) {
+				if (clazz.isAssignableFrom(throwable.getClass())) {
 					returnVal = true;
 					break;
 				}

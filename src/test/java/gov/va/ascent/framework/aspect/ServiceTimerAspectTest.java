@@ -15,7 +15,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import ch.qos.logback.classic.Level;
 import gov.va.ascent.framework.AbstractBaseLogTester;
 import gov.va.ascent.framework.service.ServiceTimerAspect;
 
@@ -56,7 +55,7 @@ public class ServiceTimerAspectTest extends AbstractBaseLogTester {
 				super.getAppender().get(0).getMessage());
 		assertEquals("enter [ServiceTimerAspectTest.someMethod]", super.getAppender().get(1).getMessage());
 		assertEquals("PerformanceLoggingAspect after method was called.", super.getAppender().get(2).getMessage());
-		assertEquals(Level.INFO, super.getAppender().get(3).getLevel());
+		assertEquals(ch.qos.logback.classic.Level.INFO, super.getAppender().get(3).getLevel());
 	}
 
 	public Method myMethod() throws NoSuchMethodException {

@@ -4,20 +4,18 @@ import java.util.Map;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This is a custom performance logging interceptor which simply wraps a method (any method) and calculates elapsed time.
- * 
+ *
  * This interceptor will create a org.apache.commons.logging.Log for the actual method intercepted and the execution time of the method
  * is logged at the info level if info level logging is enabled for that actual class.
- * 
+ *
  * This method takes a configurable 'warningThreshhold', the number of milliseconds until performance is considered a "warning."
  * If/when the 'warningThreshhold' is exceeded the performance will be logged as at a warning level.
- * 
+ *
  * @see org.aopalliance.intercept.MethodInterceptor
- * 
+ *
  * @author Jon Shrader
  */
 public class PerformanceLogMethodInterceptor implements MethodInterceptor {
@@ -63,16 +61,16 @@ public class PerformanceLogMethodInterceptor implements MethodInterceptor {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance.intercept.MethodInvocation)
 	 */
 	@Override
 	// JSHRADER throws throwable part of the interface, unavoidable
 	// CHECKSTYLE:OFF
-			public final
+	public final
 			Object invoke(final MethodInvocation methodInvocation) throws Throwable {
 		// CHECKSTYLE:ON
-		final Logger methodLog = LoggerFactory.getLogger(methodInvocation.getMethod().getDeclaringClass());
+		final AscentLogger methodLog = AscentLoggerFactory.getLogger(methodInvocation.getMethod().getDeclaringClass());
 
 		// only log entry at the debug level
 		if (methodLog.isDebugEnabled()) {
@@ -105,7 +103,7 @@ public class PerformanceLogMethodInterceptor implements MethodInterceptor {
 
 	/**
 	 * Get the warning threshold
-	 * 
+	 *
 	 * @return warning threshold
 	 */
 	public final Integer getWarningThreshhold() {
@@ -115,7 +113,7 @@ public class PerformanceLogMethodInterceptor implements MethodInterceptor {
 	/**
 	 * Gets the warning threshold. Priority is 1. <code>methoToWarningThreshold</code> 2. <code>warningThreshhold</code> 3.
 	 * <code>DEFAULT_WARNING_THRESHHOLD</code>
-	 * 
+	 *
 	 * @param callingMethod - the method the intercepter is running on
 	 * @return the warning threshold
 	 */
@@ -142,7 +140,7 @@ public class PerformanceLogMethodInterceptor implements MethodInterceptor {
 
 	/**
 	 * Set a threshold, in milliseconds, for which we log warnings if method responses come to us slower than the threshold.
-	 * 
+	 *
 	 * @param warningThreshhold the new warning threshold
 	 */
 	public final void setWarningThreshhold(final Integer warningThreshhold) {
@@ -151,7 +149,7 @@ public class PerformanceLogMethodInterceptor implements MethodInterceptor {
 
 	/**
 	 * Sets a threshold for specific methods in milliseconds. We log warnings if the method responses are slower than the threshold.
-	 * 
+	 *
 	 * @param classAndMethodSpecificWarningThreshold the methodToWarningThreshold to set
 	 */
 	public final void setClassAndMethodSpecificWarningThreshold(final Map<String, Integer> classAndMethodSpecificWarningThreshold) {

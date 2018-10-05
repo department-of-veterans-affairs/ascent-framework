@@ -3,8 +3,6 @@ package gov.va.ascent.framework.audit;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -16,6 +14,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 import gov.va.ascent.framework.messages.MessageSeverity;
 
 /**
@@ -26,7 +26,7 @@ import gov.va.ascent.framework.messages.MessageSeverity;
 @Component
 public class RequestResponseLogSerializer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RequestResponseLogSerializer.class);
+    private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(RequestResponseLogSerializer.class);
 
     ObjectMapper mapper = new ObjectMapper();
 
@@ -35,6 +35,7 @@ public class RequestResponseLogSerializer {
 	
     /**
      * Asynchronuously converts an object to JSON and then writes it to the audit logger.
+	 * 
      * @param auditEventData Data specific to the audit event
      * @param requestResponseAuditData The request and response audit data
      */

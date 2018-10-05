@@ -177,6 +177,8 @@ class TestRequest extends ServiceRequest {
 }
 
 class TestPojo extends ServiceRequest {
+	private static final long serialVersionUID = -1516814834657122327L;
+
 	@NotNull
 	String test;
 

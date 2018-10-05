@@ -5,16 +5,16 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
-import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 
 public abstract class AbstractBaseLogTester {
 
 	private TestAppender testAppender = new TestAppender();
 
-	private List<Logger> loggers = new ArrayList<Logger>();
+	private List<AscentLogger> loggers = new ArrayList<AscentLogger>();
 
 	/**
 	 * <p>
@@ -45,13 +45,13 @@ public abstract class AbstractBaseLogTester {
 	 * @param clazz the Class for which the logger was created
 	 * @return the associated logger, or {@code null}
 	 */
-	protected Logger getLogger(Class<?> clazz) {
+	protected AscentLogger getLogger(Class<?> clazz) {
 		if (loggers == null) {
-			loggers = new ArrayList<Logger>();
+			loggers = new ArrayList<AscentLogger>();
 		}
 
-		Logger logger = null;
-		for (Logger l : loggers) {
+		AscentLogger logger = null;
+		for (AscentLogger l : loggers) {
 			if (clazz.getName().equals(l.getName())) {
 				logger = l;
 				logger.setLevel(Level.DEBUG);
@@ -59,7 +59,7 @@ public abstract class AbstractBaseLogTester {
 			}
 		}
 		if (logger == null) {
-			logger = (Logger) LoggerFactory.getLogger(clazz);
+			logger = AscentLoggerFactory.getLogger(clazz);
 			logger.setLevel(Level.DEBUG);
 			loggers.add(logger);
 		}
@@ -76,10 +76,10 @@ public abstract class AbstractBaseLogTester {
 		// clean up appender
 		testAppender.clear();
 		// clean up loggers
-		if ((loggers != null) && (loggers.size() > 0)) {
-			for (Logger logger : loggers) {
+		if (loggers != null && loggers.size() > 0) {
+			for (AscentLogger logger : loggers) {
 				logger.setLevel(Level.ERROR);
-				logger.detachAndStopAllAppenders();
+				logger.getLoggerBoundImpl().detachAndStopAllAppenders();
 			}
 		}
 		loggers.clear();

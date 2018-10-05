@@ -2,11 +2,11 @@ package gov.va.ascent.framework.config;
 
 import javax.annotation.PostConstruct;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 import gov.va.ascent.framework.properties.AscentPropertySourcesPlaceholderConfigurer;
 
 /**
@@ -31,7 +31,7 @@ public class BasePropertiesConfig {
 	}
 
 	/** logger for this class. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(BasePropertiesConfig.class);
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(BasePropertiesConfig.class);
 
 	/** The Constant CLASSPATH_PREFIX. */
 	public static final String CLASSPATH_PREFIX = "classpath:/";

@@ -18,16 +18,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.event.Level;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import gov.va.ascent.framework.AbstractBaseLogTester;
+import gov.va.ascent.framework.log.AscentLogger;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PerformanceLoggingAspectTest extends AbstractBaseLogTester {
 
-	private Logger AspectLoggingLOG = super.getLogger(PerformanceLoggingAspect.class);
-	private Logger AspectLoggingTestLOG = super.getLogger(PerformanceLoggingAspectTest.class);
+	/** Underlying logger implementation of AscentLogger */
+	private AscentLogger AspectLoggingLOG = super.getLogger(PerformanceLoggingAspect.class);
+	/** Underlying logger implementation of AscentLogger */
+	private AscentLogger AspectLoggingTestLOG = super.getLogger(PerformanceLoggingAspectTest.class);
 
 	@Mock
 	private ProceedingJoinPoint proceedingJoinPoint;
@@ -57,7 +59,7 @@ public class PerformanceLoggingAspectTest extends AbstractBaseLogTester {
 		try {
 			Constructor<?> constructor = PerformanceLoggingAspect.class.getDeclaredConstructors()[0];
 			constructor.setAccessible(true);
-			constructor.newInstance(null);
+			constructor.newInstance((Object[]) null);
 			fail("Should have thrown InvocationTargetException.");
 		} catch (IllegalAccessError | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
@@ -78,7 +80,7 @@ public class PerformanceLoggingAspectTest extends AbstractBaseLogTester {
 		assertEquals("PerformanceLoggingAspect after method was called.", super.getAppender().get(2).getMessage());
 		assertTrue(
 				super.getAppender().get(3).getMessage().contains("exit [PerformanceLoggingAspectTest.someMethod] in elapsed time ["));
-		assertEquals(Level.INFO, super.getAppender().get(3).getLevel());
+		assertEquals(ch.qos.logback.classic.Level.INFO, super.getAppender().get(3).getLevel());
 
 	}
 
@@ -92,7 +94,7 @@ public class PerformanceLoggingAspectTest extends AbstractBaseLogTester {
 
 		assertTrue(
 				super.getAppender().get(0).getMessage().contains("exit [PerformanceLoggingAspectTest.someMethod] in elapsed time ["));
-		assertEquals(Level.INFO, super.getAppender().get(0).getLevel());
+		assertEquals(ch.qos.logback.classic.Level.INFO, super.getAppender().get(0).getLevel());
 
 	}
 
@@ -106,10 +108,11 @@ public class PerformanceLoggingAspectTest extends AbstractBaseLogTester {
 
 		try {
 			PerformanceLoggingAspect.aroundAdvice(proceedingJoinPoint);
+			fail("Should have thrown exception.");
 		} catch (Throwable e) {
 			assertEquals("PerformanceLoggingAspect encountered uncaught exception. Throwable Cause.",
 					super.getAppender().get(0).getMessage());
-			assertEquals(Level.ERROR, super.getAppender().get(0).getLevel());
+			assertEquals(ch.qos.logback.classic.Level.ERROR, super.getAppender().get(0).getLevel());
 		}
 
 	}

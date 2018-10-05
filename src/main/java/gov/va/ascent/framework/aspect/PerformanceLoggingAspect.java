@@ -4,12 +4,13 @@ import java.lang.reflect.Method;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
 
 public class PerformanceLoggingAspect {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PerformanceLoggingAspect.class);
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(PerformanceLoggingAspect.class);
 
 	/** number of milliseconds in a second */
 	private static final int NUMBER_OF_MILLIS_N_A_SECOND = 1000;
@@ -47,11 +48,11 @@ public class PerformanceLoggingAspect {
 
 		Object returnObject = null;
 		Method method = null;
-		Logger methodLog = null;
+		AscentLogger methodLog = null;
 		final long startTime = System.currentTimeMillis();
 		try {
 			method = ((MethodSignature) joinPoint.getStaticPart().getSignature()).getMethod();
-			methodLog = LoggerFactory.getLogger(method.getDeclaringClass());
+			methodLog = AscentLoggerFactory.getLogger(method.getDeclaringClass());
 
 			// only log entry at the debug level
 			if (methodLog.isDebugEnabled()) {
@@ -61,8 +62,7 @@ public class PerformanceLoggingAspect {
 
 			returnObject = joinPoint.proceed();
 		} catch (Throwable throwable) {
-			LOGGER.error("PerformanceLoggingAspect encountered uncaught exception. Throwable Cause.",
-					throwable.getCause());
+			LOGGER.error("PerformanceLoggingAspect encountered uncaught exception. Throwable Cause.");
 			throw throwable;
 		} finally {
 			LOGGER.debug("PerformanceLoggingAspect after method was called.");

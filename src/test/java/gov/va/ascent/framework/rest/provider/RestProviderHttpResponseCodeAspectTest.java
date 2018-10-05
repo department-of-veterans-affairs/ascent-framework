@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -29,12 +30,11 @@ import org.springframework.mock.web.MockPart;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import gov.va.ascent.framework.AbstractBaseLogTester;
 import gov.va.ascent.framework.audit.AuditEvents;
 import gov.va.ascent.framework.audit.Auditable;
 import gov.va.ascent.framework.exception.AscentRuntimeException;
+import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.messages.Message;
 import gov.va.ascent.framework.messages.MessageSeverity;
 import gov.va.ascent.framework.service.ServiceRequest;
@@ -43,7 +43,7 @@ import gov.va.ascent.framework.service.ServiceResponse;
 @RunWith(MockitoJUnitRunner.class)
 public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTester {
 
-	private final Logger restProviderLog = super.getLogger(RestProviderHttpResponseCodeAspect.class);
+	private final AscentLogger restProviderLog = super.getLogger(RestProviderHttpResponseCodeAspect.class);
 
 	private RestProviderHttpResponseCodeAspect restProviderHttpResponseCodeAspect;
 	@Mock
@@ -232,8 +232,8 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 
 		}
 		assertTrue(((ServiceResponse) returnObject).getMessages().size() > 0);
-		assertEquals("Error while executing RestProviderHttpResponseCodeAspect.aroundAdvice around restController",
-				super.getAppender().get(0).getMessage());
+		assertTrue(super.getAppender().get(0).getMessage().startsWith(
+				"Error while executing RestProviderHttpResponseCodeAspect.aroundAdvice around restController"));
 	}
 
 	@Test
@@ -254,8 +254,8 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 		}
 
 		assertTrue(((ServiceResponse) returnObject).getMessages().size() > 0);
-		assertEquals("Throwable while executing RestProviderHttpResponseCodeAspect.aroundAdvice around restController",
-				super.getAppender().get(0).getMessage());
+		assertTrue(super.getAppender().get(0).getMessage().startsWith(
+				"Throwable while executing RestProviderHttpResponseCodeAspect.aroundAdvice around restController"));
 		assertEquals("java.lang.Throwable",
 				super.getAppender().get(0).getThrowableProxy().getClassName());
 	}

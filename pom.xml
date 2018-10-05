@@ -84,6 +84,12 @@
 			 <version>${axiom-impl.version}</version>
 		</dependency>
 
+		<!-- logging -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback-classic.version}</version>
+		</dependency>
 		<!-- for ascii art enhanced logging -->
 		<dependency>
 			<groupId>com.github.lalyos</groupId>
