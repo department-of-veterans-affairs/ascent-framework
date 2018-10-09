@@ -16,7 +16,7 @@ import org.slf4j.event.Level;
 public class AscentBaseLogger {
 
 	/** Maximum length we are allowing for the "message" part of the log, leaving room for AuditEventData and JSON formatting */
-	private static final int MAX_MSG_LEN = 14336;
+	private static final int MAX_MSG_LEN = 10240;
 	/** The string to prepend when a message must be split */
 	private static final String SPLIT_MDC_NAME = "Split-Log-Sequence";
 
@@ -76,7 +76,7 @@ public class AscentBaseLogger {
 	}
 
 	/**
-	 * Splits a message into an array of strings that are 14 KB or less.
+	 * Splits a message into an array of strings that are {@link #MAX_MSG_LEN} KB or less.
 	 * Short messages will be an array with one element.
 	 *
 	 * @param message the message to split
@@ -88,7 +88,7 @@ public class AscentBaseLogger {
 		if (message.length() <= MAX_MSG_LEN) {
 			return new String[] { message };
 		} else {
-			// split message into 14 KB strings
+			// split message into MAX_MSG_LEN strings
 			return message.split("(?<=\\G.{" + MAX_MSG_LEN + "})");
 		}
 	}
