@@ -55,10 +55,24 @@ public class RemoteServiceCallInterceptor implements MethodInterceptor {
 	    }
 		LOGGER.debug("Setting data to requestResponseAuditData");
 	    requestResponseAuditData.setRequest(Arrays.asList(args));
-		final Object retVal = methodInvocation.proceed();
+	    Object retVal = "";
+	    try {
+	    	retVal = methodInvocation.proceed();
+	    }catch(Exception e) {
+	    	/**
+	    	 * Catch; Audit Log and Rethrow exception
+	    	 */
+	    	String errMSg = e.getMessage() != null ? e.getMessage() : " null exception message";
+	    	LOGGER.error("Partner error : " + errMSg, e);
+			asyncLogging.asyncLogMessageAspectAuditData(auditEventData, errMSg,
+					MessageSeverity.ERROR);
+	    	throw e;
+	    }
+		
 		requestResponseAuditData.setResponse(retVal);
 		LOGGER.debug("Invoking asyncLogRequestResponseAspectAuditData");
-		asyncLogging.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData, MessageSeverity.INFO);
+		asyncLogging.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData,
+					MessageSeverity.INFO);
 		return retVal;
 	}
 
