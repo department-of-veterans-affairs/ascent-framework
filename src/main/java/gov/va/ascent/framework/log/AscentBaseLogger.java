@@ -103,12 +103,17 @@ public class AscentBaseLogger {
 	 * @param message
 	 */
 	protected void sendlog(Level level, Marker marker, String message, Throwable t) {
-		int seq = 0;
-		for (String part : splitMessages(message)) {
-			MDC.put(SPLIT_MDC_NAME, Integer.toString(++seq));
-			this.sendLevelLog(level, marker, part, t);
-			MDC.clear();
+		if (message.length() > MAX_MSG_LEN) {
+			int seq = 0;
+			String[] splitMessages = splitMessages(message);
+			for (String part : splitMessages) {
+				MDC.put(SPLIT_MDC_NAME, Integer.toString(++seq));
+				this.sendLogAtLevel(level, marker, part, t);
+			}
+		} else {
+			this.sendLogAtLevel(level, marker, message, t);
 		}
+		MDC.clear();
 	}
 
 	/**
@@ -119,7 +124,7 @@ public class AscentBaseLogger {
 	 * @param level
 	 * @param part
 	 */
-	private void sendLevelLog(Level level, Marker marker, String part, Throwable t) {
+	private void sendLogAtLevel(Level level, Marker marker, String part, Throwable t) {
 		if (level == null) {
 			sendLogDebug(marker, part, t);
 		} else {
