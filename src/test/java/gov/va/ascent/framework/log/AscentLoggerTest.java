@@ -711,5 +711,11 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 		logger.log(Level.ERROR, MARKER, MESSAGE, EXCEPTION);
 		assertConsole(Level.ERROR, MESSAGE, EXCEPTION);
 	}
+	
+	@Test
+	public final void testNullMessage() throws IOException {
+		logger.log(Level.ERROR, null);
+		assertConsole(Level.ERROR, "null", null);
+	}
 
 }
