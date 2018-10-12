@@ -103,7 +103,7 @@ public class AscentBaseLogger {
 	 * @param message
 	 */
 	protected void sendlog(Level level, Marker marker, String message, Throwable t) {
-		if (message.length() > MAX_MSG_LEN) {
+		if (message != null && message.length() > MAX_MSG_LEN) {
 			int seq = 0;
 			String[] splitMessages = splitMessages(message);
 			for (String part : splitMessages) {
