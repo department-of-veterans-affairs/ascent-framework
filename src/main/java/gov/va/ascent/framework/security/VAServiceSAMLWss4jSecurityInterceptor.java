@@ -12,6 +12,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.io.IOUtils;
 import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.message.WSSecHeader;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapMessage;
 import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
@@ -76,14 +77,13 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 	 *
 	 * @return the sAML assertion as element
 	 */
-	Element getSAMLAssertionAsElement()
-			throws WSSecurityException { // NOSONAR throws to assist unit testing and coverage
+	Element getSAMLAssertionAsElement() throws WSSecurityException { // NOSONAR throws to assist unit testing and coverage
 		Element retVal = null;
 		String clientAssertion = null;
 
 		InputStream input = null;
 		try {
-			input = Thread.currentThread().getContextClassLoader().getResourceAsStream(getSamlFile());
+			input = new FileSystemResource(getSamlFile()).getInputStream();
 			clientAssertion = IOUtils.toString(input, "UTF-8");
 		} catch (final Exception e) {
 			LOGGER.error("Unable to read SAML assertion from file." + getSamlFile(), e);
