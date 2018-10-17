@@ -20,51 +20,49 @@ public abstract class AbstractEncryptionWss4jSecurityInterceptor extends Wss4jSe
 
 	/** The key password. */
 	private String keyPassword;
-	
-	/**
-	 * The security crypto provider
-	 */
-	@Value("${vetservices-partner-efolder.org.apache.ws.security.crypto.provider}")
+
+	/** Fully qualified name of the class that will provide cryptography capabilities. */
+	@Value("${ascent.security.crypto.provider}")
 	private String securityCryptoProvider;
 
 	/**
-	 * The security.crypto.merlin.keystore.type
+	 * The type of
 	 */
-	@Value("${vetservices-partner-efolder.org.apache.ws.security.crypto.merlin.keystore.type}")
+	@Value("${ascent.security.crypto.keystore.type}")
 	private String securityCryptoMerlinKeystoreType;
 
 	/**
 	 * The security.crypto.merlin.keystore.password.
 	 */
-	@Value("${partner.client.keystorePassword}")
+	@Value("${ascent.security.crypto.keystore.password}")
 	private String securityCryptoMerlinKeystorePassword;
 
 	/**
 	 * The security.crypto.merlin.keystore.alias
 	 */
-	@Value("${vetservices-partner-efolder.org.apache.ws.security.crypto.merlin.keystore.alias}")
+	@Value("${ascent.security.crypto.keystore.alias}")
 	private String securityCryptoMerlinKeystoreAlias;
 
 	/**
 	 * The securityCryptoMerlinKeystoreFile
 	 */
-	@Value("${partner.client.keystore}")
+	@Value("${ascent.security.crypto.keystore.keystore}")
 	private String securityCryptoMerlinKeystoreFile;
 
 	/**
 	 * Retrieves properties to set to create a crypto file
-	 * 
+	 *
 	 * @return
 	 */
 	protected Properties retrieveCryptoProps() {
-		
+
 		Properties propertiesMap = new Properties();
 		propertiesMap.setProperty("org.apache.ws.security.crypto.provider", securityCryptoProvider);
 		propertiesMap.setProperty("org.apache.ws.security.crypto.merlin.keystore.type", securityCryptoMerlinKeystoreType);
 		propertiesMap.setProperty("org.apache.ws.security.crypto.merlin.keystore.password", securityCryptoMerlinKeystorePassword);
 		propertiesMap.setProperty("org.apache.ws.security.crypto.merlin.keystore.alias", securityCryptoMerlinKeystoreAlias);
 		propertiesMap.setProperty("org.apache.ws.security.crypto.merlin.keystore.file", securityCryptoMerlinKeystoreFile);
-		
+
 		return propertiesMap;
 	}
 
