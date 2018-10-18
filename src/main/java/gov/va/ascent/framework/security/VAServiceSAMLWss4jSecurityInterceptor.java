@@ -57,19 +57,20 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 			secHeader.insertSecurityHeader(doc);
 
 			final Element xml = getSAMLAssertionAsElement();
+			LOGGER.debug("SAML Assertion: " + xml);
 
 			if (xml != null) {
 				final Document headerDoc = secHeader.getSecurityHeader().getOwnerDocument();
 				final Node importedNode = headerDoc.importNode(xml, true);
 				secHeader.getSecurityHeader().appendChild(importedNode);
 			} else {
-				LOGGER.error("Could not find an existing SAML assertion to use in " + "web service request.");
+				LOGGER.error("Could not find an existing SAML assertion to use in web service request.");
 			}
 
 			soapMessage.setDocument(doc);
 
 		} catch (final WSSecurityException e) {
-			LOGGER.error("Error while attempting to insert SAML " + "Assertion into message.", e);
+			LOGGER.error("Error while attempting to insert SAML Assertion into message.", e);
 		}
 	}
 

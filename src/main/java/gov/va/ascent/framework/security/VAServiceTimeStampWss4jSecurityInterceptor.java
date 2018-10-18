@@ -20,7 +20,7 @@ public class VAServiceTimeStampWss4jSecurityInterceptor extends Wss4jSecurityInt
 	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(VAServiceTimeStampWss4jSecurityInterceptor.class);
 
 	/** The time stamp. */
-	private String timeStamp;
+	private String timeStampTtl;
 
 	/*
 	 * (non-Javadoc)
@@ -34,37 +34,38 @@ public class VAServiceTimeStampWss4jSecurityInterceptor extends Wss4jSecurityInt
 		super.secureMessage(soapMessage, messageContext);
 
 		try {
+			LOGGER.debug("Header timestamp TTL {} " + getTimeStampTtl());
 			final Document doc = soapMessage.getDocument();
 			final WSSecHeader secHeader = new WSSecHeader();
 			secHeader.insertSecurityHeader(doc);
 			final WSSecTimestamp timestamp = new WSSecTimestamp();
-			timestamp.setTimeToLive(Integer.valueOf(getTimeStamp()));
+			timestamp.setTimeToLive(Integer.valueOf(getTimeStampTtl()));
 
 			timestamp.build(doc, secHeader);
 
 			soapMessage.setDocument(doc);
 
 		} catch (final WSSecurityException e) {
-			LOGGER.error("failed encription ", e);
+			LOGGER.error("failed encryption ", e);
 		}
 
 	}
 
 	/**
-	 * Gets the time stamp.
+	 * Gets the time stamp time to live. If not {@code null}, will be valid for Integer.valueOf(String) conversion.
 	 *
-	 * @return the time stamp
+	 * @return the time stamp ttl
 	 */
-	public final String getTimeStamp() {
-		return timeStamp;
+	public final String getTimeStampTtl() {
+		return this.timeStampTtl;
 	}
 
 	/**
-	 * Sets the time stamp.
+	 * Sets the time stamp time to live. Must be valid for Integer.valueOf(String) conversion.
 	 *
-	 * @param timeStamp the new time stamp
+	 * @param timeStampTtl the new time stamp ttl
 	 */
-	public final void setTimeStamp(final String timeStamp) {
-		this.timeStamp = timeStamp;
+	public final void setTimeStampTtl(final String timeStampTtl) {
+		this.timeStampTtl = timeStampTtl;
 	}
 }

@@ -18,8 +18,8 @@ public class VAServiceTimeStampWss4jSecurityInterceptor_UnitTest {
 	@Test
 	public void testGettersAndSetters() {
 		VAServiceTimeStampWss4jSecurityInterceptor interceptor = new VAServiceTimeStampWss4jSecurityInterceptor();
-		interceptor.setTimeStamp(TTL_STR);
-		Assert.assertEquals(TTL_STR, interceptor.getTimeStamp());
+		interceptor.setTimeStampTtl(TTL_STR);
+		Assert.assertEquals(TTL_STR, interceptor.getTimeStampTtl());
 	}
 
 	@Test
@@ -28,7 +28,7 @@ public class VAServiceTimeStampWss4jSecurityInterceptor_UnitTest {
 		SoapMessage sm = WSInterceptorTestUtil.createSoapMessage("src/test/resources/testFiles/security/soapMessage.xml");
 
 		VAServiceTimeStampWss4jSecurityInterceptor interceptor = new VAServiceTimeStampWss4jSecurityInterceptor();
-		interceptor.setTimeStamp(TTL_STR);
+		interceptor.setTimeStampTtl(TTL_STR);
 		interceptor.secureMessage(sm, null);
 		Assert.assertTrue(sm.getSoapHeader()
 				.examineHeaderElements(new QName("Security")).hasNext());
@@ -38,11 +38,10 @@ public class VAServiceTimeStampWss4jSecurityInterceptor_UnitTest {
 				"</wsu:Created>");
 		String strExpires = StringUtils.substringBetween(xml, "<wsu:Expires>",
 				"</wsu:Expires>");
-		
-		Assert.assertEquals( Integer.parseInt(TTL_STR)*1000, DatatypeConverter.parseDate(strExpires).getTimeInMillis()-DatatypeConverter.parseDate(strCreated).getTimeInMillis());
+
+		Assert.assertEquals(Integer.parseInt(TTL_STR) * 1000,
+				DatatypeConverter.parseDate(strExpires).getTimeInMillis() - DatatypeConverter.parseDate(strCreated).getTimeInMillis());
 
 	}
-
-	
 
 }

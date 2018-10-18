@@ -2,7 +2,9 @@ package gov.va.ascent.framework.security;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.ws.security.SOAPConstants;
 import org.apache.ws.security.WSConstants;
 import org.apache.ws.security.WSEncryptionPart;
@@ -44,8 +46,9 @@ public class VAServiceSignatureWss4jSecurityInterceptor extends AbstractEncrypti
 		try {
 
 			if (getCrypto() == null) {
-				LOGGER.debug("Initializing crypto properties...");
-				setCrypto(CryptoFactory.getInstance(retrieveCryptoProps()));
+				Properties props = retrieveCryptoProps();
+				LOGGER.debug("Initializing crypto properties...\n" + ReflectionToStringBuilder.toString(props));
+				setCrypto(CryptoFactory.getInstance(props));
 			}
 
 			final WSSecSignature sign = new WSSecSignature();
@@ -67,7 +70,7 @@ public class VAServiceSignatureWss4jSecurityInterceptor extends AbstractEncrypti
 			soapMessage.setDocument(doc);
 
 		} catch (final WSSecurityException e) {
-			LOGGER.error("failed encription ", e);
+			LOGGER.error("failed encryption ", e);
 		}
 	}
 
