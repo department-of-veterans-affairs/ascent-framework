@@ -1,5 +1,6 @@
 package gov.va.ascent.framework.security;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -81,15 +82,12 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 		Element retVal = null;
 		String clientAssertion = null;
 
-		InputStream input = null;
-		try {
-			input = new FileSystemResource(getSamlFile()).getInputStream();
+		try (InputStream input = getSamlFile().endsWith(".xml") ? new FileSystemResource(getSamlFile()).getInputStream()
+				: new ByteArrayInputStream(getSamlFile().getBytes())) {
 			clientAssertion = IOUtils.toString(input, "UTF-8");
 		} catch (final Exception e) {
 			LOGGER.error("Unable to read SAML assertion from file." + getSamlFile(), e);
 			return retVal;
-		} finally {
-			IOUtils.closeQuietly(input);
 		}
 
 		try {

@@ -37,7 +37,7 @@ import gov.va.ascent.framework.config.BaseYamlConfig;
 @ContextConfiguration(inheritLocations = false, classes = { BaseYamlConfig.class })
 public class VAServiceSAMLWss4jSecurityInterceptor_UnitTest {
 
-	private static final String SAML_FILE = "encryption/EFolderService/SamlTokenEBN-UAT.xml";
+	private static final String SAML_FILE = "src/test/resources/encryption/EFolderService/SamlTokenEBN-UAT.xml";
 	private static final String NONEXISTENT_FILE = "someFileNameThatDoesNotExist.xml";
 
 	private static final String SOAP_MESSAGE_FILE = "src/test/resources/testFiles/security/soapMessageMustUnderstand.xml";
@@ -101,6 +101,24 @@ public class VAServiceSAMLWss4jSecurityInterceptor_UnitTest {
 		}
 		spiedInterceptor.secureMessage(sm, messageContextMock);
 		Assert.assertNotNull(sm.getDocument());
+	}
+
+	@Test
+	public void testGetSAMLAssertionAsElementWithValidFile() {
+		interceptor.setSamlFile(SAML_FILE);
+		try {
+			interceptor.afterPropertiesSet();
+		} catch (final Exception e) {
+			e.printStackTrace();
+			fail("Should not throw exception here.");
+		}
+
+		try {
+			interceptor.getSAMLAssertionAsElement();
+		} catch (final WSSecurityException e) {
+			e.printStackTrace();
+			fail("Should not throw exception here.");
+		}
 	}
 
 	@Test
