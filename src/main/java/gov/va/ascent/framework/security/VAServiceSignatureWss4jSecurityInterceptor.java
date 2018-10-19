@@ -47,12 +47,13 @@ public class VAServiceSignatureWss4jSecurityInterceptor extends AbstractEncrypti
 		try {
 
 			if (getCrypto() == null) {
+				LOGGER.debug("Initializing crypto properties...");
 				Properties props = retrieveCryptoProps();
-				LOGGER.debug("Initializing crypto properties...\n" + ReflectionToStringBuilder.toString(props));
 				setCrypto(CryptoFactory.getInstance(props));
 			}
 
 			final WSSecSignature sign = new WSSecSignature();
+			LOGGER.info("alias {} " + getKeyAlias());
 			sign.setUserInfo(getKeyAlias(), getKeyPassword());
 			sign.setKeyIdentifierType(WSConstants.ISSUER_SERIAL);
 
@@ -63,6 +64,7 @@ public class VAServiceSignatureWss4jSecurityInterceptor extends AbstractEncrypti
 			final List<WSEncryptionPart> parts = getEncryptionPartsList(doc.getDocumentElement());
 
 			sign.setParts(parts);
+			LOGGER.info("crypto {} " + ReflectionToStringBuilder.reflectionToString(getCrypto()));
 			sign.prepare(doc, getCrypto(), secHeader);
 
 			final List<javax.xml.crypto.dsig.Reference> referenceList = sign.addReferencesToSign(parts, secHeader);

@@ -6,11 +6,15 @@ import org.apache.ws.security.components.crypto.Crypto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
 
+import gov.va.ascent.framework.log.AscentLogger;
+import gov.va.ascent.framework.log.AscentLoggerFactory;
+
 /**
  * An abstract implementation of spring's Wss4jSecurityInterceptor that adds
  * common encryption properties for encryption related implementations.
  */
 public abstract class AbstractEncryptionWss4jSecurityInterceptor extends Wss4jSecurityInterceptor {
+	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(AbstractEncryptionWss4jSecurityInterceptor.class);
 
 	/** The crypto. */
 	private Crypto crypto;
@@ -55,6 +59,13 @@ public abstract class AbstractEncryptionWss4jSecurityInterceptor extends Wss4jSe
 	 * @return
 	 */
 	protected Properties retrieveCryptoProps() {
+
+		LOGGER.info("Retrieving crypto properties:\n"
+				+ "- org.apache.ws.security.crypto.provider {} " + securityCryptoProvider + " ; \n"
+				+ "- org.apache.ws.security.crypto.merlin.keystore.type {} " + securityCryptoMerlinKeystoreType + " ; \n"
+				+ "- org.apache.ws.security.crypto.merlin.keystore.password {} " + securityCryptoMerlinKeystorePassword + " ; \n"
+				+ "- org.apache.ws.security.crypto.merlin.keystore.alias {} " + securityCryptoMerlinKeystoreAlias + " ; \n"
+				+ "- org.apache.ws.security.crypto.merlin.keystore.file {} " + securityCryptoMerlinKeystoreFile + " .");
 
 		Properties propertiesMap = new Properties();
 		propertiesMap.setProperty("org.apache.ws.security.crypto.provider", securityCryptoProvider);
