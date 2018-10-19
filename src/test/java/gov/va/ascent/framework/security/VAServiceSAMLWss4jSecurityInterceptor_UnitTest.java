@@ -1,5 +1,6 @@
 package gov.va.ascent.framework.security;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -29,6 +30,7 @@ import org.xml.sax.SAXException;
 
 import gov.va.ascent.framework.config.AscentCommonSpringProfiles;
 import gov.va.ascent.framework.config.BaseYamlConfig;
+import gov.va.ascent.framework.exception.AscentRuntimeException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners(inheritListeners = false, listeners = { DependencyInjectionTestExecutionListener.class,
@@ -99,7 +101,12 @@ public class VAServiceSAMLWss4jSecurityInterceptor_UnitTest {
 			e.printStackTrace();
 			fail("Should not throw exception here.");
 		}
-		spiedInterceptor.secureMessage(sm, messageContextMock);
+		try {
+			spiedInterceptor.secureMessage(sm, messageContextMock);
+		} catch (AscentRuntimeException e) {
+			assertTrue((e.getCause() instanceof WSSecurityException) && e.getCause().getMessage().equals("Testing"));
+		}
+
 		Assert.assertNotNull(sm.getDocument());
 	}
 

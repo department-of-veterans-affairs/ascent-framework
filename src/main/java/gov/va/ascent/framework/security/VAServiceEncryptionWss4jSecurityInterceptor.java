@@ -9,6 +9,7 @@ import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapMessage;
 import org.w3c.dom.Document;
 
+import gov.va.ascent.framework.exception.AscentRuntimeException;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
 
@@ -54,6 +55,7 @@ public class VAServiceEncryptionWss4jSecurityInterceptor extends AbstractEncrypt
 			soapMessage.setDocument(doc);
 		} catch (final WSSecurityException e) {
 			LOGGER.error("failed to encrypt ", e);
+			throw new AscentRuntimeException(e);
 		}
 	}
 

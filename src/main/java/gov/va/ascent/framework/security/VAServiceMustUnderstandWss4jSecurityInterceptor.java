@@ -11,6 +11,7 @@ import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import gov.va.ascent.framework.exception.AscentRuntimeException;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
 
@@ -49,6 +50,7 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor extends Wss4jSecuri
 			}
 		} catch (final WSSecurityException e) { // NOSONAR no action to take
 			LOGGER.error(e.getMessage()); // NOSONAR no action to take
+			throw new AscentRuntimeException(e);
 		}
 
 		soapMessage.setDocument(doc);

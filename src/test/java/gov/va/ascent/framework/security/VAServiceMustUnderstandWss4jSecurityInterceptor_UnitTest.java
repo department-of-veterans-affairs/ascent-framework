@@ -30,6 +30,7 @@ import org.xml.sax.SAXException;
 
 import gov.va.ascent.framework.config.AscentCommonSpringProfiles;
 import gov.va.ascent.framework.config.BaseYamlConfig;
+import gov.va.ascent.framework.exception.AscentRuntimeException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners(inheritListeners = false, listeners = { DependencyInjectionTestExecutionListener.class,
@@ -90,7 +91,11 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor_UnitTest {
 		// confirm mustUnderstand is in the header before attempting to remove it
 		assertTrue(securityHeader.hasAttribute("soapenv:mustUnderstand"));
 
-		interceptorSpy.secureMessage(sm, messageContextMock);
+		try {
+			interceptorSpy.secureMessage(sm, messageContextMock);
+		} catch (AscentRuntimeException e) {
+			assertTrue((e.getCause() instanceof WSSecurityException) && e.getCause().getMessage().equals("Testing"));
+		}
 
 		// confirm mustUnderstand was NOT removed due to forced mock exception
 		assertTrue(securityHeader.hasAttribute("soapenv:mustUnderstand"));

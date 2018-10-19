@@ -23,6 +23,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import gov.va.ascent.framework.exception.AscentRuntimeException;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
 
@@ -71,6 +72,7 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 
 		} catch (final WSSecurityException e) {
 			LOGGER.error("Error while attempting to insert SAML Assertion into message.", e);
+			throw new AscentRuntimeException(e);
 		}
 	}
 

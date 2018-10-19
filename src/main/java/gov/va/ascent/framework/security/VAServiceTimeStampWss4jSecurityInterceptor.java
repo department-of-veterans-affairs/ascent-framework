@@ -8,6 +8,7 @@ import org.springframework.ws.soap.SoapMessage;
 import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
 import org.w3c.dom.Document;
 
+import gov.va.ascent.framework.exception.AscentRuntimeException;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
 
@@ -47,6 +48,7 @@ public class VAServiceTimeStampWss4jSecurityInterceptor extends Wss4jSecurityInt
 
 		} catch (final WSSecurityException e) {
 			LOGGER.error("failed encryption ", e);
+			throw new AscentRuntimeException(e);
 		}
 
 	}

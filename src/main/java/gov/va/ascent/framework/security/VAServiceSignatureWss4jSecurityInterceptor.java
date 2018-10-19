@@ -19,6 +19,7 @@ import org.springframework.ws.soap.SoapMessage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import gov.va.ascent.framework.exception.AscentRuntimeException;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
 
@@ -71,6 +72,7 @@ public class VAServiceSignatureWss4jSecurityInterceptor extends AbstractEncrypti
 
 		} catch (final WSSecurityException e) {
 			LOGGER.error("failed encryption ", e);
+			throw new AscentRuntimeException(e);
 		}
 	}
 
