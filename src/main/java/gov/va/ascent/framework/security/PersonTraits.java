@@ -47,6 +47,8 @@ public class PersonTraits extends User {
 	private String gender;
 	private Integer assuranceLevel;
 	private String email;
+
+	// Same as the DOD EDIPI (Can be substituted for edipi in Veteran Identifier)
 	private String dodedipnid;
 	private String pnidType;
 	private String pnid;
