@@ -21,8 +21,6 @@ import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapMessage;
 import org.xml.sax.SAXException;
 
-import gov.va.ascent.framework.security.crypto.CryptoProperties;
-
 public class VAServiceEncryptionWss4jSecurityInterceptorTest {
 
 	private static final String SOAP_MESSAGE_FILE = "src/test/resources/testFiles/security/soapMessage.xml";
@@ -32,22 +30,22 @@ public class VAServiceEncryptionWss4jSecurityInterceptorTest {
 
 	private Properties propsCrypto;
 
-	private VAServiceEncryptionWss4jSecurityInterceptor encryptionWss4jSecurityInterceptor =
+	private VAServiceEncryptionWss4jSecurityInterceptor interceptor =
 			Mockito.spy(VAServiceEncryptionWss4jSecurityInterceptor.class);
 
 	@Before
 	public final void setUp() throws Exception {
-		CryptoProperties cryptoProps = Mockito.spy(CryptoProperties.class);
-		ReflectionTestUtils.setField(cryptoProps, "securityCryptoProvider", "org.apache.ws.security.components.crypto.Merlin");
-		ReflectionTestUtils.setField(cryptoProps, "cryptoKeystoreTypeOriginator", "SUN");
-		ReflectionTestUtils.setField(cryptoProps, "cryptoKeystoreType", "jks");
-		ReflectionTestUtils.setField(cryptoProps, "cryptoKeystorePassword", "changeit");
-		ReflectionTestUtils.setField(cryptoProps, "cryptoKeystoreAlias", "ebn_vbms_cert");
-		ReflectionTestUtils.setField(cryptoProps, "cryptoKeystoreFile", "/encryption/EFolderService/vbmsKeystore.jks");
+		ReflectionTestUtils.setField(interceptor, "securityCryptoProvider", "org.apache.ws.security.components.crypto.Merlin");
+		ReflectionTestUtils.setField(interceptor, "cryptoKeystoreTypeOriginator", "SUN");
+		ReflectionTestUtils.setField(interceptor, "cryptoKeystoreType", "jks");
+		ReflectionTestUtils.setField(interceptor, "cryptoKeystorePassword", "changeit");
+		ReflectionTestUtils.setField(interceptor, "cryptoKeystoreAlias", "ebn_vbms_cert");
+		ReflectionTestUtils.setField(interceptor, "cryptoKeystoreFile",
+				"/encryption/EFolderService/vbmsKeystore.jks");
 
-		ReflectionTestUtils.setField(encryptionWss4jSecurityInterceptor, "cryptoProperties", cryptoProps);
+		propsCrypto = interceptor.retrieveCryptoProps();
 
-		propsCrypto = encryptionWss4jSecurityInterceptor.retrieveCryptoProps();
+		assertNotNull(propsCrypto);
 
 		securityCryptoMerlinKeystoreAlias = (String) propsCrypto.get("org.apache.ws.security.crypto.merlin.keystore.alias");
 	}
@@ -69,16 +67,16 @@ public class VAServiceEncryptionWss4jSecurityInterceptorTest {
 		}
 		Crypto crypto = CryptoFactory.getInstance(propsCrypto);
 		crypto.setDefaultX509Identifier(securityCryptoMerlinKeystoreAlias);
-		encryptionWss4jSecurityInterceptor.setCrypto(crypto);
-		encryptionWss4jSecurityInterceptor.setKeyAlias(securityCryptoMerlinKeystoreAlias);
-		encryptionWss4jSecurityInterceptor.setValidationActions("Encrypt");
-		encryptionWss4jSecurityInterceptor.setValidateRequest(false);
-		encryptionWss4jSecurityInterceptor.setValidateResponse(false);
-		encryptionWss4jSecurityInterceptor.setSecurementUsername("selfsigned");
-		encryptionWss4jSecurityInterceptor.setSecurementPassword("password");
-		encryptionWss4jSecurityInterceptor.afterPropertiesSet();
+		interceptor.setCrypto(crypto);
+		interceptor.setKeyAlias(securityCryptoMerlinKeystoreAlias);
+		interceptor.setValidationActions("Encrypt");
+		interceptor.setValidateRequest(false);
+		interceptor.setValidateResponse(false);
+		interceptor.setSecurementUsername("selfsigned");
+		interceptor.setSecurementPassword("password");
+		interceptor.afterPropertiesSet();
 		MessageContext messageContextMock = mock(MessageContext.class);
-		encryptionWss4jSecurityInterceptor.secureMessage(sm, messageContextMock);
+		interceptor.secureMessage(sm, messageContextMock);
 
 		assertNotNull(sm);
 
@@ -94,15 +92,15 @@ public class VAServiceEncryptionWss4jSecurityInterceptorTest {
 			e.printStackTrace();
 			fail("VAServiceEncryptionWss4jSecurityInterceptor : testSecureMessage test method fail");
 		}
-		encryptionWss4jSecurityInterceptor.setKeyAlias(securityCryptoMerlinKeystoreAlias);
-		encryptionWss4jSecurityInterceptor.setValidationActions("Encrypt");
-		encryptionWss4jSecurityInterceptor.setValidateRequest(false);
-		encryptionWss4jSecurityInterceptor.setValidateResponse(false);
-		encryptionWss4jSecurityInterceptor.setSecurementUsername("selfsigned");
-		encryptionWss4jSecurityInterceptor.setSecurementPassword("password");
-		encryptionWss4jSecurityInterceptor.afterPropertiesSet();
+		interceptor.setKeyAlias(securityCryptoMerlinKeystoreAlias);
+		interceptor.setValidationActions("Encrypt");
+		interceptor.setValidateRequest(false);
+		interceptor.setValidateResponse(false);
+		interceptor.setSecurementUsername("selfsigned");
+		interceptor.setSecurementPassword("password");
+		interceptor.afterPropertiesSet();
 		MessageContext messageContextMock = mock(MessageContext.class);
-		encryptionWss4jSecurityInterceptor.secureMessage(sm, messageContextMock);
+		interceptor.secureMessage(sm, messageContextMock);
 
 		assertNotNull(sm);
 
@@ -119,6 +117,6 @@ public class VAServiceEncryptionWss4jSecurityInterceptorTest {
 			fail("Should not have thrown exception");
 		}
 
-		encryptionWss4jSecurityInterceptor.validateMessage(sm, null);
+		interceptor.validateMessage(sm, null);
 	}
 }

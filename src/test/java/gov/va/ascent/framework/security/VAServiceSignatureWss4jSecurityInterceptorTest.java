@@ -14,8 +14,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapMessage;
 
-import gov.va.ascent.framework.security.crypto.CryptoProperties;
-
 public class VAServiceSignatureWss4jSecurityInterceptorTest {
 
 	private static final String SOAP_MESSAGE_FILE = "src/test/resources/testFiles/security/soapMessage.xml";
@@ -35,17 +33,17 @@ public class VAServiceSignatureWss4jSecurityInterceptorTest {
 
 	@Before
 	public final void setUp() throws Exception {
-		CryptoProperties cryptoProps = Mockito.spy(CryptoProperties.class);
-		ReflectionTestUtils.setField(cryptoProps, "securityCryptoProvider", "org.apache.ws.security.components.crypto.Merlin");
-		ReflectionTestUtils.setField(cryptoProps, "cryptoKeystoreTypeOriginator", "SUN");
-		ReflectionTestUtils.setField(cryptoProps, "cryptoKeystoreType", "jks");
-		ReflectionTestUtils.setField(cryptoProps, "cryptoKeystorePassword", "changeit");
-		ReflectionTestUtils.setField(cryptoProps, "cryptoKeystoreAlias", "ebn_vbms_cert");
-		ReflectionTestUtils.setField(cryptoProps, "cryptoKeystoreFile", "/encryption/EFolderService/vbmsKeystore.jks");
-
-		ReflectionTestUtils.setField(interceptor, "cryptoProperties", cryptoProps);
+		ReflectionTestUtils.setField(interceptor, "securityCryptoProvider", "org.apache.ws.security.components.crypto.Merlin");
+		ReflectionTestUtils.setField(interceptor, "cryptoKeystoreTypeOriginator", "SUN");
+		ReflectionTestUtils.setField(interceptor, "cryptoKeystoreType", "jks");
+		ReflectionTestUtils.setField(interceptor, "cryptoKeystorePassword", "changeit");
+		ReflectionTestUtils.setField(interceptor, "cryptoKeystoreAlias", "ebn_vbms_cert");
+		ReflectionTestUtils.setField(interceptor, "cryptoKeystoreFile",
+				"/encryption/EFolderService/vbmsKeystore.jks");
 
 		propsCrypto = interceptor.retrieveCryptoProps();
+
+		assertNotNull(propsCrypto);
 
 		securityCryptoMerlinKeystoreAlias = (String) propsCrypto.get("org.apache.ws.security.crypto.merlin.keystore.alias");
 	}

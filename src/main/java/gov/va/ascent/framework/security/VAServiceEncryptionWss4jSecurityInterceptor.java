@@ -16,7 +16,7 @@ import gov.va.ascent.framework.log.AscentLoggerFactory;
 /**
  * A Wss4j2 Security Interceptor to encrypt secure message header and body.
  */
-public class VAServiceEncryptionWss4jSecurityInterceptor extends AbstractEncryptionWss4jSecurityInterceptor {
+public class VAServiceEncryptionWss4jSecurityInterceptor extends BaseEncryptionWss4jSecurityInterceptor {
 
 	/** The Constant LOGGER. */
 	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(VAServiceEncryptionWss4jSecurityInterceptor.class);

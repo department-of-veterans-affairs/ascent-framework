@@ -26,7 +26,7 @@ import gov.va.ascent.framework.log.AscentLoggerFactory;
 /**
  * A Wss4j2 Security Interceptor to digitally sign a soap message.
  */
-public class VAServiceSignatureWss4jSecurityInterceptor extends AbstractEncryptionWss4jSecurityInterceptor {
+public class VAServiceSignatureWss4jSecurityInterceptor extends BaseEncryptionWss4jSecurityInterceptor {
 
 	/** The Constant LOGGER. */
 	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(VAServiceSignatureWss4jSecurityInterceptor.class);
