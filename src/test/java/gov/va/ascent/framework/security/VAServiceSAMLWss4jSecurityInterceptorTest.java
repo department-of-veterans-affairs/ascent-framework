@@ -37,7 +37,7 @@ import gov.va.ascent.framework.exception.AscentRuntimeException;
 		DirtiesContextTestExecutionListener.class, TransactionalTestExecutionListener.class })
 @ActiveProfiles({ AscentCommonSpringProfiles.PROFILE_REMOTE_CLIENT_SIMULATORS })
 @ContextConfiguration(inheritLocations = false, classes = { BaseYamlConfig.class })
-public class VAServiceSAMLWss4jSecurityInterceptor_UnitTest {
+public class VAServiceSAMLWss4jSecurityInterceptorTest {
 
 	private static final String SAML_FILE = "src/test/resources/encryption/EFolderService/SamlTokenEBN-UAT.xml";
 	private static final String NONEXISTENT_FILE = "someFileNameThatDoesNotExist.xml";

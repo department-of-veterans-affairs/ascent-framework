@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.springframework.ws.soap.SoapMessage;
 import org.xml.sax.SAXException;
 
-public class VAServiceTimeStampWss4jSecurityInterceptor_UnitTest {
+public class VAServiceTimeStampWss4jSecurityInterceptorTest {
 	private static final String TTL_STR = "300";
 
 	@Test

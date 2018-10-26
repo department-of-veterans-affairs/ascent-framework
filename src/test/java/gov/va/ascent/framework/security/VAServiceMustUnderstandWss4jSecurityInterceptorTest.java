@@ -37,7 +37,7 @@ import gov.va.ascent.framework.exception.AscentRuntimeException;
 		DirtiesContextTestExecutionListener.class, TransactionalTestExecutionListener.class })
 @ActiveProfiles({ AscentCommonSpringProfiles.PROFILE_REMOTE_CLIENT_SIMULATORS })
 @ContextConfiguration(inheritLocations = false, classes = { BaseYamlConfig.class })
-public class VAServiceMustUnderstandWss4jSecurityInterceptor_UnitTest {
+public class VAServiceMustUnderstandWss4jSecurityInterceptorTest {
 
 	private final VAServiceMustUnderstandWss4jSecurityInterceptor interceptor = new VAServiceMustUnderstandWss4jSecurityInterceptor();
 
