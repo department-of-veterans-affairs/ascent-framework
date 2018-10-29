@@ -2,7 +2,6 @@ package gov.va.ascent.framework.security;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.ws.security.SOAPConstants;
@@ -26,7 +25,7 @@ import gov.va.ascent.framework.log.AscentLoggerFactory;
 /**
  * A Wss4j2 Security Interceptor to digitally sign a soap message.
  */
-public class VAServiceSignatureWss4jSecurityInterceptor extends BaseEncryptionWss4jSecurityInterceptor {
+public abstract class VAServiceSignatureWss4jSecurityInterceptor extends AbstractWss4jSecurityInterceptor {
 
 	/** The Constant LOGGER. */
 	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(VAServiceSignatureWss4jSecurityInterceptor.class);
@@ -46,15 +45,11 @@ public class VAServiceSignatureWss4jSecurityInterceptor extends BaseEncryptionWs
 
 		try {
 
-			if (getCrypto() == null) {
-				LOGGER.debug("Initializing crypto properties...");
-				Properties props = retrieveCryptoProps();
-				setCrypto(CryptoFactory.getInstance(props));
-			}
+			CryptoProperties props = retrieveCryptoProps();
 
 			final WSSecSignature sign = new WSSecSignature();
-			LOGGER.info("alias {} " + getKeyAlias());
-			sign.setUserInfo(getKeyAlias(), getKeyPassword());
+			LOGGER.info("alias {} " + props.getCryptoDefaultAlias());
+			sign.setUserInfo(props.getCryptoDefaultAlias(), props.getCryptoKeystorePw());
 			sign.setKeyIdentifierType(WSConstants.ISSUER_SERIAL);
 
 			final Document doc = soapMessage.getDocument();
@@ -64,8 +59,8 @@ public class VAServiceSignatureWss4jSecurityInterceptor extends BaseEncryptionWs
 			final List<WSEncryptionPart> parts = getEncryptionPartsList(doc.getDocumentElement());
 
 			sign.setParts(parts);
-			LOGGER.info("crypto {} " + ReflectionToStringBuilder.reflectionToString(getCrypto()));
-			sign.prepare(doc, getCrypto(), secHeader);
+			LOGGER.info("crypto {} " + ReflectionToStringBuilder.reflectionToString(props));
+			sign.prepare(doc, CryptoFactory.getInstance(props), secHeader);
 
 			final List<javax.xml.crypto.dsig.Reference> referenceList = sign.addReferencesToSign(parts, secHeader);
 			sign.computeSignature(referenceList, false, null);

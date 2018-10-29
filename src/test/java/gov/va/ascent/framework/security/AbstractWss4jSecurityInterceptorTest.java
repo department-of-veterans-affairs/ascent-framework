@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ws.security.components.crypto.Crypto;
@@ -15,11 +16,17 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
-public class BaseEncryptionWss4jSecurityInterceptorTest {
+public class AbstractWss4jSecurityInterceptorTest {
 
-	class Tester extends BaseEncryptionWss4jSecurityInterceptor {
+	class Tester extends AbstractWss4jSecurityInterceptor {
 		public Tester() {
 			super();
+		}
+
+		@Override
+		public Properties retrieveCryptoProps() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 
@@ -65,11 +72,11 @@ public class BaseEncryptionWss4jSecurityInterceptorTest {
 		 * ReflectionTestUtils.setField(cryptoProps, "cryptoKeystorePassword", "changeit");
 		 * ReflectionTestUtils.setField(cryptoProps, "cryptoKeystoreAlias", "ebn_vbms_cert");
 		 * ReflectionTestUtils.setField(cryptoProps, "cryptoKeystoreFile", "/encryption/EFolderService/vbmsKeystore.jks");
-		 * 
+		 *
 		 * ReflectionTestUtils.setField(tester, "cryptoProperties", cryptoProps);
-		 * 
+		 *
 		 * Map<Object, Object> mapCrypto = tester.retrieveCryptoProps();
-		 * 
+		 *
 		 * assertNotNull(mapCrypto);
 		 * assertEquals("org.apache.ws.security.components.crypto.Merlin", mapCrypto.get("org.apache.ws.security.crypto.provider"));
 		 * assertEquals("SUN", mapCrypto.get("org.apache.ws.security.crypto.merlin.keystore.provider"));
@@ -80,7 +87,7 @@ public class BaseEncryptionWss4jSecurityInterceptorTest {
 		 * mapCrypto.get("org.apache.ws.security.crypto.merlin.keystore.file"));
 		 */
 		// Spy BaseEncryptionWss4jSecurityInterceptor and set the properties
-		BaseEncryptionWss4jSecurityInterceptor cryptoProperties = Mockito.spy(BaseEncryptionWss4jSecurityInterceptor.class);
+		AbstractWss4jSecurityInterceptor cryptoProperties = Mockito.spy(AbstractWss4jSecurityInterceptor.class);
 		ReflectionTestUtils.setField(cryptoProperties, "securityCryptoProvider", "org.apache.ws.security.components.crypto.Merlin");
 		ReflectionTestUtils.setField(cryptoProperties, "cryptoKeystoreTypeOriginator", "SUN");
 		ReflectionTestUtils.setField(cryptoProperties, "cryptoKeystoreType", "jks");
