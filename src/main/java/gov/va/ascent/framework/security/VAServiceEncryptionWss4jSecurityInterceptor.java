@@ -16,7 +16,7 @@ import gov.va.ascent.framework.log.AscentLoggerFactory;
 /**
  * A Wss4j2 Security Interceptor to encrypt secure message header and body.
  */
-public class VAServiceEncryptionWss4jSecurityInterceptor extends BaseEncryptionWss4jSecurityInterceptor {
+public abstract class VAServiceEncryptionWss4jSecurityInterceptor extends AbstractWss4jSecurityInterceptor {
 
 	/** The Constant LOGGER. */
 	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(VAServiceEncryptionWss4jSecurityInterceptor.class);
@@ -35,22 +35,19 @@ public class VAServiceEncryptionWss4jSecurityInterceptor extends BaseEncryptionW
 		WSSConfig.init();
 		try {
 
-			if (getCrypto() == null) {
-				LOGGER.debug("Initializing crypto properties...");
-				setCrypto(CryptoFactory.getInstance(retrieveCryptoProps()));
-			}
+			CryptoProperties props = retrieveCryptoProps();
 
 			LOGGER.debug("Encrypting outgoing message...");
 
 			final WSSecEncrypt encrypt = new WSSecEncrypt();
-			encrypt.setUserInfo(getKeyAlias());
+			encrypt.setUserInfo(props.getCryptoEncryptionAlias());
 
 			final Document doc = soapMessage.getDocument();
 			final WSSecHeader secHeader = new WSSecHeader();
 			secHeader.insertSecurityHeader(doc);
 			encrypt.setDocument(doc);
 
-			encrypt.build(doc, getCrypto(), secHeader);
+			encrypt.build(doc, CryptoFactory.getInstance(props), secHeader);
 
 			soapMessage.setDocument(doc);
 		} catch (final WSSecurityException e) {

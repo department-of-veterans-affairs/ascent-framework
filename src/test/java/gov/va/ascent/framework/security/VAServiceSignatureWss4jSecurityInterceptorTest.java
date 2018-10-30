@@ -2,6 +2,7 @@ package gov.va.ascent.framework.security;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Properties;
 
@@ -10,13 +11,27 @@ import org.apache.ws.security.components.crypto.CryptoFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapMessage;
 
 public class VAServiceSignatureWss4jSecurityInterceptorTest {
 
 	private static final String SOAP_MESSAGE_FILE = "src/test/resources/testFiles/security/soapMessage.xml";
+
+	/** The property name whose value would be the crypto provider */
+	private static final String APACHE_PROVIDER = "org.apache.ws.security.crypto.provider";
+	/** The property name whose value would be the keystore type originator (provider of this type of keystore) */
+	private static final String APACHE_KS_PROVIDER = "org.apache.ws.security.crypto.merlin.keystore.provider";
+	/** The property name whose value would be the keystore type */
+	private static final String APACHE_KS_TYPE = "org.apache.ws.security.crypto.merlin.keystore.type";
+	/** The property name whose value would be the keystore password */
+	private static final String APACHE_KS_PW = "org.apache.ws.security.crypto.merlin.keystore.password";
+	/** The property name whose value would be the alias of the desired certificate in the keystore */
+	private static final String APACHE_KS_ALIAS = "org.apache.ws.security.crypto.merlin.keystore.alias";
+	/** The property name whose value would be the path to the keystore file */
+	private static final String APACHE_KS_FILE = "org.apache.ws.security.crypto.merlin.keystore.file";
+	/** The property name whose value would be time-stamp of the TTL (time to live) */
+	private static final String TIMESTAMP_TTL = "vetservices-partner-efolder.ws.client.security.timestamp.ttl";
 
 	/** The key time stamp alias. */
 	private String keyTimeStampAlias = "ebn_vbms_cert";
@@ -33,14 +48,40 @@ public class VAServiceSignatureWss4jSecurityInterceptorTest {
 
 	@Before
 	public final void setUp() throws Exception {
-		ReflectionTestUtils.setField(interceptor, "securityCryptoProvider", "org.apache.ws.security.components.crypto.Merlin");
-		ReflectionTestUtils.setField(interceptor, "cryptoKeystoreTypeOriginator", "SUN");
-		ReflectionTestUtils.setField(interceptor, "cryptoKeystoreType", "jks");
-		ReflectionTestUtils.setField(interceptor, "cryptoKeystorePassword", "changeit");
-		ReflectionTestUtils.setField(interceptor, "cryptoKeystoreAlias", "ebn_vbms_cert");
-		ReflectionTestUtils.setField(interceptor, "cryptoKeystoreFile",
-				"/encryption/EFolderService/vbmsKeystore.jks");
+		CryptoProperties props = new CryptoProperties() {
 
+			private static final long serialVersionUID = 4980226916621404426L;
+
+			@Override
+			public String getCryptoEncryptionAlias() {
+				return this.getProperty(APACHE_KS_ALIAS);
+			}
+
+			@Override
+			public String getCryptoDefaultAlias() {
+				return this.getProperty(APACHE_KS_ALIAS);
+			}
+
+			@Override
+			public String getCryptoKeystorePw() {
+				return this.getProperty(APACHE_KS_PW);
+			}
+
+			@Override
+			public String getTimeStampTtl() {
+				return this.getProperty(TIMESTAMP_TTL);
+			}
+
+		};
+		props.setProperty(APACHE_PROVIDER, "org.apache.ws.security.components.crypto.Merlin");
+		props.setProperty(APACHE_KS_PROVIDER, "SUN");
+		props.setProperty(APACHE_KS_TYPE, "jks");
+		props.setProperty(APACHE_KS_PW, "changeit");
+		props.setProperty(APACHE_KS_ALIAS, "ebn_vbms_cert");
+		props.setProperty(APACHE_KS_FILE, "/encryption/EFolderService/vbmsKeystore.jks");
+		props.setProperty(TIMESTAMP_TTL, "300");
+
+		when(interceptor.retrieveCryptoProps()).thenReturn(props);
 		propsCrypto = interceptor.retrieveCryptoProps();
 
 		assertNotNull(propsCrypto);
@@ -54,9 +95,6 @@ public class VAServiceSignatureWss4jSecurityInterceptorTest {
 		SoapMessage sm = WSInterceptorTestUtil.createSoapMessage(SOAP_MESSAGE_FILE);
 		Crypto crypto = CryptoFactory.getInstance(propsCrypto);
 		crypto.setDefaultX509Identifier(securityCryptoMerlinKeystoreAlias);
-		interceptor.setCrypto(crypto);
-		interceptor.setKeyAlias(keyTimeStampAlias);
-		interceptor.setKeyPassword(keyTimeStampPassword);
 		interceptor.setValidationActions("Signature");
 		interceptor.setValidateRequest(false);
 		interceptor.setValidateResponse(false);
@@ -74,8 +112,6 @@ public class VAServiceSignatureWss4jSecurityInterceptorTest {
 	public void testSecureMessageNoCrypto() throws Exception {
 
 		SoapMessage sm = WSInterceptorTestUtil.createSoapMessage(SOAP_MESSAGE_FILE);
-		interceptor.setKeyAlias(keyTimeStampAlias);
-		interceptor.setKeyPassword(keyTimeStampPassword);
 		interceptor.setValidationActions("Signature");
 		interceptor.setValidateRequest(false);
 		interceptor.setValidateResponse(false);
