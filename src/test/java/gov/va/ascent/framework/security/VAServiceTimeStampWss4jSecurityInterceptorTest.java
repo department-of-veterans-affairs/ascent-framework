@@ -51,11 +51,6 @@ public class VAServiceTimeStampWss4jSecurityInterceptorTest {
 					}
 
 					@Override
-					public String getCryptoKeystoreFile() {
-						return this.getProperty(APACHE_KS_FILE);
-					}
-
-					@Override
 					public String getCryptoKeystorePw() {
 						return this.getProperty(APACHE_KS_PW);
 					}
@@ -100,11 +95,6 @@ public class VAServiceTimeStampWss4jSecurityInterceptorTest {
 					@Override
 					public String getCryptoDefaultAlias() {
 						return this.getProperty(APACHE_KS_ALIAS);
-					}
-
-					@Override
-					public String getCryptoKeystoreFile() {
-						return this.getProperty(APACHE_KS_FILE);
 					}
 
 					@Override

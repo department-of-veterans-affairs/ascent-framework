@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -97,11 +98,6 @@ public class AbstractWss4jSecurityInterceptorTest {
 			@Override
 			public String getCryptoDefaultAlias() {
 				return this.getProperty(APACHE_KS_ALIAS);
-			}
-
-			@Override
-			public String getCryptoKeystoreFile() {
-				return this.getProperty(APACHE_KS_FILE);
 			}
 
 			@Override

@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.ws.security.WSSecurityException;
@@ -62,11 +63,6 @@ public class VAServiceEncryptionWss4jSecurityInterceptorTest {
 			}
 
 			@Override
-			public String getCryptoKeystoreFile() {
-				return this.getProperty(APACHE_KS_FILE);
-			}
-
-			@Override
 			public String getCryptoKeystorePw() {
 				return this.getProperty(APACHE_KS_PW);
 			}
@@ -76,7 +72,7 @@ public class VAServiceEncryptionWss4jSecurityInterceptorTest {
 				return this.getProperty(TIMESTAMP_TTL);
 			}
 		};
-		
+
 		props.setProperty(APACHE_PROVIDER, "org.apache.ws.security.components.crypto.Merlin");
 		props.setProperty(APACHE_KS_PROVIDER, "SUN");
 		props.setProperty(APACHE_KS_TYPE, "jks");
@@ -84,7 +80,7 @@ public class VAServiceEncryptionWss4jSecurityInterceptorTest {
 		props.setProperty(APACHE_KS_ALIAS, "ebn_vbms_cert");
 		props.setProperty(APACHE_KS_FILE, "/encryption/EFolderService/vbmsKeystore.jks");
 		props.setProperty(TIMESTAMP_TTL, "300");
-		
+
 		when(interceptor.retrieveCryptoProps()).thenReturn(props);
 		propsCrypto = interceptor.retrieveCryptoProps();
 

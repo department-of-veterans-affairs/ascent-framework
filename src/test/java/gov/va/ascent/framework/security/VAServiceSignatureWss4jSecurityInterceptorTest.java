@@ -63,11 +63,6 @@ public class VAServiceSignatureWss4jSecurityInterceptorTest {
 			}
 
 			@Override
-			public String getCryptoKeystoreFile() {
-				return this.getProperty(APACHE_KS_FILE);
-			}
-
-			@Override
 			public String getCryptoKeystorePw() {
 				return this.getProperty(APACHE_KS_PW);
 			}
