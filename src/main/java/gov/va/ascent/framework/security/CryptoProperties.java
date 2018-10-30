@@ -2,6 +2,11 @@ package gov.va.ascent.framework.security;
 
 import java.util.Properties;
 
+/**
+ * Used by partner client projects as the contract for applying properties to apache merlin.
+ * 
+ * @author aburkholder
+ */
 public abstract class CryptoProperties extends Properties {
 
 	private static final long serialVersionUID = 7915711218403848542L;
@@ -19,13 +24,6 @@ public abstract class CryptoProperties extends Properties {
 	 * @return String the default alias
 	 */
 	public abstract String getCryptoDefaultAlias();
-
-	/**
-	 * The path and filename where the keystore file is located.
-	 *
-	 * @return String the path to the keystore file
-	 */
-	public abstract String getCryptoKeystoreFile();
 
 	/**
 	 * The keystore pw.
