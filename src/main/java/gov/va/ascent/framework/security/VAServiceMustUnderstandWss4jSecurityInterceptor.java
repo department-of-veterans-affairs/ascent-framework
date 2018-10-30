@@ -30,6 +30,14 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor extends Wss4jSecuri
 	private static final List<String> SOAP_NS_LIST = Arrays.asList(new String[] {
 			javax.xml.soap.SOAPConstants.URI_NS_SOAP_1_1_ENVELOPE, javax.xml.soap.SOAPConstants.URI_NS_SOAP_1_2_ENVELOPE });
 
+	/**
+	 * Create the interceptor that sets the "Must Understand" header value.
+	 * Validation actions are turned off.
+	 */
+	public VAServiceMustUnderstandWss4jSecurityInterceptor() {
+		setValidationActions("NoSecurity");
+	}
+
 	/*
 	 * (non-Javadoc)
 	 *

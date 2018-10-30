@@ -48,7 +48,7 @@ public abstract class VAServiceSignatureWss4jSecurityInterceptor extends Abstrac
 			CryptoProperties props = retrieveCryptoProps();
 
 			final WSSecSignature sign = new WSSecSignature();
-			LOGGER.info("alias {} " + props.getCryptoDefaultAlias());
+			LOGGER.info("UserInfo alias {} " + props.getCryptoDefaultAlias());
 			sign.setUserInfo(props.getCryptoDefaultAlias(), props.getCryptoKeystorePw());
 			sign.setKeyIdentifierType(WSConstants.ISSUER_SERIAL);
 
