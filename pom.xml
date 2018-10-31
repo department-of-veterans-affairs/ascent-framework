@@ -13,7 +13,7 @@
 	</parent>
 
 	<artifactId>ascent-framework</artifactId>
-	<version>0.0.11</version>
+	<version>0.0.12-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>${project.artifactId}</name>
 	<description>Ascent Framework</description>
