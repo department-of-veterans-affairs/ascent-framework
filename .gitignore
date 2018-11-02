@@ -33,3 +33,4 @@ nbdist/
 .metadata
 /nbproject/
 /local-only.fpr
+/bin
