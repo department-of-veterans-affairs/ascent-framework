@@ -25,8 +25,9 @@ public abstract class VAServiceTimeStampWss4jSecurityInterceptor extends Abstrac
 	private String timeStampTtl;
 
 	public VAServiceTimeStampWss4jSecurityInterceptor() {
-		this.setTimeStampTtl(retrieveCryptoProps().getTimeStampTtl());
-		this.setValidationTimeToLive(Integer.valueOf(retrieveCryptoProps().getTimeStampTtl()));
+		String timestampTtl = retrieveCryptoProps().getTimeStampTtl();
+		this.setTimeStampTtl(timestampTtl);
+		this.setValidationTimeToLive(Integer.valueOf(timestampTtl));
 		this.setValidationActions(TIMESTAMP);
 	}
 

@@ -24,17 +24,39 @@ import gov.va.ascent.framework.log.AscentLoggerFactory;
 
 /**
  * A Wss4j2 Security Interceptor to digitally sign a soap message.
+ * <p>
+ * Instantiation of this class requires a {@link #retrieveCryptoProps()} method
+ * that returns a {@link CryptoProperties} implementation, as declared in
+ * {@link AbstractWss4jSecurityInterceptor#retrieveCryptoProps()}.
+ * <p>
+ * A complete example can be found in the spring beans of vetservices-partner-efolder EFolderWsClientConfig.java.
+ * <p>
+ * <b>NOTE:</b> VBMS uses the same cert for ssl AND signing AND key time stamp AND decryption.
+ * If future implementations require separate certificates, this code, and possibly the {@link CryptoProperties}
+ * interface and certainly its implementations, will need to be modified to provide the additional alias(es).
+ * <p>
+ * Calling code would typically provide the method in-line during construction, for example:
+ *
+ * <pre>
+ * new VAServiceSignatureWss4jSecurityInterceptor() {
+ * 	&#64;Override
+ * 	public CryptoProperties retrieveCryptoProps() {
+ * 		return new VAServiceSignatureWss4jSecurityInterceptor interceptor = cryptoProps.retrieveCryptoProperties();
+ * 	}
+ * };
+ * </pre>
  */
 public abstract class VAServiceSignatureWss4jSecurityInterceptor extends AbstractWss4jSecurityInterceptor {
 
 	/** The Constant LOGGER. */
 	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(VAServiceSignatureWss4jSecurityInterceptor.class);
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Create a message that is encrypted and signed. See {@link VAServiceSignatureWss4jSecurityInterceptor} javadoc for implementation
+	 * details.
 	 *
 	 * @see org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor#secureMessage(org.springframework.ws.soap .SoapMessage,
-	 * org.springframework.ws.context.MessageContext)
+	 *      org.springframework.ws.context.MessageContext)
 	 */
 	@Override
 	protected final void secureMessage(final SoapMessage soapMessage, final MessageContext messageContext) {

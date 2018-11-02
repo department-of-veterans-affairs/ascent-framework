@@ -8,9 +8,9 @@ import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
  */
 public abstract class AbstractWss4jSecurityInterceptor extends Wss4jSecurityInterceptor {
 	/**
-	 * Retrieves properties to set to create a crypto file
+	 * Retrieves properties needed to create an {@link org.apache.wss4j.common.crypto.Crypto} object.
 	 *
-	 * @return
+	 * @return CryptoProperties
 	 */
 	public abstract CryptoProperties retrieveCryptoProps();
 
