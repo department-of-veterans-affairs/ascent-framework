@@ -25,15 +25,14 @@ import gov.va.ascent.framework.log.AscentLoggerFactory;
 /**
  * A Wss4j2 Security Interceptor to digitally sign a soap message.
  * <p>
- * Instantiation of this class requires a {@link #retrieveCryptoProps()} method
- * that returns a {@link CryptoProperties} implementation, as declared in
- * {@link AbstractWss4jSecurityInterceptor#retrieveCryptoProps()}.
+ * Instantiation of this class requires a {@link #retrieveCryptoProps()} method that returns a {@link CryptoProperties} implementation,
+ * as declared in {@link AbstractWss4jSecurityInterceptor#retrieveCryptoProps()}.
  * <p>
  * A complete example can be found in the spring beans of vetservices-partner-efolder EFolderWsClientConfig.java.
  * <p>
- * <b>NOTE:</b> VBMS uses the same cert for ssl AND signing AND key time stamp AND decryption.
- * If future implementations require separate certificates, this code, and possibly the {@link CryptoProperties}
- * interface and certainly its implementations, will need to be modified to provide the additional alias(es).
+ * <b>NOTE:</b> VBMS uses the same cert for ssl AND signing AND key time stamp AND decryption. If future implementations require
+ * separate certificates, this code, and possibly the {@link CryptoProperties} interface and certainly its implementations, will need
+ * to be modified to provide the additional alias(es).
  * <p>
  * Calling code would typically provide the method in-line during construction, for example:
  *
@@ -84,10 +83,25 @@ public abstract class VAServiceSignatureWss4jSecurityInterceptor extends Abstrac
 			LOGGER.info("crypto {} " + ReflectionToStringBuilder.reflectionToString(props));
 			sign.prepare(doc, CryptoFactory.getInstance(props), secHeader);
 
+			LOGGER.info("Document prepared for signature, doc {} " + ReflectionToStringBuilder.reflectionToString(doc) + " sign {} "
+					+ ReflectionToStringBuilder.reflectionToString(sign) + " secHeader {} "
+					+ ReflectionToStringBuilder.reflectionToString(secHeader));
+
 			final List<javax.xml.crypto.dsig.Reference> referenceList = sign.addReferencesToSign(parts, secHeader);
+
+			LOGGER.info("References added for signature parts {}" + ReflectionToStringBuilder.reflectionToString(parts) + " sign {} "
+					+ ReflectionToStringBuilder.reflectionToString(sign) + " secHeader {} "
+					+ ReflectionToStringBuilder.reflectionToString(secHeader));
+
 			sign.computeSignature(referenceList, false, null);
 
+			LOGGER.info("References added for signature referenceList {}" + ReflectionToStringBuilder.reflectionToString(referenceList)
+					+ " sign {} " + ReflectionToStringBuilder.reflectionToString(sign));
+
 			soapMessage.setDocument(doc);
+
+			LOGGER.info("Document set in the SOAP request {}" + ReflectionToStringBuilder.reflectionToString(doc) + " soapMessage {} "
+					+ ReflectionToStringBuilder.reflectionToString(soapMessage));
 
 		} catch (final WSSecurityException e) {
 			LOGGER.error("failed encryption ", e);
