@@ -9,6 +9,7 @@ import org.apache.ws.security.WSConstants;
 import org.apache.ws.security.WSEncryptionPart;
 import org.apache.ws.security.WSSConfig;
 import org.apache.ws.security.WSSecurityException;
+import org.apache.ws.security.components.crypto.Crypto;
 import org.apache.ws.security.components.crypto.CryptoFactory;
 import org.apache.ws.security.message.WSSecHeader;
 import org.apache.ws.security.message.WSSecSignature;
@@ -81,7 +82,13 @@ public abstract class VAServiceSignatureWss4jSecurityInterceptor extends Abstrac
 
 			sign.setParts(parts);
 			LOGGER.info("crypto {} " + ReflectionToStringBuilder.reflectionToString(props));
-			sign.prepare(doc, CryptoFactory.getInstance(props), secHeader);
+			LOGGER.info("creating crypto instance... ");
+
+			Crypto instance = CryptoFactory.getInstance(props);
+
+			LOGGER.info("crypto instance created {} " + ReflectionToStringBuilder.reflectionToString(instance));
+
+			sign.prepare(doc, instance, secHeader);
 
 			LOGGER.info("Document prepared for signature, doc {} " + ReflectionToStringBuilder.reflectionToString(doc) + " sign {} "
 					+ ReflectionToStringBuilder.reflectionToString(sign) + " secHeader {} "
