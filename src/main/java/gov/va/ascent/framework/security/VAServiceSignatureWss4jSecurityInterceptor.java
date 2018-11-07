@@ -50,6 +50,7 @@ public abstract class VAServiceSignatureWss4jSecurityInterceptor extends Abstrac
 
 	/** The Constant LOGGER. */
 	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(VAServiceSignatureWss4jSecurityInterceptor.class);
+	private static final String SIGN = " sign {} ";
 
 	/**
 	 * Create a message that is encrypted and signed. See {@link VAServiceSignatureWss4jSecurityInterceptor} javadoc for implementation
@@ -90,20 +91,20 @@ public abstract class VAServiceSignatureWss4jSecurityInterceptor extends Abstrac
 
 			sign.prepare(doc, instance, secHeader);
 
-			LOGGER.info("Document prepared for signature, doc {} " + ReflectionToStringBuilder.reflectionToString(doc) + " sign {} "
+			LOGGER.info("Document prepared for signature, doc {} " + ReflectionToStringBuilder.reflectionToString(doc) + SIGN
 					+ ReflectionToStringBuilder.reflectionToString(sign) + " secHeader {} "
 					+ ReflectionToStringBuilder.reflectionToString(secHeader));
 
 			final List<javax.xml.crypto.dsig.Reference> referenceList = sign.addReferencesToSign(parts, secHeader);
 
-			LOGGER.info("References added for signature parts {}" + ReflectionToStringBuilder.reflectionToString(parts) + " sign {} "
+			LOGGER.info("References added for signature parts {}" + ReflectionToStringBuilder.reflectionToString(parts) + SIGN
 					+ ReflectionToStringBuilder.reflectionToString(sign) + " secHeader {} "
 					+ ReflectionToStringBuilder.reflectionToString(secHeader));
 
 			sign.computeSignature(referenceList, false, null);
 
 			LOGGER.info("References added for signature referenceList {}" + ReflectionToStringBuilder.reflectionToString(referenceList)
-					+ " sign {} " + ReflectionToStringBuilder.reflectionToString(sign));
+					+ SIGN + ReflectionToStringBuilder.reflectionToString(sign));
 
 			soapMessage.setDocument(doc);
 

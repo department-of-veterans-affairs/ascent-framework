@@ -109,13 +109,13 @@ public class AscentBaseLogger {
 		// *** DO NOT USE THE message PARAM BELOW HERE ***
 		if (safeMessage != null && safeMessage.length() > MAX_MSG_LEN) {
 			int seq = 0;
-			String[] splitMessages = splitMessages(safeMessage.toString());
+			String[] splitMessages = splitMessages(safeMessage);
 			for (String part : splitMessages) {
 				MDC.put(SPLIT_MDC_NAME, Integer.toString(++seq));
 				this.sendLogAtLevel(level, marker, part, t);
 			}
 		} else {
-			this.sendLogAtLevel(level, marker, safeMessage.toString(), t);
+			this.sendLogAtLevel(level, marker, safeMessage, t);
 		}
 		MDC.clear();
 	}
