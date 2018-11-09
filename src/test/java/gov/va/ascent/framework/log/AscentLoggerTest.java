@@ -2,6 +2,7 @@ package gov.va.ascent.framework.log;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -114,11 +115,6 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 		logger.setLevel(Level.DEBUG);
 	}
 
-//	@Test
-//	public final void testGetLogger() throws IOException {
-//		fail("Not yet implemented");
-//	}
-
 	@Test
 	public final void testGetLoggerInterfaceImpl() {
 		org.slf4j.Logger slf4j = logger.getLoggerInterfaceImpl();
@@ -130,6 +126,19 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 		ch.qos.logback.classic.Logger logback = logger.getLoggerBoundImpl();
 		assertNotNull(logback);
 		assertTrue(ch.qos.logback.classic.Logger.class.isAssignableFrom(logback.getClass()));
+	}
+
+	@Test
+	public final void testLargeMessage() {
+		logger.setLevel(Level.DEBUG);
+		logger.debug(StringUtils.repeat("test ", 3275));
+		try {
+			assertConsole(Level.DEBUG, "test ", null);
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			fail("Should not have thrown exception");
+		}
 	}
 
 	@Test

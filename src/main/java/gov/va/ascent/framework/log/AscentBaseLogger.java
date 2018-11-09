@@ -1,5 +1,10 @@
 package gov.va.ascent.framework.log;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+
+import org.apache.commons.io.IOUtils;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
@@ -38,6 +43,7 @@ public class AscentBaseLogger {
 	 */
 	protected AscentBaseLogger(org.slf4j.Logger logger) {
 		this.logger = logger;
+
 	}
 
 	/**
@@ -105,17 +111,67 @@ public class AscentBaseLogger {
 	 * @param message
 	 */
 	protected void sendlog(Level level, Marker marker, String message, Throwable t) {
+
+		/*
+		 * DELETE THIS COMMENT WHEN CODE IS WRITTEN AND TESTED
+		 * Pseudo code for splitting message and stack trace
+		 *
+		 *   mdcReserve = 10240 (10 KB), leaving 6144 (6 KB) for message and stacktrace
+		 *   messageLen = safeMessage length
+		 *   stacktraceLen = stacktrace length
+		 *   if mcdReserve + messageLen + stacktraceLen > 16384 then
+		 *     if messageLen >= 6144 then
+		 *       split the safeMessage
+		 *       loop on splitMessages
+		 *         add MDC SPLIT_MDC_NAME and seq
+		 *         log the splitMessage
+		 *       end loop
+		 *     else
+		 *       log the safeMessage
+		 *     end if
+		 *     if stacktraceLen >= 6144 then
+		 *       split the stacktrace
+		 *       loop on splitStacktraces
+		 *         add MDC SPLIT_MDC_NAME and value
+		 *         log the splitStacktrace
+		 *       end loop
+		 *     else
+		 *       log the throwable
+		 *     end if
+		 *   else
+		 *     log the safeMessage AND the stacktrace
+		 *   end if
+		 */
+
 		String safeMessage = safeMessage(message);
 		// *** DO NOT USE THE message PARAM BELOW HERE ***
+
+		// get the stack trace
+		String stackTrace = null;
+		if (t != null) {
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			t.printStackTrace(new PrintStream(out));
+			try {
+				stackTrace = IOUtils.toString(out.toByteArray(), "UTF-8");
+			} catch (IOException e) { // NOSONAR not rethrowing just yet
+				this.logger.error("While retrieving stacktrace", e);
+			}
+		}
+		this.logger.debug(stackTrace);
+
+		// need logic to print message(s), followed by stacktrace(s)
+		// stack trace needs to be manually added to MDC under "stack_trace"
+
 		if (safeMessage != null && safeMessage.length() > MAX_MSG_LEN) {
 			int seq = 0;
 			String[] splitMessages = splitMessages(safeMessage);
 			for (String part : splitMessages) {
 				MDC.put(SPLIT_MDC_NAME, Integer.toString(++seq));
-				this.sendLogAtLevel(level, marker, part, t);
+				// manually add a MDC put "stack_trace", string
+				this.sendLogAtLevel(level, marker, part, null); // from now on, throwable arg will always be null
 			}
 		} else {
-			this.sendLogAtLevel(level, marker, safeMessage, t);
+			this.sendLogAtLevel(level, marker, safeMessage, t); // only if message AND stacktrace fit into 10 KB
 		}
 		MDC.clear();
 	}
