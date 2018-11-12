@@ -22,6 +22,7 @@ import org.slf4j.event.Level;
 import org.springframework.boot.test.rule.OutputCapture;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.fasterxml.jackson.core.io.JsonStringEncoder;
 import com.github.lalyos.jfiglet.FigletFont;
 
 import gov.va.ascent.framework.AbstractBaseLogTester;
@@ -71,8 +72,8 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 		final String outString = outputCapture.toString();
 
 		if (banner != null) {
-			String expected =
-					FigletFont.convertOneLine(AscentBanner.FONT_FILE, level.name() + ": " + banner.getBannerText());
+			String expected = String.valueOf(JsonStringEncoder.getInstance().quoteAsString(
+					FigletFont.convertOneLine(AscentBanner.FONT_FILE, level.name() + ": " + banner.getBannerText())));
 			Assert.assertTrue(StringUtils.contains(StringUtils.normalizeSpace(outString), StringUtils.normalizeSpace(expected)));
 		}
 		// always assert the message
@@ -711,7 +712,7 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 		logger.log(Level.ERROR, MARKER, MESSAGE, EXCEPTION);
 		assertConsole(Level.ERROR, MESSAGE, EXCEPTION);
 	}
-	
+
 	@Test
 	public final void testNullMessage() throws IOException {
 		logger.log(Level.ERROR, null);

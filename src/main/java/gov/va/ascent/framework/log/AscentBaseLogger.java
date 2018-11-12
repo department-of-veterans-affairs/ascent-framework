@@ -5,6 +5,8 @@ import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.event.Level;
 
+import com.fasterxml.jackson.core.io.JsonStringEncoder;
+
 /**
  * Base logger class that:
  * <li>splits messages so large messages can be logged in spite of the docker 16 KB limit
@@ -103,17 +105,31 @@ public class AscentBaseLogger {
 	 * @param message
 	 */
 	protected void sendlog(Level level, Marker marker, String message, Throwable t) {
-		if (message != null && message.length() > MAX_MSG_LEN) {
+		String safeMessage = safeMessage(message);
+		// *** DO NOT USE THE message PARAM BELOW HERE ***
+		if (safeMessage != null && safeMessage.length() > MAX_MSG_LEN) {
 			int seq = 0;
-			String[] splitMessages = splitMessages(message);
+			String[] splitMessages = splitMessages(safeMessage);
 			for (String part : splitMessages) {
 				MDC.put(SPLIT_MDC_NAME, Integer.toString(++seq));
 				this.sendLogAtLevel(level, marker, part, t);
 			}
 		} else {
-			this.sendLogAtLevel(level, marker, message, t);
+			this.sendLogAtLevel(level, marker, safeMessage, t);
 		}
 		MDC.clear();
+	}
+
+	/**
+	 * Get a string that is safe for use within a JSON context - escapes quotes, etc.
+	 * <p>
+	 * If {@code null} is passed as the message, then {@code null} will be returned.
+	 *
+	 * @param message
+	 * @return String the escaped message, or {@code null}
+	 */
+	private String safeMessage(String message) {
+		return message == null ? null : String.valueOf(JsonStringEncoder.getInstance().quoteAsString(message));
 	}
 
 	/**

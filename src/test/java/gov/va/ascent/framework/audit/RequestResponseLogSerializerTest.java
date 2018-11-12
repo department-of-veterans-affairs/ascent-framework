@@ -25,14 +25,13 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.io.JsonStringEncoder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gov.va.ascent.framework.log.AscentLogger;
@@ -93,9 +92,9 @@ public class RequestResponseLogSerializerTest {
 				MessageSeverity.INFO);
 		verify(mockAppender, times(1)).doAppend(captorLoggingEvent.capture());
 		final List<ch.qos.logback.classic.spi.LoggingEvent> loggingEvents = captorLoggingEvent.getAllValues();
-		JSONAssert.assertEquals(
-				"{\"headers\":{\"Header1\":\"Header1Value\"},\"uri\":\"/\",\"method\":\"GET\",\"response\":\"Response\",\"request\":[\"Request\"],\"attachmentTextList\":[\"attachment1\",\"attachment2\"]}",
-				loggingEvents.get(0).getMessage(), JSONCompareMode.STRICT);
+		final String expected = String.valueOf(JsonStringEncoder.getInstance().quoteAsString(
+				"{\"headers\":{\"Header1\":\"Header1Value\"},\"uri\":\"/\",\"method\":\"GET\",\"response\":\"Response\",\"request\":[\"Request\"],\"attachmentTextList\":[\"attachment1\",\"attachment2\"]}"));
+		assertEquals(expected, loggingEvents.get(0).getMessage());
 		assertThat(loggingEvents.get(0).getLevel(), is(ch.qos.logback.classic.Level.INFO));
 	}
 
