@@ -11,6 +11,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.message.WSSecHeader;
 import org.springframework.core.io.FileSystemResource;
@@ -55,10 +57,15 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 		try {
 			final Document doc = soapMessage.getDocument();
 			final WSSecHeader secHeader = new WSSecHeader();
+			LOGGER.info("doc before security header: "
+					+ ReflectionToStringBuilder.toString(doc, ToStringStyle.SHORT_PREFIX_STYLE, true, true, null));
 			secHeader.insertSecurityHeader(doc);
+			LOGGER.info("doc after security header: "
+					+ ReflectionToStringBuilder.toString(doc, ToStringStyle.SHORT_PREFIX_STYLE, true, true, null));
 
 			final Element xml = getSAMLAssertionAsElement();
-			LOGGER.debug("SAML Assertion: " + xml);
+			LOGGER.info(
+					"SAML Assertion: " + ReflectionToStringBuilder.toString(xml, ToStringStyle.SHORT_PREFIX_STYLE, true, true, null));
 
 			if (xml != null) {
 				final Document headerDoc = secHeader.getSecurityHeader().getOwnerDocument();
@@ -69,6 +76,8 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 			}
 
 			soapMessage.setDocument(doc);
+			LOGGER.info("SOAP message: "
+					+ ReflectionToStringBuilder.toString(soapMessage, ToStringStyle.SHORT_PREFIX_STYLE, true, true, null));
 
 		} catch (final WSSecurityException e) {
 			LOGGER.error("Error while attempting to insert SAML Assertion into message.", e);
