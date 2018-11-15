@@ -58,14 +58,17 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 			final Document doc = soapMessage.getDocument();
 			final WSSecHeader secHeader = new WSSecHeader();
 			LOGGER.info("doc before security header: "
-					+ ReflectionToStringBuilder.toString(doc, ToStringStyle.SHORT_PREFIX_STYLE, true, true, null));
+					+ ReflectionToStringBuilder.toString(doc == null ? "null" : doc, ToStringStyle.SHORT_PREFIX_STYLE, true, true,
+							null));
 			secHeader.insertSecurityHeader(doc);
 			LOGGER.info("doc after security header: "
-					+ ReflectionToStringBuilder.toString(doc, ToStringStyle.SHORT_PREFIX_STYLE, true, true, null));
+					+ ReflectionToStringBuilder.toString(doc == null ? "null" : doc, ToStringStyle.SHORT_PREFIX_STYLE, true, true,
+							null));
 
 			final Element xml = getSAMLAssertionAsElement();
 			LOGGER.info(
-					"SAML Assertion: " + ReflectionToStringBuilder.toString(xml, ToStringStyle.SHORT_PREFIX_STYLE, true, true, null));
+					"SAML Assertion: " + ReflectionToStringBuilder.toString(xml == null ? "null" : xml,
+							ToStringStyle.SHORT_PREFIX_STYLE, false, true, null));
 
 			if (xml != null) {
 				final Document headerDoc = secHeader.getSecurityHeader().getOwnerDocument();
@@ -77,7 +80,8 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 
 			soapMessage.setDocument(doc);
 			LOGGER.info("SOAP message: "
-					+ ReflectionToStringBuilder.toString(soapMessage, ToStringStyle.SHORT_PREFIX_STYLE, true, true, null));
+					+ ReflectionToStringBuilder.toString(soapMessage == null ? "null" : soapMessage, ToStringStyle.SHORT_PREFIX_STYLE,
+							true, true, null));
 
 		} catch (final WSSecurityException e) {
 			LOGGER.error("Error while attempting to insert SAML Assertion into message.", e);
