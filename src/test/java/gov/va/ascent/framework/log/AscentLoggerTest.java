@@ -1,11 +1,15 @@
 package gov.va.ascent.framework.log;
 
+import static gov.va.ascent.framework.log.AscentBaseLogger.MAX_TOTAL_LOG_LEN;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +25,7 @@ import org.slf4j.Marker;
 import org.slf4j.event.Level;
 import org.springframework.boot.test.rule.OutputCapture;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.fasterxml.jackson.core.io.JsonStringEncoder;
 import com.github.lalyos.jfiglet.FigletFont;
@@ -69,11 +74,28 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 	private void assertConsoleBanner(final Level level, final AscentBanner banner, final String message, final Exception e)
 			throws IOException {
 		// output capture
+		assertConsoleBanner(level, banner, message, e, 1);
+	}
+
+	/**
+	 * Assert output that was directed through the console.
+	 *
+	 * @param level the level
+	 * @param banner the banner (use @{code null} for non-banner assertions)
+	 * @param message the message
+	 * @param e the Exception
+	 * @param captureCount the number of times the logs need to be counted while being appended
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	@SuppressWarnings("unchecked")
+	private void assertConsoleBanner(final Level level, final AscentBanner banner, final String message, final Exception e,
+			final int captureCount) throws IOException {
+		// output capture
 		final String outString = outputCapture.toString();
 
 		if (banner != null) {
-			String expected = String.valueOf(JsonStringEncoder.getInstance().quoteAsString(
-					FigletFont.convertOneLine(AscentBanner.FONT_FILE, level.name() + ": " + banner.getBannerText())));
+			String expected = String.valueOf(JsonStringEncoder.getInstance()
+					.quoteAsString(FigletFont.convertOneLine(AscentBanner.FONT_FILE, level.name() + ": " + banner.getBannerText())));
 			Assert.assertTrue(StringUtils.contains(StringUtils.normalizeSpace(outString), StringUtils.normalizeSpace(expected)));
 		}
 		// always assert the message
@@ -81,11 +103,13 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 
 		if (e != null) {
 			// appender capture
-			verify(mockAppender, times(1)).doAppend(captorLoggingEvent.capture());
+			verify(mockAppender, times(captureCount)).doAppend(captorLoggingEvent.capture());
 			final List<ch.qos.logback.classic.spi.LoggingEvent> loggingEvents = captorLoggingEvent.getAllValues();
 
-			assertNotNull(loggingEvents.get(0).getThrowableProxy());
-			assertTrue(e.getClass().getName().equals(loggingEvents.get(0).getThrowableProxy().getClassName()));
+			if (captureCount == 1) {
+				assertNotNull(loggingEvents.get(0).getThrowableProxy());
+				assertTrue(e.getClass().getName().equals(loggingEvents.get(0).getThrowableProxy().getClassName()));
+			}
 		}
 	}
 
@@ -114,11 +138,6 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 		logger.setLevel(Level.DEBUG);
 	}
 
-//	@Test
-//	public final void testGetLogger() throws IOException {
-//		fail("Not yet implemented");
-//	}
-
 	@Test
 	public final void testGetLoggerInterfaceImpl() {
 		org.slf4j.Logger slf4j = logger.getLoggerInterfaceImpl();
@@ -133,10 +152,105 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 	}
 
 	@Test
+	public final void testLargeMessage() {
+		logger.setLevel(Level.DEBUG);
+		String message = StringUtils.repeat("test ", 16000);
+		logger.debug(message);
+
+		String stackTrace = null;
+		int messageLength = message == null ? 0 : message.length();
+		int stackTraceLength = 0;
+		int mdcReserveLength = gov.va.ascent.framework.log.AscentBaseLogger.MDC_RESERVE_LENGTH;
+
+		int captureCount = 0;
+
+		if ((mdcReserveLength + messageLength + stackTraceLength) > MAX_TOTAL_LOG_LEN) {
+			if (messageLength >= gov.va.ascent.framework.log.AscentBaseLogger.MAX_MSG_LENGTH) {
+				String[] splitMessages = ReflectionTestUtils.invokeMethod(logger, "splitMessages", message);
+				captureCount = splitMessages.length;
+			} else {
+				captureCount = 1;
+			}
+
+			if ((stackTraceLength >= gov.va.ascent.framework.log.AscentBaseLogger.MAX_STACK_TRACE_TEXT_LENGTH)) {
+				String[] splitstackTrace = ReflectionTestUtils.invokeMethod(logger, "splitStackTraceText", stackTrace);
+				captureCount = captureCount + splitstackTrace.length;
+			} else if (stackTraceLength != 0) {
+				captureCount = captureCount + 1;
+			}
+
+		} else {
+			captureCount = 1;
+		}
+
+		try {
+			assertConsoleBanner(Level.DEBUG, null, "test ", null, captureCount);
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			fail("Should not have thrown exception");
+		}
+	}
+
+	@Test
+	public final void testLargeMessageWithLargeStackTrace() {
+
+		Exception e = new AscentRuntimeException("TestException");
+		ArrayList<StackTraceElement> stackTraces = new ArrayList<>();
+		for (int i = 0; i < 6; i++) {
+			stackTraces.addAll(Arrays.asList(e.getStackTrace()));
+		}
+		StackTraceElement stackTraceElement[] = new StackTraceElement[2];
+		e.setStackTrace(stackTraces.toArray(stackTraceElement));
+		logger.error(StringUtils.repeat("test ", 160000), e);
+
+		String message = StringUtils.repeat("test ", 160000);
+
+		String stackTrace = null;
+		stackTrace = ReflectionTestUtils.invokeMethod(logger, "getStackTraceAsString", e);
+		int messageLength = message == null ? 0 : message.length();
+		int stackTraceLength = stackTrace == null ? 0 : stackTrace.length();
+		int mdcReserveLength = gov.va.ascent.framework.log.AscentBaseLogger.MDC_RESERVE_LENGTH;
+
+		int captureCount = 0;
+
+		if ((mdcReserveLength + messageLength + stackTraceLength) > MAX_TOTAL_LOG_LEN) {
+			if (messageLength >= gov.va.ascent.framework.log.AscentBaseLogger.MAX_MSG_LENGTH) {
+				String[] splitMessages = ReflectionTestUtils.invokeMethod(logger, "splitMessages", message);
+				captureCount = splitMessages.length;
+			} else {
+				captureCount = 1;
+			}
+
+			if ((stackTraceLength >= gov.va.ascent.framework.log.AscentBaseLogger.MAX_STACK_TRACE_TEXT_LENGTH)) {
+				String[] splitstackTrace = ReflectionTestUtils.invokeMethod(logger, "splitStackTraceText", stackTrace);
+				captureCount = captureCount + splitstackTrace.length;
+			} else if (stackTraceLength != 0) {
+				captureCount = captureCount + 1;
+			}
+
+		} else
+
+		{
+			captureCount = 1;
+		}
+
+		try {
+			assertConsoleBanner(Level.DEBUG, null, "test ", null, captureCount);
+		} catch (IOException ioe) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			fail("Should not have thrown exception");
+		}
+		logger.setLevel(Level.DEBUG);
+	}
+
+	@Test
 	public final void testDebugBannerString() throws IOException {
 		banner.setLevel(Level.DEBUG);
 		logger.debug(banner, MESSAGE);
 		assertConsoleBanner(Level.DEBUG, banner, MESSAGE, null);
+		banner.setLevel(Level.DEBUG);
 	}
 
 	@Test
@@ -144,6 +258,7 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 		banner.setLevel(Level.DEBUG);
 		logger.debug(banner, "{}", MESSAGE);
 		assertConsoleBanner(Level.DEBUG, banner, MESSAGE, null);
+		banner.setLevel(Level.DEBUG);
 	}
 
 	@Test
@@ -172,6 +287,7 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 		banner.setLevel(Level.INFO);
 		logger.info(banner, MESSAGE);
 		assertConsoleBanner(Level.INFO, banner, MESSAGE, null);
+		banner.setLevel(Level.DEBUG);
 	}
 
 	@Test
@@ -179,6 +295,7 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 		banner.setLevel(Level.INFO);
 		logger.info(banner, "{}", MESSAGE);
 		assertConsoleBanner(Level.INFO, banner, MESSAGE, null);
+		banner.setLevel(Level.DEBUG);
 	}
 
 	@Test
@@ -186,6 +303,7 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 		banner.setLevel(Level.INFO);
 		logger.info(banner, "{} {}", MESSAGE, MESSAGE);
 		assertConsoleBanner(Level.INFO, banner, MESSAGE + " " + MESSAGE, null);
+		banner.setLevel(Level.DEBUG);
 	}
 
 	@Test
@@ -193,13 +311,18 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 		banner.setLevel(Level.INFO);
 		logger.info(banner, "{} {}", new Object[] { MESSAGE, MESSAGE });
 		assertConsoleBanner(Level.INFO, banner, MESSAGE + " " + MESSAGE, null);
+		banner.setLevel(Level.DEBUG);
 	}
 
 	@Test
 	public final void testInfoBannerStringThrowable() throws IOException {
+		logger.setLevel(Level.INFO);
 		banner.setLevel(Level.INFO);
 		logger.info(banner, MESSAGE, EXCEPTION);
 		assertConsoleBanner(Level.INFO, banner, MESSAGE, EXCEPTION);
+		logger.setLevel(Level.DEBUG);
+		banner.setLevel(Level.DEBUG);
+
 	}
 
 	@Test
@@ -207,6 +330,7 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 		banner.setLevel(Level.WARN);
 		logger.warn(banner, MESSAGE);
 		assertConsoleBanner(Level.WARN, banner, MESSAGE, null);
+		banner.setLevel(Level.DEBUG);
 	}
 
 	@Test
@@ -214,6 +338,7 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 		banner.setLevel(Level.WARN);
 		logger.warn(banner, "{}", MESSAGE);
 		assertConsoleBanner(Level.WARN, banner, MESSAGE, null);
+		banner.setLevel(Level.DEBUG);
 	}
 
 	@Test
@@ -221,6 +346,7 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 		banner.setLevel(Level.WARN);
 		logger.warn(banner, "{} {}", new Object[] { MESSAGE, MESSAGE });
 		assertConsoleBanner(Level.WARN, banner, MESSAGE + " " + MESSAGE, null);
+		banner.setLevel(Level.DEBUG);
 	}
 
 	@Test
@@ -228,13 +354,17 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 		banner.setLevel(Level.WARN);
 		logger.warn(banner, "{} {}", MESSAGE, MESSAGE);
 		assertConsoleBanner(Level.WARN, banner, MESSAGE + " " + MESSAGE, null);
+		banner.setLevel(Level.DEBUG);
 	}
 
 	@Test
 	public final void testWarnBannerStringThrowable() throws IOException {
+		logger.setLevel(Level.INFO);
 		banner.setLevel(Level.WARN);
 		logger.warn(banner, MESSAGE, EXCEPTION);
 		assertConsoleBanner(Level.WARN, banner, MESSAGE, EXCEPTION);
+		banner.setLevel(Level.DEBUG);
+		logger.setLevel(Level.DEBUG);
 	}
 
 	@Test
@@ -242,6 +372,7 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 		banner.setLevel(Level.ERROR);
 		logger.error(banner, MESSAGE);
 		assertConsoleBanner(Level.ERROR, banner, MESSAGE, null);
+		banner.setLevel(Level.DEBUG);
 	}
 
 	@Test
@@ -249,6 +380,7 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 		banner.setLevel(Level.ERROR);
 		logger.error(banner, "{}", MESSAGE);
 		assertConsoleBanner(Level.ERROR, banner, MESSAGE, null);
+		banner.setLevel(Level.DEBUG);
 	}
 
 	@Test
@@ -256,6 +388,7 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 		banner.setLevel(Level.ERROR);
 		logger.error(banner, "{} {}", MESSAGE, MESSAGE);
 		assertConsoleBanner(Level.ERROR, banner, MESSAGE + " " + MESSAGE, null);
+		banner.setLevel(Level.DEBUG);
 	}
 
 	@Test
@@ -263,6 +396,7 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 		banner.setLevel(Level.ERROR);
 		logger.error(banner, "{} {}", new Object[] { MESSAGE, MESSAGE });
 		assertConsoleBanner(Level.ERROR, banner, MESSAGE + " " + MESSAGE, null);
+		banner.setLevel(Level.DEBUG);
 	}
 
 	@Test
@@ -270,6 +404,7 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 		banner.setLevel(Level.ERROR);
 		logger.error(banner, MESSAGE, EXCEPTION);
 		assertConsoleBanner(Level.ERROR, banner, MESSAGE, EXCEPTION);
+		banner.setLevel(Level.DEBUG);
 	}
 
 	@Test
@@ -348,8 +483,10 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 
 	@Test
 	public final void testLogStringThrowable() throws IOException {
+		logger.setLevel(Level.ERROR);
 		logger.log(Level.ERROR, MESSAGE, EXCEPTION);
 		assertConsole(Level.ERROR, MESSAGE, EXCEPTION);
+		logger.setLevel(Level.DEBUG);
 	}
 
 	@Test
@@ -497,8 +634,10 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 
 	@Test
 	public final void testInfoStringThrowable() throws IOException {
+		logger.setLevel(Level.INFO);
 		logger.info(MESSAGE, EXCEPTION);
 		assertConsole(Level.INFO, MESSAGE, EXCEPTION);
+		logger.setLevel(Level.DEBUG);
 	}
 
 	@Test
@@ -709,8 +848,10 @@ public class AscentLoggerTest extends AbstractBaseLogTester {
 
 	@Test
 	public final void testLogMarkerStringThrowable() throws IOException {
+		logger.setLevel(Level.ERROR);
 		logger.log(Level.ERROR, MARKER, MESSAGE, EXCEPTION);
 		assertConsole(Level.ERROR, MESSAGE, EXCEPTION);
+		logger.setLevel(Level.DEBUG);
 	}
 
 	@Test

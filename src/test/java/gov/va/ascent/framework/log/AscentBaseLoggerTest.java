@@ -15,6 +15,7 @@ public class AscentBaseLoggerTest {
 		assertNotNull(level);
 		logger.setLevel(Level.INFO);
 		assertTrue(Level.INFO.equals(logger.getLevel()));
+		logger.info("Test message");
 	}
 
 }
