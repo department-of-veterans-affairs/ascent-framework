@@ -1,5 +1,6 @@
 package gov.va.ascent.framework.audit;
 
+import static gov.va.ascent.framework.log.AscentBaseLogger.MAX_TOTAL_LOG_LEN;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -27,7 +28,9 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import gov.va.ascent.framework.log.AscentBaseLogger;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
 import gov.va.ascent.framework.security.PersonTraits;
@@ -78,10 +81,7 @@ public class AuditLoggerTest {
 	public void auditDebug() throws NoSuchMethodException, SecurityException {
 		// given
 		Method method = AuditLoggerTest.class.getMethod("auditDebug", null);
-		AuditLogger.debug(
-				new AuditEventData(AuditEvents.REQUEST_RESPONSE,
-						method.getName(),
-						method.getDeclaringClass().getName()),
+		AuditLogger.debug(new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
 				"Audit DEBUG Activity Detail");
 
 		// Now verify our logging interactions
@@ -98,8 +98,7 @@ public class AuditLoggerTest {
 	public void auditInfo() throws NoSuchMethodException, SecurityException {
 		// given
 		Method method = AuditLoggerTest.class.getMethod("auditInfo", null);
-		AuditLogger.info(
-				new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
+		AuditLogger.info(new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
 				"Audit INFO Activity Detail");
 
 		// Now verify our logging interactions
@@ -117,8 +116,7 @@ public class AuditLoggerTest {
 	public void auditWarn() throws NoSuchMethodException, SecurityException {
 		// given
 		Method method = AuditLoggerTest.class.getMethod("auditWarn", null);
-		AuditLogger.warn(
-				new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
+		AuditLogger.warn(new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
 				"Audit WARN Activity Detail");
 
 		// Now verify our logging interactions
@@ -137,8 +135,7 @@ public class AuditLoggerTest {
 	public void auditError() throws NoSuchMethodException, SecurityException {
 		// given and when
 		Method method = AuditLoggerTest.class.getMethod("auditError", null);
-		AuditLogger.error(
-				new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
+		AuditLogger.error(new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
 				"Audit ERROR Activity Detail");
 
 		// Now verify our logging interactions
@@ -180,15 +177,42 @@ public class AuditLoggerTest {
 	@Test
 	public void largeMessage() throws NoSuchMethodException, SecurityException {
 		// docker max message size including JSON formatting and AuditEventData is 16374
-		String largeMessage = StringUtils.repeat("test ", 3275); // 5 * 3275 = 16 KB message
+		String message = StringUtils.repeat("test ", 3275);
 
 		Method method = AuditLoggerTest.class.getMethod("largeMessage", null);
 		AuditEventData eventData =
 				new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName());
-		AuditLogger.info(eventData, largeMessage);
+		AuditLogger.info(eventData, message);
+
+		String stackTrace = null;
+		int messageLength = message == null ? 0 : message.length();
+		int stackTraceLength = 0;
+		int mdcReserveLength = gov.va.ascent.framework.log.AscentBaseLogger.MDC_RESERVE_LENGTH;
+
+		int captureCount = 0;
+
+		AscentBaseLogger logger = AscentLoggerFactory.getLogger(AscentLogger.ROOT_LOGGER_NAME);
+		if ((mdcReserveLength + messageLength + stackTraceLength) > MAX_TOTAL_LOG_LEN) {
+			if (messageLength >= gov.va.ascent.framework.log.AscentBaseLogger.MAX_MSG_LENGTH) {
+				String[] splitMessages = ReflectionTestUtils.invokeMethod(logger, "splitMessages", message);
+				captureCount = splitMessages.length;
+			} else {
+				captureCount = 1;
+			}
+
+			if ((stackTraceLength >= gov.va.ascent.framework.log.AscentBaseLogger.MAX_STACK_TRACE_TEXT_LENGTH)) {
+				String[] splitstackTrace = ReflectionTestUtils.invokeMethod(logger, "splitStackTraceText", stackTrace);
+				captureCount = captureCount + splitstackTrace.length;
+			} else if (stackTraceLength != 0) {
+				captureCount = captureCount + 1;
+			}
+
+		} else {
+			captureCount = 1;
+		}
 
 		// Now verify our logging interactions
-		verify(mockAppender, times(2)).doAppend(captorLoggingEvent.capture());
+		verify(mockAppender, times(captureCount)).doAppend(captorLoggingEvent.capture());
 
 		List<ch.qos.logback.classic.spi.LoggingEvent> events = captorLoggingEvent.getAllValues();
 		for (ch.qos.logback.classic.spi.LoggingEvent event : events) {

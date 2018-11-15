@@ -1,10 +1,8 @@
 package gov.va.ascent.framework.log;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
@@ -22,10 +20,17 @@ import com.fasterxml.jackson.core.io.JsonStringEncoder;
  */
 public class AscentBaseLogger {
 
-	/** Maximum length we are allowing for the "message" part of the log, leaving room for AuditEventData and JSON formatting */
-	private static final int MAX_MSG_LEN = 10240;
+	/** Maximum length we are allowing for a single log */
+	public static final int MAX_TOTAL_LOG_LEN = 16384;
+
 	/** The string to prepend when a message must be split */
 	private static final String SPLIT_MDC_NAME = "Split-Log-Sequence";
+
+	/**
+	 * Maximum length we are allowing for the "message" part of the log, leaving room for AuditEventData and JSON formatting and stack
+	 * trace
+	 */
+	public static final int MAX_MSG_LENGTH = 6144;
 
 	/** The actual logger implementation (logback under slf4j) */
 	private org.slf4j.Logger logger;
@@ -37,11 +42,23 @@ public class AscentBaseLogger {
 	public static final String ROOT_LOGGER_NAME = org.slf4j.Logger.ROOT_LOGGER_NAME;
 
 	/**
+	 * Maximum length we are allowing for AuditEventData and JSON formatting, etc., (everything other than the message and stack trace
+	 * text
+	 */
+	public static final int MDC_RESERVE_LENGTH = 10240;
+
+	/**
+	 * Maximum length we are allowing for the "stack trace" part of the log, leaving room for AuditEventData and JSON formatting and
+	 * message
+	 */
+	public static final int MAX_STACK_TRACE_TEXT_LENGTH = 6144;
+
+	/**
 	 * Create a new logger for Ascent.
 	 *
 	 * @param logger org.slf4j.Logger
 	 */
-	protected AscentBaseLogger(org.slf4j.Logger logger) {
+	protected AscentBaseLogger(final org.slf4j.Logger logger) {
 		this.logger = logger;
 
 	}
@@ -53,14 +70,13 @@ public class AscentBaseLogger {
 	 *
 	 * @param level the org.slf4j.event.Level
 	 */
-	public void setLevel(Level level) {
+	public void setLevel(final Level level) {
 		((ch.qos.logback.classic.Logger) logger).setLevel(ch.qos.logback.classic.Level.toLevel(level.name()));
 	}
 
 	/**
-	 * Get the current log level for the logger.
-	 * If no level has been set, the ROOT_LOGGER level is returned.
-	 * If ROOT_LOGGER has not been set, DEBUG is returned.
+	 * Get the current log level for the logger. If no level has been set, the ROOT_LOGGER level is returned. If ROOT_LOGGER has not
+	 * been set, DEBUG is returned.
 	 * <p>
 	 * This method accesses the underlying log implementation (e.g. logback).
 	 *
@@ -84,20 +100,38 @@ public class AscentBaseLogger {
 	}
 
 	/**
-	 * Splits a message into an array of strings that are {@link #MAX_MSG_LEN} KB or less.
-	 * Short messages will be an array with one element.
+	 * Splits a message into an array of strings that are {@link #MAX_MSG_LENGTH} KB or less. Short messages will be an array with one
+	 * element.
 	 *
 	 * @param message the message to split
 	 * @return an array of Strings
 	 */
-	private String[] splitMessages(String message) {
+	private static String[] splitMessages(String message) {
 		message = message == null ? "null" : message; // NOSONAR intentional variable reuse
 
-		if (message.length() <= MAX_MSG_LEN) {
+		if (message.length() <= MAX_MSG_LENGTH) {
 			return new String[] { message };
 		} else {
-			// split message into MAX_MSG_LEN strings
-			return message.split("(?<=\\G.{" + MAX_MSG_LEN + "})");
+			// split message into MAX_MSG_LENGTH strings
+			return message.split("(?<=\\G.{" + MAX_MSG_LENGTH + "})");
+		}
+	}
+
+	/**
+	 * Splits a stack trace text into an array of strings that are {@link #MAX_STACK_TRACE_TEXT_LENGTH} KB or less. Short stack trace
+	 * text will be an array with one element.
+	 *
+	 * @param stackTraceText the message to split
+	 * @return an array of Strings
+	 */
+	private String[] splitStackTraceText(String stackTraceText) {
+		stackTraceText = stackTraceText == null ? "null" : stackTraceText; // NOSONAR intentional variable reuse
+
+		if (stackTraceText.length() <= MAX_STACK_TRACE_TEXT_LENGTH) {
+			return new String[] { stackTraceText };
+		} else {
+			// split message into MAX_MSG_OR_STACK_TRACE_LENGTH strings
+			return stackTraceText.split("\\b.{1," + (MAX_STACK_TRACE_TEXT_LENGTH - 1) + "}\\b\\W?");
 		}
 	}
 
@@ -110,70 +144,70 @@ public class AscentBaseLogger {
 	 * @param marker
 	 * @param message
 	 */
-	protected void sendlog(Level level, Marker marker, String message, Throwable t) {
-
-		/*
-		 * DELETE THIS COMMENT WHEN CODE IS WRITTEN AND TESTED
-		 * Pseudo code for splitting message and stack trace
-		 *
-		 *   mdcReserve = 10240 (10 KB), leaving 6144 (6 KB) for message and stacktrace
-		 *   messageLen = safeMessage length
-		 *   stacktraceLen = stacktrace length
-		 *   if mcdReserve + messageLen + stacktraceLen > 16384 then
-		 *     if messageLen >= 6144 then
-		 *       split the safeMessage
-		 *       loop on splitMessages
-		 *         add MDC SPLIT_MDC_NAME and seq
-		 *         log the splitMessage
-		 *       end loop
-		 *     else
-		 *       log the safeMessage
-		 *     end if
-		 *     if stacktraceLen >= 6144 then
-		 *       split the stacktrace
-		 *       loop on splitStacktraces
-		 *         add MDC SPLIT_MDC_NAME and value
-		 *         log the splitStacktrace
-		 *       end loop
-		 *     else
-		 *       log the throwable
-		 *     end if
-		 *   else
-		 *     log the safeMessage AND the stacktrace
-		 *   end if
-		 */
+	protected void sendlog(final Level level, final Marker marker, final String message, final Throwable t) {
 
 		String safeMessage = safeMessage(message);
-		// *** DO NOT USE THE message PARAM BELOW HERE ***
 
 		// get the stack trace
-		String stackTrace = null;
-		if (t != null) {
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			t.printStackTrace(new PrintStream(out));
-			try {
-				stackTrace = IOUtils.toString(out.toByteArray(), "UTF-8");
-			} catch (IOException e) { // NOSONAR not rethrowing just yet
-				this.logger.error("While retrieving stacktrace", e);
-			}
-		}
-		this.logger.debug(stackTrace);
+		String stackTrace = getStackTraceAsString(t);
 
-		// need logic to print message(s), followed by stacktrace(s)
-		// stack trace needs to be manually added to MDC under "stack_trace"
+		int messageLength = safeMessage == null ? 0 : safeMessage.length();
+		int stackTraceLength = stackTrace == null ? 0 : stackTrace.length();
+		int mdcReserveLength = MDC_RESERVE_LENGTH;
 
-		if (safeMessage != null && safeMessage.length() > MAX_MSG_LEN) {
-			int seq = 0;
-			String[] splitMessages = splitMessages(safeMessage);
-			for (String part : splitMessages) {
-				MDC.put(SPLIT_MDC_NAME, Integer.toString(++seq));
+		if ((mdcReserveLength + messageLength + stackTraceLength) > MAX_TOTAL_LOG_LEN) {
+			if (messageLength >= MAX_MSG_LENGTH) {
+				int seq = 0;
+				String[] splitMessages = splitMessages(safeMessage);
+				for (String part : splitMessages) {
+					MDC.put(SPLIT_MDC_NAME, Integer.toString(++seq));
+					// manually add an MDC put "stack_trace", string
+					MDC.put("stack_trace", "stack trace will be printed in successive split logs");
+					// throwable arg will be null if the stack trace needs to be split to another split log message
+					this.sendLogAtLevel(level, marker, part, null);
+				}
+			} else {
 				// manually add a MDC put "stack_trace", string
-				this.sendLogAtLevel(level, marker, part, null); // from now on, throwable arg will always be null
+				MDC.put("stack_trace", "stack trace will be printed in successive split logs");
+				// log the safeMessage
+				// throwable arg will be null if the stack trace needs to be split to another split log message
+				this.sendLogAtLevel(level, marker, safeMessage, null);
 			}
+
+			String messageStub = "message is already printed in previous split logs";
+			if (stackTraceLength >= MAX_STACK_TRACE_TEXT_LENGTH) {
+				int seq = 0;
+				String[] splitstackTrace = splitStackTraceText(stackTrace);
+				for (String part : splitstackTrace) {
+					MDC.put(SPLIT_MDC_NAME, Integer.toString(++seq));
+					// manually add an MDC put "stack_trace", string
+					MDC.put("stack_trace", part);
+					// throwable arg will be null if the stack trace needs to be split to another split log message
+					this.sendLogAtLevel(level, marker, messageStub, null);
+				}
+			} else if (stackTraceLength != 0) {
+				this.sendLogAtLevel(level, marker, messageStub, t);
+			}
+
 		} else {
-			this.sendLogAtLevel(level, marker, safeMessage, t); // only if message AND stacktrace fit into 10 KB
+			this.sendLogAtLevel(level, marker, safeMessage, t);
 		}
+
 		MDC.clear();
+	}
+
+	private String getStackTraceAsString(final Throwable t) {
+
+		if (t == null) {
+			return "";
+		}
+
+		StringWriter writer = new StringWriter();
+		PrintWriter printWriter = new PrintWriter(writer);
+		t.printStackTrace(printWriter);
+		printWriter.flush();
+
+		return writer.toString();
 	}
 
 	/**
@@ -184,7 +218,7 @@ public class AscentBaseLogger {
 	 * @param message
 	 * @return String the escaped message, or {@code null}
 	 */
-	private String safeMessage(String message) {
+	private String safeMessage(final String message) {
 		return message == null ? null : String.valueOf(JsonStringEncoder.getInstance().quoteAsString(message));
 	}
 
@@ -196,7 +230,7 @@ public class AscentBaseLogger {
 	 * @param level
 	 * @param part
 	 */
-	private void sendLogAtLevel(Level level, Marker marker, String part, Throwable t) {
+	private void sendLogAtLevel(final Level level, final Marker marker, final String part, final Throwable t) {
 		if (level == null) {
 			sendLogDebug(marker, part, t);
 		} else {
@@ -215,7 +249,7 @@ public class AscentBaseLogger {
 	}
 
 	/** Because sonar is a PITA */
-	private void sendLogTrace(Marker marker, String part, Throwable t) {
+	private void sendLogTrace(final Marker marker, final String part, final Throwable t) {
 		if (t == null) {
 			if (marker == null) {
 				this.logger.trace(part);
@@ -232,7 +266,7 @@ public class AscentBaseLogger {
 	}
 
 	/** Because sonar is a PITA */
-	private void sendLogDebug(Marker marker, String part, Throwable t) {
+	private void sendLogDebug(final Marker marker, final String part, final Throwable t) {
 		if (t == null) {
 			if (marker == null) {
 				this.logger.debug(part);
@@ -249,7 +283,7 @@ public class AscentBaseLogger {
 	}
 
 	/** Because sonar is a PITA */
-	private void sendLogInfo(Marker marker, String part, Throwable t) {
+	private void sendLogInfo(final Marker marker, final String part, final Throwable t) {
 		if (t == null) {
 			if (marker == null) {
 				this.logger.info(part);
@@ -266,7 +300,7 @@ public class AscentBaseLogger {
 	}
 
 	/** Because sonar is a PITA */
-	private void sendLogWarn(Marker marker, String part, Throwable t) {
+	private void sendLogWarn(final Marker marker, final String part, final Throwable t) {
 		if (t == null) {
 			if (marker == null) {
 				this.logger.warn(part);
@@ -283,7 +317,7 @@ public class AscentBaseLogger {
 	}
 
 	/** Because sonar is a PITA */
-	private void sendLogError(Marker marker, String part, Throwable t) {
+	private void sendLogError(final Marker marker, final String part, final Throwable t) {
 		if (t == null) {
 			if (marker == null) {
 				this.logger.error(part);
