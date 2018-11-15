@@ -20,6 +20,8 @@ import com.fasterxml.jackson.core.io.JsonStringEncoder;
  */
 public class AscentBaseLogger {
 
+	private static final String STACK_TRACE_MDC_NAME = "stack_trace";
+
 	/** Maximum length we are allowing for a single log */
 	public static final int MAX_TOTAL_LOG_LEN = 16384;
 
@@ -162,13 +164,13 @@ public class AscentBaseLogger {
 				for (String part : splitMessages) {
 					MDC.put(SPLIT_MDC_NAME, Integer.toString(++seq));
 					// manually add an MDC put "stack_trace", string
-					MDC.put("stack_trace", "stack trace will be printed in successive split logs");
+					MDC.put(STACK_TRACE_MDC_NAME, "stack trace will be printed in successive split logs");
 					// throwable arg will be null if the stack trace needs to be split to another split log message
 					this.sendLogAtLevel(level, marker, part, null);
 				}
 			} else {
 				// manually add a MDC put "stack_trace", string
-				MDC.put("stack_trace", "stack trace will be printed in successive split logs");
+				MDC.put(STACK_TRACE_MDC_NAME, "stack trace will be printed in successive split logs");
 				// log the safeMessage
 				// throwable arg will be null if the stack trace needs to be split to another split log message
 				this.sendLogAtLevel(level, marker, safeMessage, null);
@@ -181,7 +183,7 @@ public class AscentBaseLogger {
 				for (String part : splitstackTrace) {
 					MDC.put(SPLIT_MDC_NAME, Integer.toString(++seq));
 					// manually add an MDC put "stack_trace", string
-					MDC.put("stack_trace", part);
+					MDC.put(STACK_TRACE_MDC_NAME, part);
 					// throwable arg will be null if the stack trace needs to be split to another split log message
 					this.sendLogAtLevel(level, marker, messageStub, null);
 				}
