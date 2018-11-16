@@ -20,9 +20,10 @@ import com.fasterxml.jackson.core.io.JsonStringEncoder;
  */
 public class AscentBaseLogger {
 
+	/** The property name used by logback encoder for stack traces */
 	private static final String STACK_TRACE_MDC_NAME = "stack_trace";
 
-	/** Maximum length we are allowing for a single log */
+	/** Maximum length we are allowing for a single log, as dictated by docker limits */
 	public static final int MAX_TOTAL_LOG_LEN = 16384;
 
 	/** The string to prepend when a message must be split */
@@ -77,8 +78,9 @@ public class AscentBaseLogger {
 	}
 
 	/**
-	 * Get the current log level for the logger. If no level has been set, the ROOT_LOGGER level is returned. If ROOT_LOGGER has not
-	 * been set, DEBUG is returned.
+	 * Get the current log level for the logger.
+	 * If no level has been set, the ROOT_LOGGER level is returned.
+	 * If ROOT_LOGGER has not been set, DEBUG is returned.
 	 * <p>
 	 * This method accesses the underlying log implementation (e.g. logback).
 	 *
@@ -157,7 +159,7 @@ public class AscentBaseLogger {
 		int stackTraceLength = stackTrace == null ? 0 : stackTrace.length();
 		int mdcReserveLength = MDC_RESERVE_LENGTH;
 
-		if ((mdcReserveLength + messageLength + stackTraceLength) > MAX_TOTAL_LOG_LEN) {
+		if (mdcReserveLength + messageLength + stackTraceLength > MAX_TOTAL_LOG_LEN) {
 			if (messageLength >= MAX_MSG_LENGTH) {
 				int seq = 0;
 				String[] splitMessages = splitMessages(safeMessage);
@@ -198,6 +200,12 @@ public class AscentBaseLogger {
 		MDC.clear();
 	}
 
+	/**
+	 * Get the stack trace formatted the same way as with Throwable.printStckTrace().
+	 *
+	 * @param t Throwable that contains the stack trace
+	 * @return String the formatted stack trace
+	 */
 	private String getStackTraceAsString(final Throwable t) {
 
 		if (t == null) {
