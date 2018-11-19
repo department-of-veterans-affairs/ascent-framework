@@ -2,6 +2,8 @@ package gov.va.ascent.framework.log;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -135,7 +137,14 @@ public class AscentBaseLogger {
 			return new String[] { stackTraceText };
 		} else {
 			// split message into MAX_MSG_OR_STACK_TRACE_LENGTH strings
-			return stackTraceText.split("\\b.{1," + (MAX_STACK_TRACE_TEXT_LENGTH - 1) + "}\\b\\W?");
+			List<String> listToReturn =
+					new ArrayList<String>(((stackTraceText.length() + MAX_STACK_TRACE_TEXT_LENGTH) - 1) / MAX_STACK_TRACE_TEXT_LENGTH);
+
+			for (int start = 0; start < stackTraceText.length(); start += MAX_STACK_TRACE_TEXT_LENGTH) {
+				listToReturn
+						.add(stackTraceText.substring(start, Math.min(stackTraceText.length(), start + MAX_STACK_TRACE_TEXT_LENGTH)));
+			}
+			return listToReturn.toArray(new String[1]);
 		}
 	}
 
