@@ -168,20 +168,25 @@ public class AscentBaseLogger {
 		int stackTraceLength = stackTrace == null ? 0 : stackTrace.length();
 		int mdcReserveLength = MDC_RESERVE_LENGTH;
 
-		if (mdcReserveLength + messageLength + stackTraceLength > MAX_TOTAL_LOG_LEN) {
+		if ((mdcReserveLength + messageLength + stackTraceLength) > MAX_TOTAL_LOG_LEN) {
+			boolean shouldStackTraceBePrinted = stackTraceLength != 0;
 			if (messageLength >= MAX_MSG_LENGTH) {
 				int seq = 0;
 				String[] splitMessages = splitMessages(safeMessage);
 				for (String part : splitMessages) {
 					MDC.put(SPLIT_MDC_NAME, Integer.toString(++seq));
-					// manually add an MDC put "stack_trace", string
-					MDC.put(STACK_TRACE_MDC_NAME, "stack trace will be printed in successive split logs");
+					if (shouldStackTraceBePrinted) {
+						// manually add an MDC put "stack_trace", string
+						MDC.put(STACK_TRACE_MDC_NAME, "stack trace will be printed in successive split logs");
+					}
 					// throwable arg will be null if the stack trace needs to be split to another split log message
 					this.sendLogAtLevel(level, marker, part, null);
 				}
 			} else {
-				// manually add a MDC put "stack_trace", string
-				MDC.put(STACK_TRACE_MDC_NAME, "stack trace will be printed in successive split logs");
+				if (shouldStackTraceBePrinted) {
+					// manually add a MDC put "stack_trace", string
+					MDC.put(STACK_TRACE_MDC_NAME, "stack trace will be printed in successive split logs");
+				}
 				// log the safeMessage
 				// throwable arg will be null if the stack trace needs to be split to another split log message
 				this.sendLogAtLevel(level, marker, safeMessage, null);
@@ -198,7 +203,7 @@ public class AscentBaseLogger {
 					// throwable arg will be null if the stack trace needs to be split to another split log message
 					this.sendLogAtLevel(level, marker, messageStub, null);
 				}
-			} else if (stackTraceLength != 0) {
+			} else if (shouldStackTraceBePrinted) {
 				this.sendLogAtLevel(level, marker, messageStub, t);
 			}
 
