@@ -113,6 +113,9 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 			factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
 			final InputSource inStream = new InputSource();
+
+			LOGGER.info("Client SAML assertion XML String : " + clientAssertion);
+
 			inStream.setCharacterStream(new StringReader(clientAssertion));
 
 			final Document doc = builder.parse(inStream);
