@@ -169,9 +169,9 @@ public class AscentBaseLogger {
 		int mdcReserveLength = MDC_RESERVE_LENGTH;
 
 		if ((mdcReserveLength + messageLength + stackTraceLength) > MAX_TOTAL_LOG_LEN) {
+			int seq = 0;
 			boolean shouldStackTraceBePrinted = stackTraceLength != 0;
 			if (messageLength >= MAX_MSG_LENGTH) {
-				int seq = 0;
 				String[] splitMessages = splitMessages(safeMessage);
 				for (String part : splitMessages) {
 					MDC.put(SPLIT_MDC_NAME, Integer.toString(++seq));
@@ -184,6 +184,7 @@ public class AscentBaseLogger {
 				}
 			} else {
 				if (shouldStackTraceBePrinted) {
+					MDC.put(SPLIT_MDC_NAME, Integer.toString(++seq));
 					// manually add a MDC put "stack_trace", string
 					MDC.put(STACK_TRACE_MDC_NAME, "stack trace will be printed in successive split logs");
 				}
@@ -194,7 +195,6 @@ public class AscentBaseLogger {
 
 			String messageStub = "message is already printed in previous split logs";
 			if (stackTraceLength >= MAX_STACK_TRACE_TEXT_LENGTH) {
-				int seq = 0;
 				String[] splitstackTrace = splitStackTraceText(stackTrace);
 				for (String part : splitstackTrace) {
 					MDC.put(SPLIT_MDC_NAME, Integer.toString(++seq));
@@ -204,6 +204,7 @@ public class AscentBaseLogger {
 					this.sendLogAtLevel(level, marker, messageStub, null);
 				}
 			} else if (shouldStackTraceBePrinted) {
+				MDC.put(SPLIT_MDC_NAME, Integer.toString(++seq));
 				this.sendLogAtLevel(level, marker, messageStub, t);
 			}
 
