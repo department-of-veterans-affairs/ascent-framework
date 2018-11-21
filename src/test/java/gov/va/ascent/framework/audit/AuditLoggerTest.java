@@ -2,6 +2,7 @@ package gov.va.ascent.framework.audit;
 
 import static gov.va.ascent.framework.log.AscentBaseLogger.MAX_TOTAL_LOG_LEN;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
@@ -30,6 +31,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import gov.va.ascent.framework.audit.AuditEventData;
+import gov.va.ascent.framework.audit.AuditEvents;
+import gov.va.ascent.framework.audit.AuditLogger;
 import gov.va.ascent.framework.log.AscentBaseLogger;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
@@ -78,9 +82,93 @@ public class AuditLoggerTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
+	public void auditNullEventData() {
+		AuditLogger.info(null, "test");
+		verify(mockAppender).doAppend(captorLoggingEvent.capture());
+		final ch.qos.logback.classic.spi.LoggingEvent loggingEvent = captorLoggingEvent.getValue();
+		assertTrue("UNKNOWN".equals(loggingEvent.getMDCPropertyMap().get("event")));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void auditNullEventDataEvent() {
+		AuditEventData data = new AuditEventData(null, "test", this.getClass().getSimpleName());
+		assertTrue(AuditEvents.UNKNOWN.equals(data.getEvent()));
+
+		ReflectionTestUtils.setField(data, "event", null);
+		assertNull(data.getEvent());
+
+		AuditLogger.info(data, "test");
+		verify(mockAppender).doAppend(captorLoggingEvent.capture());
+		final ch.qos.logback.classic.spi.LoggingEvent loggingEvent = captorLoggingEvent.getValue();
+		assertTrue("UNKNOWN".equals(loggingEvent.getMDCPropertyMap().get("event")));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void auditNullEventDataActivity() {
+		AuditEventData data = new AuditEventData(AuditEvents.SERVICE_AUDIT, null, this.getClass().getSimpleName());
+		assertTrue("Unknown".equals(data.getActivity()));
+
+		ReflectionTestUtils.setField(data, "activity", null);
+		assertNull(data.getActivity());
+
+		AuditLogger.info(data, "test");
+		verify(mockAppender).doAppend(captorLoggingEvent.capture());
+		final ch.qos.logback.classic.spi.LoggingEvent loggingEvent = captorLoggingEvent.getValue();
+		assertTrue("Unknown".equals(loggingEvent.getMDCPropertyMap().get("activity")));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void auditNullEventDataClass() {
+		AuditEventData data = new AuditEventData(AuditEvents.SERVICE_AUDIT, "test", null);
+		assertTrue("Unknown".equals(data.getAuditClass()));
+
+		ReflectionTestUtils.setField(data, "auditClass", null);
+		assertNull(data.getAuditClass());
+
+		AuditLogger.info(data, "test");
+		verify(mockAppender).doAppend(captorLoggingEvent.capture());
+		final ch.qos.logback.classic.spi.LoggingEvent loggingEvent = captorLoggingEvent.getValue();
+		assertTrue("Unknown".equals(loggingEvent.getMDCPropertyMap().get("audit_class")));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void auditNullEventDataUser() {
+		AuditEventData data = new AuditEventData(AuditEvents.SERVICE_AUDIT, "test", this.getClass().getSimpleName());
+		assertTrue("Unknown".equals(data.getUser()));
+
+		ReflectionTestUtils.setField(data, "user", null);
+		assertNull(data.getUser());
+
+		AuditLogger.info(data, "test");
+		verify(mockAppender).doAppend(captorLoggingEvent.capture());
+		final ch.qos.logback.classic.spi.LoggingEvent loggingEvent = captorLoggingEvent.getValue();
+		assertTrue("Unknown".equals(loggingEvent.getMDCPropertyMap().get("user")));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void auditNullEventDataTokenid() {
+		AuditEventData data = new AuditEventData(AuditEvents.SERVICE_AUDIT, "test", this.getClass().getSimpleName());
+		assertTrue(StringUtils.EMPTY.equals(data.getTokenId()));
+
+		ReflectionTestUtils.setField(data, "tokenId", "123456");
+		assertTrue(data.getTokenId().equals("123456"));
+
+		AuditLogger.info(data, "test");
+		verify(mockAppender).doAppend(captorLoggingEvent.capture());
+		final ch.qos.logback.classic.spi.LoggingEvent loggingEvent = captorLoggingEvent.getValue();
+		assertTrue("123456".equals(loggingEvent.getMDCPropertyMap().get("tokenId")));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
 	public void auditDebug() throws NoSuchMethodException, SecurityException {
 		// given
-		Method method = AuditLoggerTest.class.getMethod("auditDebug", null);
+		Method method = AuditLoggerTest.class.getMethod("auditDebug", (Class<?>[]) null);
 		AuditLogger.debug(new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
 				"Audit DEBUG Activity Detail");
 
@@ -97,7 +185,7 @@ public class AuditLoggerTest {
 	@Test
 	public void auditInfo() throws NoSuchMethodException, SecurityException {
 		// given
-		Method method = AuditLoggerTest.class.getMethod("auditInfo", null);
+		Method method = AuditLoggerTest.class.getMethod("auditInfo", (Class<?>[]) null);
 		AuditLogger.info(new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
 				"Audit INFO Activity Detail");
 
@@ -115,7 +203,7 @@ public class AuditLoggerTest {
 	@Test
 	public void auditWarn() throws NoSuchMethodException, SecurityException {
 		// given
-		Method method = AuditLoggerTest.class.getMethod("auditWarn", null);
+		Method method = AuditLoggerTest.class.getMethod("auditWarn", (Class<?>[]) null);
 		AuditLogger.warn(new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
 				"Audit WARN Activity Detail");
 
@@ -134,7 +222,7 @@ public class AuditLoggerTest {
 	@Test
 	public void auditError() throws NoSuchMethodException, SecurityException {
 		// given and when
-		Method method = AuditLoggerTest.class.getMethod("auditError", null);
+		Method method = AuditLoggerTest.class.getMethod("auditError", (Class<?>[]) null);
 		AuditLogger.error(new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
 				"Audit ERROR Activity Detail");
 
@@ -158,7 +246,7 @@ public class AuditLoggerTest {
 		Authentication auth = new UsernamePasswordAuthenticationToken(personTraits,
 				personTraits.getPassword(), personTraits.getAuthorities());
 		SecurityContextHolder.getContext().setAuthentication(auth);
-		Method method = AuditLoggerTest.class.getMethod("auditError", null);
+		Method method = AuditLoggerTest.class.getMethod("auditError", (Class<?>[]) null);
 		AuditLogger.error(
 				new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
 				"Audit ERROR Activity Detail");
@@ -179,7 +267,7 @@ public class AuditLoggerTest {
 		// docker max message size including JSON formatting and AuditEventData is 16374
 		String message = StringUtils.repeat("test ", 3275);
 
-		Method method = AuditLoggerTest.class.getMethod("largeMessage", null);
+		Method method = AuditLoggerTest.class.getMethod("largeMessage", (Class<?>[]) null);
 		AuditEventData eventData =
 				new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName());
 		AuditLogger.info(eventData, message);
@@ -192,7 +280,7 @@ public class AuditLoggerTest {
 		int captureCount = 0;
 
 		AscentBaseLogger logger = AscentLoggerFactory.getLogger(AscentLogger.ROOT_LOGGER_NAME);
-		if ((mdcReserveLength + messageLength + stackTraceLength) > MAX_TOTAL_LOG_LEN) {
+		if (mdcReserveLength + messageLength + stackTraceLength > MAX_TOTAL_LOG_LEN) {
 			if (messageLength >= gov.va.ascent.framework.log.AscentBaseLogger.MAX_MSG_LENGTH) {
 				String[] splitMessages = ReflectionTestUtils.invokeMethod(logger, "splitMessages", message);
 				captureCount = splitMessages.length;
@@ -200,7 +288,7 @@ public class AuditLoggerTest {
 				captureCount = 1;
 			}
 
-			if ((stackTraceLength >= gov.va.ascent.framework.log.AscentBaseLogger.MAX_STACK_TRACE_TEXT_LENGTH)) {
+			if (stackTraceLength >= gov.va.ascent.framework.log.AscentBaseLogger.MAX_STACK_TRACE_TEXT_LENGTH) {
 				String[] splitstackTrace = ReflectionTestUtils.invokeMethod(logger, "splitStackTraceText", stackTrace);
 				captureCount = captureCount + splitstackTrace.length;
 			} else if (stackTraceLength != 0) {
