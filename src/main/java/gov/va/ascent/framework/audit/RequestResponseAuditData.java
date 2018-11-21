@@ -149,11 +149,11 @@ public class RequestResponseAuditData implements Serializable {
 	@Override
 	public String toString() {
 		return "RequestResponseAuditData{" +
-				"headers=" + ReflectionToStringBuilder.toString(headers) +
-				", uri='" + uri + '\'' +
-				", method='" + method + '\'' +
-				", response=" + ReflectionToStringBuilder.toString(response) +
-				", request=" + ReflectionToStringBuilder.toString(request) +
+				"headers=" + (headers == null ? "" : ReflectionToStringBuilder.toString(headers)) +
+				", uri='" + uri + "\'" +
+				", method='" + method + "\'" +
+				", response=" + (response == null ? "" : ReflectionToStringBuilder.toString(response)) +
+				", request=" + (request == null ? "" : ReflectionToStringBuilder.toString(request)) +
 				'}';
 	}
 }
