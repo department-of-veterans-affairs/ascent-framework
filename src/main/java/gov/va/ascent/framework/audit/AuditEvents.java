@@ -14,5 +14,7 @@ public enum AuditEvents {
 	/** Audit event from within the service business tier */
 	SERVICE_AUDIT,
 	/** An audit rquest was made, but no event type was specified */
-	UNKNOWN
+	UNKNOWN,
+	/** Partner SOAP request event */
+	PARTNER_REQUEST
 }
