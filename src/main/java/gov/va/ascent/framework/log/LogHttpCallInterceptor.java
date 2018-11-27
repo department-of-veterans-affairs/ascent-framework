@@ -5,7 +5,7 @@ import org.springframework.ws.context.MessageContext;
 
 import gov.va.ascent.framework.audit.AuditEvents;
 
-public class LogHttpRequestInterceptor implements ClientInterceptor {
+public class LogHttpCallInterceptor implements ClientInterceptor {
 
 	public static final String CLIENT_REQUEST_MESSAGE_TEXT = "Client Request Message : ";
 	public static final String CLIENT_REPONSE_MESSAGE_TEXT = "Client Response Message : ";
@@ -21,7 +21,7 @@ public class LogHttpRequestInterceptor implements ClientInterceptor {
 
 	@Override
 	public boolean handleResponse(final MessageContext messageContext) {
-		HttpLoggingUtils.logMessage(CLIENT_REPONSE_MESSAGE_TEXT, messageContext.getRequest(), HANDLE_REPONSE_ACTIVITY_NAME,
+		HttpLoggingUtils.logMessage(CLIENT_REPONSE_MESSAGE_TEXT, messageContext.getResponse(), HANDLE_REPONSE_ACTIVITY_NAME,
 				this.getClass().getName(), AuditEvents.PARTNER_SOAP_RESPONSE);
 		return true;
 	}
