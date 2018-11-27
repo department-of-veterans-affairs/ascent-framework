@@ -16,5 +16,7 @@ public enum AuditEvents {
 	/** An audit rquest was made, but no event type was specified */
 	UNKNOWN,
 	/** Partner SOAP request event */
-	PARTNER_REQUEST
+	PARTNER_SOAP_REQUEST,
+	/** Partner SOAP response event */
+	PARTNER_SOAP_RESPONSE
 }

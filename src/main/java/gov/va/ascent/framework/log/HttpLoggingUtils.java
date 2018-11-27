@@ -28,13 +28,13 @@ public class HttpLoggingUtils {
 	}
 
 	public static void logMessage(final String id, final WebServiceMessage webServiceMessage, final String auditActivity,
-			final String auditClassName) {
+			final String auditClassName, AuditEvents auditEvent) {
 		try {
 			ByteArrayTransportOutputStream byteArrayTransportOutputStream = new ByteArrayTransportOutputStream();
 			webServiceMessage.writeTo(byteArrayTransportOutputStream);
 
 			String httpMessage = new String(byteArrayTransportOutputStream.toByteArray(), "ISO-8859-1");
-			AuditEventData auditEventData = new AuditEventData(AuditEvents.PARTNER_REQUEST, auditActivity, auditClassName);
+			AuditEventData auditEventData = new AuditEventData(auditEvent, auditActivity, auditClassName);
 			asyncLogging.asyncLogMessageAspectAuditData(auditEventData, NEW_LINE + "----------------------------" + NEW_LINE + id
 					+ NEW_LINE + "----------------------------" + NEW_LINE + httpMessage + NEW_LINE, MessageSeverity.INFO);
 		} catch (Exception e) {

@@ -18,6 +18,7 @@ import org.springframework.boot.test.rule.OutputCapture;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.ws.WebServiceMessage;
 
+import gov.va.ascent.framework.audit.AuditEvents;
 import gov.va.ascent.framework.log.HttpLoggingUtils.ByteArrayTransportOutputStream;
 
 @RunWith(SpringRunner.class)
@@ -53,7 +54,8 @@ public class HttpLoggingUtilsTest {
 			fail("Should not throw execption");
 		}
 
-		logMessage(TEST_STARTING_TEXT, request, TEST_SAMPLE_AUDIT_ACTIVITY, TEST_SAMPLE_AUDIT_CLASS_NAME);
+		logMessage(TEST_STARTING_TEXT, request, TEST_SAMPLE_AUDIT_ACTIVITY, TEST_SAMPLE_AUDIT_CLASS_NAME,
+				AuditEvents.PARTNER_SOAP_REQUEST);
 
 		try {
 			verify(request).writeTo(any(HttpLoggingUtils.ByteArrayTransportOutputStream.class));
@@ -70,7 +72,8 @@ public class HttpLoggingUtilsTest {
 
 	@Test
 	public void logMessageThrowingExceptionTest() {
-		logMessage(TEST_STARTING_TEXT, request, TEST_SAMPLE_AUDIT_ACTIVITY, TEST_SAMPLE_AUDIT_CLASS_NAME);
+		logMessage(TEST_STARTING_TEXT, request, TEST_SAMPLE_AUDIT_ACTIVITY, TEST_SAMPLE_AUDIT_CLASS_NAME,
+				AuditEvents.PARTNER_SOAP_REQUEST);
 
 		final String outString = outputCapture.toString();
 

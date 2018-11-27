@@ -1,5 +1,6 @@
 package gov.va.ascent.framework.log;
 
+import static gov.va.ascent.framework.log.LogHttpRequestInterceptor.CLIENT_REPONSE_MESSAGE_TEXT;
 import static gov.va.ascent.framework.log.LogHttpRequestInterceptor.CLIENT_REQUEST_MESSAGE_TEXT;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -52,7 +53,7 @@ public class LogHttpRequestInterceptorTest {
 		when(messageContext.getRequest()).thenReturn(request);
 
 		LogHttpRequestInterceptor interceptor = new LogHttpRequestInterceptor();
-		interceptor.handleRequest(messageContext);
+		assertTrue(interceptor.handleRequest(messageContext));
 
 		final String outString = outputCapture.toString();
 
@@ -62,8 +63,27 @@ public class LogHttpRequestInterceptorTest {
 
 	@Test
 	public void handleResponseTest() {
+
+		try {
+			doAnswer((Answer) invocation -> {
+				ByteArrayTransportOutputStream arg0 =
+						invocation.getArgumentAt(0, HttpLoggingUtils.ByteArrayTransportOutputStream.class);
+				arg0.write(TEST_SAMPLE_SOAP_MESSAGE.getBytes("UTF-8"));
+				return null;
+			}).when(request).writeTo(any(HttpLoggingUtils.ByteArrayTransportOutputStream.class));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			fail("Should not throw execption");
+		}
+		when(messageContext.getRequest()).thenReturn(request);
+
 		LogHttpRequestInterceptor interceptor = new LogHttpRequestInterceptor();
-		assertTrue(interceptor.handleResponse(messageContext));
+		assertTrue(interceptor.handleRequest(messageContext));
+
+		final String outString = outputCapture.toString();
+
+		assertTrue(outString.contains(CLIENT_REPONSE_MESSAGE_TEXT));
+		assertTrue(outString.contains(TEST_SAMPLE_SOAP_MESSAGE));
 	}
 
 	@Test
