@@ -1,24 +1,21 @@
 package gov.va.ascent.framework.rest.provider;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Test;
+import java.lang.reflect.Method;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import gov.va.ascent.framework.audit.AuditEventData;
 import gov.va.ascent.framework.audit.AuditEvents;
-
-import java.lang.reflect.Method;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BaseRestProviderAspectTest {
@@ -87,8 +84,7 @@ public class BaseRestProviderAspectTest {
 		assertEquals(expResult, result.getEvent());
 		assertEquals("someMethod", result.getActivity());
 		assertEquals("gov.va.ascent.framework.rest.provider.BaseRestProviderAspectTest", result.getAuditClass());
-		
-		
+
 	}
 
 	/**
@@ -113,8 +109,8 @@ public class BaseRestProviderAspectTest {
 		AuditEvents expResult = AuditEvents.REQUEST_RESPONSE;
 		AuditEventData result = BaseRestProviderAspect.getDefaultAuditableInstance(method);
 		assertEquals(expResult, result.getEvent());
-		assertEquals("", result.getActivity());
-		assertEquals("", result.getAuditClass());
+		assertEquals("Unknown", result.getActivity());
+		assertEquals("Unknown", result.getAuditClass());
 	}
 
 	public Method myMethod() throws NoSuchMethodException {

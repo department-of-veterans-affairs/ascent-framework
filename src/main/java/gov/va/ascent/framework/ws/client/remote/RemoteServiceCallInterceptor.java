@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,17 +18,9 @@ import gov.va.ascent.framework.audit.RequestResponseLogSerializer;
 import gov.va.ascent.framework.messages.MessageSeverity;
 
 /**
- * This is a custom performance logging interceptor which simply wraps a method (any method) and calculates elapsed time.
- *
- * This interceptor will create a org.apache.commons.logging.Log for the actual method intercepted and the execution time of the method
- * is logged at the info level if info level logging is enabled for that actual class.
- *
- * This method takes a configurable 'warningThreshhold', the number of milliseconds until performance is considered a "warning."
- * If/when the 'warningThreshhold' is exceeded the performance will be logged as at a warning level.
- *
+ * Audit log partner request/response data
+ * 
  * @see org.aopalliance.intercept.MethodInterceptor
- *
- * @author vanapalliv
  */
 @Component
 public class RemoteServiceCallInterceptor implements MethodInterceptor {
@@ -46,17 +39,26 @@ public class RemoteServiceCallInterceptor implements MethodInterceptor {
 	// CHECKSTYLE:OFF
 	public final Object invoke(final MethodInvocation methodInvocation) throws Throwable {
 		// CHECKSTYLE:ON
-		final RequestResponseAuditData requestResponseAuditData = new RequestResponseAuditData();
+
+		String paramtypesToLog = "";
+		for (Class<?> c : methodInvocation.getMethod().getParameterTypes()) {
+			paramtypesToLog += c.getName() + ", ";
+		}
+		paramtypesToLog = StringUtils.removeEnd(paramtypesToLog, ", ");
+		LOGGER.info("Intercepted: " + methodInvocation.getMethod().getDeclaringClass().getName()
+				+ "." + methodInvocation.getMethod().getName()
+				+ "(" + paramtypesToLog + ")");
+
 		Object[] args = methodInvocation.getArguments();
+		LOGGER.info("Number of Arguments : " + args.length + "; values: " + ReflectionToStringBuilder.toString(args));
+
+		final RequestResponseAuditData requestResponseAuditData = new RequestResponseAuditData();
+		requestResponseAuditData.setRequest(Arrays.asList(args));
+
 		AuditEventData auditEventData =
 				new AuditEventData(AuditEvents.PARTNER_REQUEST_RESPONSE, methodInvocation.getMethod().getName(),
 						methodInvocation.getMethod().getDeclaringClass().getSimpleName());
-		LOGGER.info("Number of Arguments : " + args.length);
-		for (int i = 0; i < args.length; i++) {
-			LOGGER.info(args[i].toString());
-		}
-		LOGGER.debug("Setting data to requestResponseAuditData");
-		requestResponseAuditData.setRequest(Arrays.asList(args));
+
 		Object retVal = "";
 		try {
 			retVal = methodInvocation.proceed();
@@ -64,18 +66,18 @@ public class RemoteServiceCallInterceptor implements MethodInterceptor {
 			/**
 			 * Catch; Audit Log and Rethrow exception
 			 */
-			String errMSg = e.getMessage() != null ? e.getMessage() : " null.";
+			String errMsg = e.getMessage() != null ? e.getMessage() : " null.";
 			LOGGER.error("Partner error: methodName {} " + methodInvocation.getMethod() + "; method args {} "
-					+ ReflectionToStringBuilder.toString(methodInvocation.getArguments()) + ".\n Message: " + errMSg, e);
-			asyncLogging.asyncLogMessageAspectAuditData(auditEventData, errMSg,
-					MessageSeverity.ERROR);
+					+ ReflectionToStringBuilder.toString(methodInvocation.getArguments()) + ".\n Message: " + errMsg, e);
+
+			asyncLogging.asyncLogMessageAspectAuditData(auditEventData, errMsg, MessageSeverity.ERROR);
 			throw e;
 		}
 
 		requestResponseAuditData.setResponse(retVal);
+
 		LOGGER.debug("Invoking asyncLogRequestResponseAspectAuditData");
-		asyncLogging.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData,
-				MessageSeverity.INFO);
+		asyncLogging.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData, MessageSeverity.INFO);
 		return retVal;
 	}
 

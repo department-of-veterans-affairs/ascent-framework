@@ -138,7 +138,7 @@ public class AscentBaseLogger {
 		} else {
 			// split message into MAX_MSG_OR_STACK_TRACE_LENGTH strings
 			List<String> listToReturn =
-					new ArrayList<String>(((stackTraceText.length() + MAX_STACK_TRACE_TEXT_LENGTH) - 1) / MAX_STACK_TRACE_TEXT_LENGTH);
+					new ArrayList<>(((stackTraceText.length() + MAX_STACK_TRACE_TEXT_LENGTH) - 1) / MAX_STACK_TRACE_TEXT_LENGTH);
 
 			for (int start = 0; start < stackTraceText.length(); start += MAX_STACK_TRACE_TEXT_LENGTH) {
 				listToReturn
@@ -169,21 +169,13 @@ public class AscentBaseLogger {
 		int mdcReserveLength = MDC_RESERVE_LENGTH;
 
 		if ((mdcReserveLength + messageLength + stackTraceLength) > MAX_TOTAL_LOG_LEN) {
+			int seq = 0;
 			boolean shouldStackTraceBePrinted = stackTraceLength != 0;
 			if (messageLength >= MAX_MSG_LENGTH) {
-				int seq = 0;
-				String[] splitMessages = splitMessages(safeMessage);
-				for (String part : splitMessages) {
-					MDC.put(SPLIT_MDC_NAME, Integer.toString(++seq));
-					if (shouldStackTraceBePrinted) {
-						// manually add an MDC put "stack_trace", string
-						MDC.put(STACK_TRACE_MDC_NAME, "stack trace will be printed in successive split logs");
-					}
-					// throwable arg will be null if the stack trace needs to be split to another split log message
-					this.sendLogAtLevel(level, marker, part, null);
-				}
+				seq = splitAndSendLargeMessage(level, marker, safeMessage, seq, shouldStackTraceBePrinted);
 			} else {
 				if (shouldStackTraceBePrinted) {
+					MDC.put(SPLIT_MDC_NAME, Integer.toString(++seq));
 					// manually add a MDC put "stack_trace", string
 					MDC.put(STACK_TRACE_MDC_NAME, "stack trace will be printed in successive split logs");
 				}
@@ -194,22 +186,44 @@ public class AscentBaseLogger {
 
 			String messageStub = "message is already printed in previous split logs";
 			if (stackTraceLength >= MAX_STACK_TRACE_TEXT_LENGTH) {
-				int seq = 0;
-				String[] splitstackTrace = splitStackTraceText(stackTrace);
-				for (String part : splitstackTrace) {
-					MDC.put(SPLIT_MDC_NAME, Integer.toString(++seq));
-					// manually add an MDC put "stack_trace", string
-					MDC.put(STACK_TRACE_MDC_NAME, part);
-					// throwable arg will be null if the stack trace needs to be split to another split log message
-					this.sendLogAtLevel(level, marker, messageStub, null);
-				}
+				splitAndSendLargeStackTrace(level, marker, stackTrace, seq, messageStub);
 			} else if (shouldStackTraceBePrinted) {
+				MDC.put(SPLIT_MDC_NAME, Integer.toString(++seq));
 				this.sendLogAtLevel(level, marker, messageStub, t);
 			}
 
 		} else {
 			this.sendLogAtLevel(level, marker, safeMessage, t);
 		}
+	}
+
+	private void splitAndSendLargeStackTrace(final Level level, final Marker marker, final String stackTrace, final int seq,
+			final String messageStub) {
+		String[] splitstackTrace = splitStackTraceText(stackTrace);
+		int currentSequenceNumber = seq;
+		for (String part : splitstackTrace) {
+			MDC.put(SPLIT_MDC_NAME, Integer.toString(++currentSequenceNumber));
+			// manually add an MDC put "stack_trace", string
+			MDC.put(STACK_TRACE_MDC_NAME, part);
+			// throwable arg will be null if the stack trace needs to be split to another split log message
+			this.sendLogAtLevel(level, marker, messageStub, null);
+		}
+	}
+
+	private int splitAndSendLargeMessage(final Level level, final Marker marker, final String safeMessage, final int seq,
+			final boolean shouldStackTraceBePrinted) {
+		String[] splitMessages = splitMessages(safeMessage);
+		int currentSequenceNumber = seq;
+		for (String part : splitMessages) {
+			MDC.put(SPLIT_MDC_NAME, Integer.toString(++currentSequenceNumber));
+			if (shouldStackTraceBePrinted) {
+				// manually add an MDC put "stack_trace", string
+				MDC.put(STACK_TRACE_MDC_NAME, "stack trace will be printed in successive split logs");
+			}
+			// throwable arg will be null if the stack trace needs to be split to another split log message
+			this.sendLogAtLevel(level, marker, part, null);
+		}
+		return currentSequenceNumber;
 	}
 
 	/**

@@ -92,7 +92,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	}
 
 	/**
-	 * Log annotated method request response.
+	 * Advice to log method requests/responses that are annotated with @Auditable.
 	 *
 	 * @param joinPoint
 	 *            the join point
@@ -125,7 +125,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	}
 
 	/**
-	 * Around advice executes around the pointcut.
+	 * Around advice to log Audits for REST request/response objects, and alter HTTP response codes.
 	 *
 	 * @param joinPoint the join point
 	 * @return the response entity
