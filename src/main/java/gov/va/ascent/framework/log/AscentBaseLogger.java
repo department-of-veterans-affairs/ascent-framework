@@ -210,8 +210,6 @@ public class AscentBaseLogger {
 		} else {
 			this.sendLogAtLevel(level, marker, safeMessage, t);
 		}
-
-		MDC.clear();
 	}
 
 	/**
