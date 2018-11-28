@@ -1,7 +1,5 @@
 package gov.va.ascent.framework.log;
 
-import static gov.va.ascent.framework.log.LogHttpCallInterceptor.CLIENT_REPONSE_MESSAGE_TEXT;
-import static gov.va.ascent.framework.log.LogHttpCallInterceptor.CLIENT_REQUEST_MESSAGE_TEXT;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -57,7 +55,6 @@ public class LogHttpCallInterceptorTest {
 
 		final String outString = outputCapture.toString();
 
-		assertTrue(outString.contains(CLIENT_REQUEST_MESSAGE_TEXT));
 		assertTrue(outString.contains(TEST_SAMPLE_SOAP_MESSAGE));
 	}
 
@@ -82,7 +79,6 @@ public class LogHttpCallInterceptorTest {
 
 		final String outString = outputCapture.toString();
 
-		assertTrue(outString.contains(CLIENT_REPONSE_MESSAGE_TEXT));
 		assertTrue(outString.contains(TEST_SAMPLE_SOAP_MESSAGE));
 	}
 
