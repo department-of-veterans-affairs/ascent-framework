@@ -195,8 +195,6 @@ public class AscentBaseLogger {
 		} else {
 			this.sendLogAtLevel(level, marker, safeMessage, t);
 		}
-
-		MDC.clear();
 	}
 
 	private void splitAndSendLargeStackTrace(final Level level, final Marker marker, final String stackTrace, final int seq,
