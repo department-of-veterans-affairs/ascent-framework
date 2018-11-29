@@ -12,15 +12,11 @@ public class LogHttpCallInterceptor implements ClientInterceptor {
 
 	@Override
 	public boolean handleRequest(final MessageContext messageContext) {
-		HttpLoggingUtils.logMessage(messageContext.getRequest(), HANDLE_REQUEST_ACTIVITY_NAME, this.getClass().getName(),
-				AuditEvents.PARTNER_SOAP_REQUEST);
 		return true;
 	}
 
 	@Override
 	public boolean handleResponse(final MessageContext messageContext) {
-		HttpLoggingUtils.logMessage(messageContext.getResponse(), HANDLE_REPONSE_ACTIVITY_NAME, this.getClass().getName(),
-				AuditEvents.PARTNER_SOAP_RESPONSE);
 		return true;
 	}
 
@@ -31,7 +27,10 @@ public class LogHttpCallInterceptor implements ClientInterceptor {
 
 	@Override
 	public void afterCompletion(final MessageContext messageContext, final Exception ex) {
-		// nothing to do after completion
+		HttpLoggingUtils.logMessage(messageContext.getRequest(), HANDLE_REQUEST_ACTIVITY_NAME, this.getClass().getName(),
+				AuditEvents.PARTNER_SOAP_REQUEST);
+		HttpLoggingUtils.logMessage(messageContext.getResponse(), HANDLE_REPONSE_ACTIVITY_NAME, this.getClass().getName(),
+				AuditEvents.PARTNER_SOAP_RESPONSE);
 	}
 
 }
