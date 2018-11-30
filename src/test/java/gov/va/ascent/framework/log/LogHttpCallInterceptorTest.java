@@ -22,6 +22,8 @@ import gov.va.ascent.framework.log.HttpLoggingUtils.ByteArrayTransportOutputStre
 @RunWith(SpringRunner.class)
 public class LogHttpCallInterceptorTest {
 
+	private static final String TEST_TITLE_STRING = "Test title";
+
 	private static final String TEST_SAMPLE_SOAP_MESSAGE = "test sample soap message";
 
 	/** The output capture. */
@@ -36,19 +38,19 @@ public class LogHttpCallInterceptorTest {
 
 	@Test
 	public void handleRequestTest() {
-		LogHttpCallInterceptor interceptor = new LogHttpCallInterceptor();
+		LogHttpCallInterceptor interceptor = new LogHttpCallInterceptor(TEST_TITLE_STRING);
 		assertTrue(interceptor.handleRequest(messageContext));
 	}
 
 	@Test
 	public void handleResponseTest() {
-		LogHttpCallInterceptor interceptor = new LogHttpCallInterceptor();
+		LogHttpCallInterceptor interceptor = new LogHttpCallInterceptor(TEST_TITLE_STRING);
 		assertTrue(interceptor.handleResponse(messageContext));
 	}
 
 	@Test
 	public void handleFaultTest() {
-		LogHttpCallInterceptor interceptor = new LogHttpCallInterceptor();
+		LogHttpCallInterceptor interceptor = new LogHttpCallInterceptor(TEST_TITLE_STRING);
 		assertTrue(interceptor.handleFault(messageContext));
 	}
 
@@ -79,11 +81,12 @@ public class LogHttpCallInterceptorTest {
 		}
 
 		when(messageContext.getRequest()).thenReturn(message);
-		LogHttpCallInterceptor interceptor = new LogHttpCallInterceptor();
+		LogHttpCallInterceptor interceptor = new LogHttpCallInterceptor(TEST_TITLE_STRING);
 		interceptor.afterCompletion(messageContext, null);
 
 		final String outString = outputCapture.toString();
 
+		assertTrue(outString.contains(TEST_TITLE_STRING));
 		assertTrue(outString.contains(TEST_SAMPLE_SOAP_MESSAGE));
 	}
 

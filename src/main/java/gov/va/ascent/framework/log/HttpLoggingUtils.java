@@ -27,15 +27,16 @@ public class HttpLoggingUtils {
 	private HttpLoggingUtils() {
 	}
 
-	public static void logMessage(final WebServiceMessage webServiceMessage, final String auditActivity, final String auditClassName,
-			final AuditEvents auditEvent) {
+	public static void logMessage(final String title, final WebServiceMessage webServiceMessage, final String auditActivity,
+			final String auditClassName, AuditEvents auditEvent) {
 		try {
 			ByteArrayTransportOutputStream byteArrayTransportOutputStream = new ByteArrayTransportOutputStream();
 			webServiceMessage.writeTo(byteArrayTransportOutputStream);
 
 			String httpMessage = new String(byteArrayTransportOutputStream.toByteArray(), "ISO-8859-1");
 			AuditEventData auditEventData = new AuditEventData(auditEvent, auditActivity, auditClassName);
-			asyncLogging.asyncLogMessageAspectAuditData(auditEventData, NEW_LINE + httpMessage + NEW_LINE, MessageSeverity.INFO);
+			asyncLogging.asyncLogMessageAspectAuditData(auditEventData, NEW_LINE + title +
+					" : " + NEW_LINE + httpMessage + NEW_LINE, MessageSeverity.INFO);
 		} catch (Exception e) {
 			LOGGER.error(UNABLE_TO_LOG_HTTP_MESSAGE_TEXT, e);
 		}

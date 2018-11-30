@@ -7,6 +7,13 @@ import gov.va.ascent.framework.audit.AuditEvents;
 
 public class LogHttpCallInterceptor implements ClientInterceptor {
 
+	private String title = "";
+
+	public LogHttpCallInterceptor(final String title) {
+		super();
+		this.title = title;
+	}
+
 	private static final String HANDLE_REQUEST_ACTIVITY_NAME = "handleRequest";
 	private static final String HANDLE_REPONSE_ACTIVITY_NAME = "handleResponse";
 
@@ -27,9 +34,9 @@ public class LogHttpCallInterceptor implements ClientInterceptor {
 
 	@Override
 	public void afterCompletion(final MessageContext messageContext, final Exception ex) {
-		HttpLoggingUtils.logMessage(messageContext.getRequest(), HANDLE_REQUEST_ACTIVITY_NAME, this.getClass().getName(),
+		HttpLoggingUtils.logMessage(title, messageContext.getRequest(), HANDLE_REQUEST_ACTIVITY_NAME, this.getClass().getName(),
 				AuditEvents.PARTNER_SOAP_REQUEST);
-		HttpLoggingUtils.logMessage(messageContext.getResponse(), HANDLE_REPONSE_ACTIVITY_NAME, this.getClass().getName(),
+		HttpLoggingUtils.logMessage(title, messageContext.getResponse(), HANDLE_REPONSE_ACTIVITY_NAME, this.getClass().getName(),
 				AuditEvents.PARTNER_SOAP_RESPONSE);
 	}
 

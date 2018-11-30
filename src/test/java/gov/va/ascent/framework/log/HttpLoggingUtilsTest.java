@@ -30,6 +30,8 @@ public class HttpLoggingUtilsTest {
 
 	private static final String TEST_SAMPLE_SOAP_MESSAGE = "test sample soap message";
 
+	private static final String TEST_STARTING_TEXT = "Test starting text";
+
 	/** The output capture. */
 	@Rule
 	public OutputCapture outputCapture = new OutputCapture();
@@ -52,7 +54,8 @@ public class HttpLoggingUtilsTest {
 			fail("Should not throw execption");
 		}
 
-		logMessage(request, TEST_SAMPLE_AUDIT_ACTIVITY, TEST_SAMPLE_AUDIT_CLASS_NAME, AuditEvents.PARTNER_SOAP_REQUEST);
+		logMessage(TEST_STARTING_TEXT, request, TEST_SAMPLE_AUDIT_ACTIVITY, TEST_SAMPLE_AUDIT_CLASS_NAME,
+				AuditEvents.PARTNER_SOAP_REQUEST);
 
 		try {
 			verify(request).writeTo(any(HttpLoggingUtils.ByteArrayTransportOutputStream.class));
@@ -62,13 +65,15 @@ public class HttpLoggingUtilsTest {
 
 		final String outString = outputCapture.toString();
 
+		assertTrue(outString.contains(TEST_STARTING_TEXT));
 		assertTrue(outString.contains(TEST_SAMPLE_SOAP_MESSAGE));
 
 	}
 
 	@Test
 	public void logMessageThrowingExceptionTest() {
-		logMessage(request, TEST_SAMPLE_AUDIT_ACTIVITY, TEST_SAMPLE_AUDIT_CLASS_NAME, AuditEvents.PARTNER_SOAP_REQUEST);
+		logMessage(TEST_STARTING_TEXT, request, TEST_SAMPLE_AUDIT_ACTIVITY, TEST_SAMPLE_AUDIT_CLASS_NAME,
+				AuditEvents.PARTNER_SOAP_REQUEST);
 
 		final String outString = outputCapture.toString();
 
