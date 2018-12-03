@@ -7,15 +7,15 @@ import gov.va.ascent.framework.audit.AuditEvents;
 
 public class LogHttpCallInterceptor implements ClientInterceptor {
 
+	private static final String HANDLE_REQUEST_ACTIVITY_NAME = "handleRequest";
+	private static final String HANDLE_REPONSE_ACTIVITY_NAME = "handleResponse";
+
 	private String title = "";
 
 	public LogHttpCallInterceptor(final String title) {
 		super();
 		this.title = title;
 	}
-
-	private static final String HANDLE_REQUEST_ACTIVITY_NAME = "handleRequest";
-	private static final String HANDLE_REPONSE_ACTIVITY_NAME = "handleResponse";
 
 	@Override
 	public boolean handleRequest(final MessageContext messageContext) {
