@@ -40,11 +40,11 @@ public class RequestResponseLogSerializer {
 	 * org.springframework.cloud.sleuth.instrument.async.TraceAsyncAspect.traceBackgroundThread(org.aspectj.lang.ProceedingJoinPoint)
 	 *
 	 * @param auditEventData Data specific to the audit event
-	 * @param requestResponseAuditData The request and response audit data
+	 * @param auditData The request and response audit data
 	 */
 	@Async
-	public void asyncLogRequestResponseAspectAuditData(
-			AuditEventData auditEventData, RequestResponseAuditData requestResponseAuditData, MessageSeverity messageSeverity) {
+	public void asyncLogRequestResponseAspectAuditData(final AuditEventData auditEventData, final AuditableData auditData,
+			final Class auditDataClass, final MessageSeverity messageSeverity) {
 
 		String auditDetails;
 		try {
@@ -60,10 +60,10 @@ public class RequestResponseLogSerializer {
 			mapper.disable(DeserializationFeature.FAIL_ON_UNRESOLVED_OBJECT_IDS);
 			mapper.disable(DeserializationFeature.FAIL_ON_NULL_CREATOR_PROPERTIES);
 
-			auditDetails = mapper.writeValueAsString(requestResponseAuditData);
+			auditDetails = mapper.writeValueAsString(auditDataClass.cast(auditData));
 		} catch (JsonProcessingException ex) {
 			LOGGER.error("Error occurred on JSON processing, calling custom toString()", ex);
-			auditDetails = requestResponseAuditData.toString();
+			auditDetails = auditDataClass.cast(auditData).toString();
 		}
 
 		if (messageSeverity.equals(MessageSeverity.ERROR) || messageSeverity.equals(MessageSeverity.FATAL)) {

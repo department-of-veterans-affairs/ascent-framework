@@ -13,8 +13,9 @@ import org.springframework.stereotype.Component;
 
 import gov.va.ascent.framework.audit.AuditEventData;
 import gov.va.ascent.framework.audit.AuditEvents;
-import gov.va.ascent.framework.audit.RequestResponseAuditData;
+import gov.va.ascent.framework.audit.RequestAuditData;
 import gov.va.ascent.framework.audit.RequestResponseLogSerializer;
+import gov.va.ascent.framework.audit.ResponseAuditData;
 import gov.va.ascent.framework.messages.MessageSeverity;
 
 /**
@@ -52,12 +53,14 @@ public class RemoteServiceCallInterceptor implements MethodInterceptor {
 		Object[] args = methodInvocation.getArguments();
 		LOGGER.info("Number of Arguments : " + args.length + "; values: " + ReflectionToStringBuilder.toString(args));
 
-		final RequestResponseAuditData requestResponseAuditData = new RequestResponseAuditData();
-		requestResponseAuditData.setRequest(Arrays.asList(args));
+		final RequestAuditData requestAuditData = new RequestAuditData();
+		requestAuditData.setRequest(Arrays.asList(args));
 
-		AuditEventData auditEventData =
-				new AuditEventData(AuditEvents.PARTNER_REQUEST_RESPONSE, methodInvocation.getMethod().getName(),
-						methodInvocation.getMethod().getDeclaringClass().getSimpleName());
+		LOGGER.debug("Invoking asyncLogRequestResponseAspectAuditData");
+		AuditEventData auditEventData = new AuditEventData(AuditEvents.PARTNER_SOAP_REQUEST, methodInvocation.getMethod().getName(),
+				methodInvocation.getMethod().getDeclaringClass().getSimpleName());
+		asyncLogging.asyncLogRequestResponseAspectAuditData(auditEventData, requestAuditData, RequestAuditData.class,
+				MessageSeverity.INFO);
 
 		Object retVal = "";
 		try {
@@ -74,10 +77,14 @@ public class RemoteServiceCallInterceptor implements MethodInterceptor {
 			throw e;
 		}
 
-		requestResponseAuditData.setResponse(retVal);
+		final ResponseAuditData resonseAuditData = new ResponseAuditData();
+		resonseAuditData.setResponse(retVal);
 
 		LOGGER.debug("Invoking asyncLogRequestResponseAspectAuditData");
-		asyncLogging.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData, MessageSeverity.INFO);
+		auditEventData = new AuditEventData(AuditEvents.PARTNER_SOAP_RESPONSE, methodInvocation.getMethod().getName(),
+				methodInvocation.getMethod().getDeclaringClass().getSimpleName());
+		asyncLogging.asyncLogRequestResponseAspectAuditData(auditEventData, resonseAuditData, ResponseAuditData.class,
+				MessageSeverity.INFO);
 		return retVal;
 	}
 

@@ -7,6 +7,10 @@ package gov.va.ascent.framework.audit;
 public enum AuditEvents {
 	/** REST request / response event */
 	REQUEST_RESPONSE,
+	/** REST request event */
+	REST_REQUEST,
+	/** REST response event */
+	REST_RESPONSE,
 	/** Security interceptor or similar event */
 	SECURITY,
 	/** Partner SOAP request / response event */
