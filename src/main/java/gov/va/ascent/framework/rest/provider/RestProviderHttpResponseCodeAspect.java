@@ -94,7 +94,8 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	}
 
 	/**
-	 * Advice to log method requests/responses that are annotated with @Auditable.
+	 * Advice to log methods that are annotated with @Auditable. Separately logs the call to the method and its arguments, and the
+	 * response from the method.
 	 *
 	 * @param joinPoint
 	 *            the join point
@@ -115,15 +116,16 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 			AuditEventData auditEventData;
 			if (auditableAnnotation != null) {
 				auditEventData =
-						new AuditEventData(AuditEvents.REST_REQUEST, auditableAnnotation.activity(), auditableAnnotation.auditClass());
+						new AuditEventData(auditableAnnotation.event(), auditableAnnotation.activity(),
+								auditableAnnotation.auditClass());
 
 				writeRequestAudit(request, auditEventData, MessageSeverity.INFO);
 			}
 
 			response = joinPoint.proceed();
 
-			if ((auditableAnnotation != null) && AuditEvents.REQUEST_RESPONSE.equals(auditableAnnotation.event())) {
-				auditEventData = new AuditEventData(AuditEvents.REST_RESPONSE, auditableAnnotation.activity(),
+			if (auditableAnnotation != null) {
+				auditEventData = new AuditEventData(auditableAnnotation.event(), auditableAnnotation.activity(),
 						auditableAnnotation.auditClass());
 				writeResponseAudit(response, auditEventData, MessageSeverity.INFO);
 			}
@@ -134,7 +136,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	}
 
 	/**
-	 * Around advice to log Audits for REST request/response objects, and alter HTTP response codes.
+	 * Around advice to separately log Audits for REST request object and response object, and alter HTTP response codes.
 	 *
 	 * @param joinPoint the join point
 	 * @return the response entity
@@ -177,7 +179,6 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 
 			responseObject = joinPoint.proceed();
 
-
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Response Object: {}", responseObject);
 			}
@@ -193,8 +194,8 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 			final HttpStatus ruleStatus = rulesEngine.messagesToHttpStatus(serviceResponse.getMessages());
 
 			auditEventData = new AuditEventData(AuditEvents.REST_RESPONSE, method.getName(), method.getDeclaringClass().getName());
-			if ((ruleStatus != null) && ((HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.SERVER_ERROR)
-					|| (HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.CLIENT_ERROR))) {
+			if (ruleStatus != null && (HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.SERVER_ERROR
+					|| HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.CLIENT_ERROR)) {
 				LOGGER.debug("HttpStatus {}", ruleStatus.value());
 				writeResponseAudit(responseObject, auditEventData, MessageSeverity.ERROR);
 
@@ -357,7 +358,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 
 		LOGGER.debug("Content Type: {}", SanitizationUtil.stripXSS(contentType));
 
-		if ((contentType != null) && (contentType.toLowerCase(Locale.ENGLISH).startsWith(MediaType.MULTIPART_FORM_DATA_VALUE)
+		if (contentType != null && (contentType.toLowerCase(Locale.ENGLISH).startsWith(MediaType.MULTIPART_FORM_DATA_VALUE)
 				|| contentType.toLowerCase(Locale.ENGLISH).startsWith("multipart/mixed"))) {
 			final List<String> attachmentTextList = new ArrayList<>();
 			InputStream inputstream = null;
