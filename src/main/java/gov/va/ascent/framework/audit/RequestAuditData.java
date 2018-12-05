@@ -10,13 +10,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
- * @author npaulus
- *         The purpose of this class is to collect the audit data for a request and response before serializing it to the logs.
+ * The purpose of this class is to collect the audit data for a request before serializing it to the logs.
  */
 @JsonInclude(Include.NON_NULL)
-public class RequestResponseAuditData implements Serializable {
+public class RequestAuditData implements Serializable, AuditableData {
 
-	private static final long serialVersionUID = -4623810801622309487L;
+	private static final long serialVersionUID = -6346123934909781965L;
 
 	/* A map of the http headers on the request. */
 	private Map<String, String> headers;
@@ -27,31 +26,10 @@ public class RequestResponseAuditData implements Serializable {
 	/* The http method. */
 	private String method;
 
-	/* The response. */
-	private transient Object response;
-
 	/* The request. */
 	private transient List<Object> request;
 
 	private List<String> attachmentTextList;
-
-	/**
-	 * Gets the response.
-	 *
-	 * @return
-	 */
-	public Object getResponse() {
-		return response;
-	}
-
-	/**
-	 * Sets the response.
-	 *
-	 * @param response
-	 */
-	public void setResponse(Object response) {
-		this.response = response;
-	}
 
 	/**
 	 * Gets the http headers.
@@ -67,7 +45,7 @@ public class RequestResponseAuditData implements Serializable {
 	 *
 	 * @param headers
 	 */
-	public void setHeaders(Map<String, String> headers) {
+	public void setHeaders(final Map<String, String> headers) {
 		this.headers = headers;
 	}
 
@@ -85,7 +63,7 @@ public class RequestResponseAuditData implements Serializable {
 	 *
 	 * @param uri
 	 */
-	public void setUri(String uri) {
+	public void setUri(final String uri) {
 		this.uri = uri;
 	}
 
@@ -103,7 +81,7 @@ public class RequestResponseAuditData implements Serializable {
 	 *
 	 * @param method
 	 */
-	public void setMethod(String method) {
+	public void setMethod(final String method) {
 		this.method = method;
 	}
 
@@ -121,7 +99,7 @@ public class RequestResponseAuditData implements Serializable {
 	 *
 	 * @param request
 	 */
-	public void setRequest(List<Object> request) {
+	public void setRequest(final List<Object> request) {
 		this.request = request;
 	}
 
@@ -139,7 +117,7 @@ public class RequestResponseAuditData implements Serializable {
 	 *
 	 * @param attachmentTextList
 	 */
-	public void setAttachmentTextList(List<String> attachmentTextList) {
+	public void setAttachmentTextList(final List<String> attachmentTextList) {
 		this.attachmentTextList = attachmentTextList;
 	}
 
@@ -148,12 +126,8 @@ public class RequestResponseAuditData implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "RequestResponseAuditData{" +
-				"headers=" + (headers == null ? "" : ReflectionToStringBuilder.toString(headers)) +
-				", uri='" + uri + "\'" +
-				", method='" + method + "\'" +
-				", response=" + (response == null ? "" : ReflectionToStringBuilder.toString(response)) +
-				", request=" + (request == null ? "" : ReflectionToStringBuilder.toString(request)) +
-				'}';
+		return "RequestAuditData{" + "headers=" + (headers == null ? "" : ReflectionToStringBuilder.toString(headers)) + ", uri='"
+				+ uri + "\'" + ", method='" + method + "\'" + ", request="
+				+ (request == null ? "" : ReflectionToStringBuilder.toString(request)) + '}';
 	}
 }

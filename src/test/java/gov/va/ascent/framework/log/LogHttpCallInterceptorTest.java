@@ -68,19 +68,8 @@ public class LogHttpCallInterceptorTest {
 			fail("Should not throw execption");
 		}
 
-		try {
-			doAnswer((Answer) invocation -> {
-				ByteArrayTransportOutputStream arg0 =
-						invocation.getArgumentAt(0, HttpLoggingUtils.ByteArrayTransportOutputStream.class);
-				arg0.write(TEST_SAMPLE_SOAP_MESSAGE.getBytes("UTF-8"));
-				return null;
-			}).when(message).writeTo(any(HttpLoggingUtils.ByteArrayTransportOutputStream.class));
-		} catch (IOException e1) {
-			e1.printStackTrace();
-			fail("Should not throw execption");
-		}
-
 		when(messageContext.getRequest()).thenReturn(message);
+		when(messageContext.getResponse()).thenReturn(message);
 		LogHttpCallInterceptor interceptor = new LogHttpCallInterceptor(TEST_TITLE_STRING);
 		interceptor.afterCompletion(messageContext, null);
 

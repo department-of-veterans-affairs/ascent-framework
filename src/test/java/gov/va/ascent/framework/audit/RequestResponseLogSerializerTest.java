@@ -36,7 +36,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gov.va.ascent.framework.audit.AuditEventData;
 import gov.va.ascent.framework.audit.AuditEvents;
-import gov.va.ascent.framework.audit.RequestResponseAuditData;
 import gov.va.ascent.framework.audit.RequestResponseLogSerializer;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
@@ -62,23 +61,24 @@ public class RequestResponseLogSerializerTest {
 
 	AuditEventData auditServiceEventData = new AuditEventData(AuditEvents.SERVICE_AUDIT, "MethodName", "ClassName");
 
-	RequestResponseAuditData requestResponseAuditData = new RequestResponseAuditData();
+	RequestAuditData requestAuditData = new RequestAuditData();
+
+	ResponseAuditData responseAuditData = new ResponseAuditData();
 
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() throws Exception {
 		AscentLoggerFactory.getLogger(AscentLogger.ROOT_LOGGER_NAME).getLoggerBoundImpl().addAppender(mockAppender);
 
-		requestResponseAuditData.setRequest(Arrays.asList("Request"));
-		requestResponseAuditData.setResponse("Response");
-		requestResponseAuditData.setMethod("GET");
-		requestResponseAuditData.setUri("/");
-		requestResponseAuditData.setAttachmentTextList(new ArrayList<String>(Arrays.asList("attachment1", "attachment2")));
+		requestAuditData.setRequest(Arrays.asList("Request"));
+		requestAuditData.setMethod("GET");
+		requestAuditData.setUri("/");
+		requestAuditData.setAttachmentTextList(new ArrayList<String>(Arrays.asList("attachment1", "attachment2")));
 		Map<String, String> headers = new HashMap<>();
-
 		headers.put("Header1", "Header1Value");
-		requestResponseAuditData.setHeaders(headers);
+		requestAuditData.setHeaders(headers);
 
+		responseAuditData.setResponse("Response");
 		mapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
 		ReflectionTestUtils.setField(requestResponseLogSerializer, "dateFormat", "yyyy-MM-dd'T'HH:mm:ss");
 	}
@@ -92,28 +92,33 @@ public class RequestResponseLogSerializerTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testJson() throws Exception {
-		requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData,
+		requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, requestAuditData, RequestAuditData.class,
 				MessageSeverity.INFO);
-		verify(mockAppender, times(1)).doAppend(captorLoggingEvent.capture());
+		requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, responseAuditData, ResponseAuditData.class,
+				MessageSeverity.INFO);
+		verify(mockAppender, times(2)).doAppend(captorLoggingEvent.capture());
 		final List<ch.qos.logback.classic.spi.LoggingEvent> loggingEvents = captorLoggingEvent.getAllValues();
-		final String expected = String.valueOf(JsonStringEncoder.getInstance().quoteAsString(
-				"{\"headers\":{\"Header1\":\"Header1Value\"},\"uri\":\"/\",\"method\":\"GET\",\"response\":\"Response\",\"request\":[\"Request\"],\"attachmentTextList\":[\"attachment1\",\"attachment2\"]}"));
-		assertEquals(expected, loggingEvents.get(0).getMessage());
+		final String expectedRequest = String.valueOf(JsonStringEncoder.getInstance().quoteAsString(
+				"{\"headers\":{\"Header1\":\"Header1Value\"},\"uri\":\"/\",\"method\":\"GET\",\"request\":[\"Request\"],\"attachmentTextList\":[\"attachment1\",\"attachment2\"]}"));
+		final String expectedResponse = String.valueOf(JsonStringEncoder.getInstance().quoteAsString("{\"response\":\"Response\"}"));
+		assertEquals(expectedRequest, loggingEvents.get(0).getMessage());
 		assertThat(loggingEvents.get(0).getLevel(), is(ch.qos.logback.classic.Level.INFO));
+		assertEquals(expectedResponse, loggingEvents.get(1).getMessage());
+		assertThat(loggingEvents.get(1).getLevel(), is(ch.qos.logback.classic.Level.INFO));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testJsonException() throws Exception {
 		when(mapper.writeValueAsString(any())).thenThrow(JsonProcessingException.class);
-		requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData,
+		requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, requestAuditData, RequestAuditData.class,
 				MessageSeverity.INFO);
 		verify(mockAppender, times(2)).doAppend(captorLoggingEvent.capture());
 		final List<ch.qos.logback.classic.spi.LoggingEvent> loggingEvents = captorLoggingEvent.getAllValues();
 		assertTrue(loggingEvents.get(0).getMessage().startsWith("Error occurred on JSON processing, calling"));
 		assertThat(loggingEvents.get(0).getLevel(), is(ch.qos.logback.classic.Level.ERROR));
-		assertTrue(loggingEvents.get(1).getMessage() != null && loggingEvents.get(1).getMessage().startsWith(
-				"RequestResponseAuditData{headers="));
+		assertTrue((loggingEvents.get(1).getMessage() != null)
+				&& loggingEvents.get(1).getMessage().startsWith("RequestAuditData{headers="));
 		assertThat(loggingEvents.get(1).getLevel(), is(ch.qos.logback.classic.Level.INFO));
 
 	}
@@ -122,14 +127,14 @@ public class RequestResponseLogSerializerTest {
 	@Test
 	public void testJsonExceptionError() throws Exception {
 		when(mapper.writeValueAsString(any())).thenThrow(JsonProcessingException.class);
-		requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData,
+		requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, requestAuditData, RequestAuditData.class,
 				MessageSeverity.ERROR);
 		verify(mockAppender, times(2)).doAppend(captorLoggingEvent.capture());
 		final List<ch.qos.logback.classic.spi.LoggingEvent> loggingEvents = captorLoggingEvent.getAllValues();
 		assertTrue(loggingEvents.get(0).getMessage().startsWith("Error occurred on JSON processing, calling"));
 		assertThat(loggingEvents.get(0).getLevel(), is(ch.qos.logback.classic.Level.ERROR));
-		assertTrue(loggingEvents.get(1).getMessage() != null && loggingEvents.get(1).getMessage().startsWith(
-				"RequestResponseAuditData{headers="));
+		assertTrue((loggingEvents.get(1).getMessage() != null)
+				&& loggingEvents.get(1).getMessage().startsWith("RequestAuditData{headers="));
 		assertThat(loggingEvents.get(1).getLevel(), is(ch.qos.logback.classic.Level.ERROR));
 	}
 
@@ -137,14 +142,14 @@ public class RequestResponseLogSerializerTest {
 	@Test
 	public void testJsonExceptionFatal() throws Exception {
 		when(mapper.writeValueAsString(any())).thenThrow(JsonProcessingException.class);
-		requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData,
+		requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, requestAuditData, RequestAuditData.class,
 				MessageSeverity.FATAL);
 		verify(mockAppender, times(2)).doAppend(captorLoggingEvent.capture());
 		final List<ch.qos.logback.classic.spi.LoggingEvent> loggingEvents = captorLoggingEvent.getAllValues();
 		assertTrue(loggingEvents.get(0).getMessage().startsWith("Error occurred on JSON processing, calling"));
 		assertThat(loggingEvents.get(0).getLevel(), is(ch.qos.logback.classic.Level.ERROR));
-		assertTrue(loggingEvents.get(1).getMessage() != null && loggingEvents.get(1).getMessage().startsWith(
-				"RequestResponseAuditData{headers="));
+		assertTrue((loggingEvents.get(1).getMessage() != null)
+				&& loggingEvents.get(1).getMessage().startsWith("RequestAuditData{headers="));
 		assertThat(loggingEvents.get(1).getLevel(), is(ch.qos.logback.classic.Level.ERROR));
 	}
 

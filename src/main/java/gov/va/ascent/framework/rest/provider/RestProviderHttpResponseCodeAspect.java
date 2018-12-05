@@ -5,7 +5,8 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -32,8 +33,9 @@ import gov.va.ascent.framework.audit.AuditEventData;
 import gov.va.ascent.framework.audit.AuditEvents;
 import gov.va.ascent.framework.audit.AuditLogger;
 import gov.va.ascent.framework.audit.Auditable;
-import gov.va.ascent.framework.audit.RequestResponseAuditData;
+import gov.va.ascent.framework.audit.RequestAuditData;
 import gov.va.ascent.framework.audit.RequestResponseLogSerializer;
+import gov.va.ascent.framework.audit.ResponseAuditData;
 import gov.va.ascent.framework.exception.AscentRuntimeException;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
@@ -92,7 +94,8 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	}
 
 	/**
-	 * Advice to log method requests/responses that are annotated with @Auditable.
+	 * Advice to log methods that are annotated with @Auditable. Separately logs the call to the method and its arguments, and the
+	 * response from the method.
 	 *
 	 * @param joinPoint
 	 *            the join point
@@ -108,15 +111,23 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 				request = Arrays.asList(joinPoint.getArgs());
 			}
 
-			response = joinPoint.proceed();
-
 			final Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
 			final Auditable auditableAnnotation = method.getAnnotation(Auditable.class);
+			AuditEventData auditEventData;
+			if (auditableAnnotation != null) {
+				auditEventData =
+						new AuditEventData(auditableAnnotation.event(), auditableAnnotation.activity(),
+								auditableAnnotation.auditClass());
 
-			if (auditableAnnotation != null && AuditEvents.REQUEST_RESPONSE.equals(auditableAnnotation.event())) {
-				final AuditEventData auditEventData = new AuditEventData(auditableAnnotation.event(),
-						auditableAnnotation.activity(), auditableAnnotation.auditClass());
-				writeAudit(request, response, auditEventData, MessageSeverity.INFO);
+				writeRequestAudit(request, auditEventData, MessageSeverity.INFO);
+			}
+
+			response = joinPoint.proceed();
+
+			if (auditableAnnotation != null) {
+				auditEventData = new AuditEventData(auditableAnnotation.event(), auditableAnnotation.activity(),
+						auditableAnnotation.auditClass());
+				writeResponseAudit(response, auditEventData, MessageSeverity.INFO);
 			}
 		} catch (Throwable e) {
 			LOGGER.error("Error while executing logAnnotatedMethodRequestResponse around auditableExecution", e);
@@ -125,7 +136,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	}
 
 	/**
-	 * Around advice to log Audits for REST request/response objects, and alter HTTP response codes.
+	 * Around advice to separately log Audits for REST request object and response object, and alter HTTP response codes.
 	 *
 	 * @param joinPoint the join point
 	 * @return the response entity
@@ -156,8 +167,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 
 			returnTypeIsServiceResponse = method.getReturnType().toString().contains("ResponseEntity") ? false : true;
 
-			auditEventData = new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(),
-					method.getDeclaringClass().getName());
+			auditEventData = new AuditEventData(AuditEvents.REST_REQUEST, method.getName(), method.getDeclaringClass().getName());
 
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Request Object: {}", requestObject);
@@ -165,6 +175,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 				LOGGER.debug("Return Type as ResponseEntity: {}", returnTypeIsServiceResponse);
 				LOGGER.debug("AuditEventData Object: {}", auditEventData.toString());
 			}
+			writeRequestAudit(requestObject, auditEventData, MessageSeverity.INFO);
 
 			responseObject = joinPoint.proceed();
 
@@ -182,11 +193,11 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 
 			final HttpStatus ruleStatus = rulesEngine.messagesToHttpStatus(serviceResponse.getMessages());
 
-			if (ruleStatus != null
-					&& (HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.SERVER_ERROR
-							|| HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.CLIENT_ERROR)) {
+			auditEventData = new AuditEventData(AuditEvents.REST_RESPONSE, method.getName(), method.getDeclaringClass().getName());
+			if (ruleStatus != null && (HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.SERVER_ERROR
+					|| HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.CLIENT_ERROR)) {
 				LOGGER.debug("HttpStatus {}", ruleStatus.value());
-				writeAudit(requestObject, responseObject, auditEventData, MessageSeverity.ERROR);
+				writeResponseAudit(responseObject, auditEventData, MessageSeverity.ERROR);
 
 				if (returnTypeIsServiceResponse) {
 					response.setStatus(ruleStatus.value());
@@ -195,7 +206,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 					return new ResponseEntity<>(serviceResponse, ruleStatus);
 				}
 			} else {
-				writeAudit(requestObject, responseObject, auditEventData, MessageSeverity.INFO);
+				writeResponseAudit(responseObject, auditEventData, MessageSeverity.INFO);
 			}
 		} catch (final AscentRuntimeException ascentRuntimeException) {
 			Object returnObj = null;
@@ -256,8 +267,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	 */
 	private ResponseEntity<ServiceResponse> writeAuditError(final AscentRuntimeException ascentRuntimeException,
 			final AuditEventData auditEventData) {
-		LOGGER.error("RestProviderHttpResponseCodeAspect encountered uncaught exception in REST endpoint.",
-				ascentRuntimeException);
+		LOGGER.error("RestProviderHttpResponseCodeAspect encountered uncaught exception in REST endpoint.", ascentRuntimeException);
 		final ServiceResponse serviceResponse = new ServiceResponse();
 		serviceResponse.addMessage(MessageSeverity.FATAL, "UNEXPECTED_ERROR", ascentRuntimeException.getMessage());
 		final StringBuilder sb = new StringBuilder();
@@ -267,76 +277,141 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	}
 
 	/**
-	 * Write audit.
+	 * Write audit for request.
 	 *
 	 * @param request the request
-	 * @param response the response
 	 * @param auditEventData the auditable annotation
 	 */
-	private void writeAudit(final List<Object> request, final Object response,
-			final AuditEventData auditEventData, final MessageSeverity messageSeverity) {
+	private void writeRequestAudit(final List<Object> request, final AuditEventData auditEventData,
+			final MessageSeverity messageSeverity) {
 
 		final HttpServletRequest httpServletRequest =
 				((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
-		final RequestResponseAuditData requestResponseAuditData = new RequestResponseAuditData();
+		final RequestAuditData requestAuditData = new RequestAuditData();
 
 		if (request != null) {
-			requestResponseAuditData.setRequest(request);
-		}
-		if (response != null) {
-			requestResponseAuditData.setResponse(response);
+			requestAuditData.setRequest(request);
 		}
 
 		if (httpServletRequest != null) {
-			getHttpRequestAuditData(httpServletRequest, requestResponseAuditData);
+			getHttpRequestAuditData(httpServletRequest, requestAuditData);
 		}
 
 		LOGGER.debug("Invoking asyncLogRequestResponseAspectAuditData");
 
 		if (asyncLogging != null) {
-			asyncLogging.asyncLogRequestResponseAspectAuditData(auditEventData, requestResponseAuditData, messageSeverity);
+			asyncLogging.asyncLogRequestResponseAspectAuditData(auditEventData, requestAuditData, RequestAuditData.class,
+					messageSeverity);
 		}
 	}
 
-	private void getHttpRequestAuditData(final HttpServletRequest httpServletRequest,
-			final RequestResponseAuditData requestResponseAuditData) {
-		final Map<String, String> headers = new HashMap<>();
-		final Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
+	/**
+	 * Write audit for response.
+	 *
+	 * @param response the response
+	 * @param auditEventData the auditable annotation
+	 */
+	private void writeResponseAudit(final Object response, final AuditEventData auditEventData,
+			final MessageSeverity messageSeverity) {
 
-		while (headerNames.hasMoreElements()) {
-			final String headerName = headerNames.nextElement();
-			final String value = httpServletRequest.getHeader(headerName);
-			headers.put(headerName, value);
+		final HttpServletResponse httpServletReponse =
+				((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
+
+		final ResponseAuditData responseAuditData = new ResponseAuditData();
+
+		if (httpServletReponse != null) {
+			getHttpResponseAuditData(httpServletReponse, responseAuditData);
 		}
-		requestResponseAuditData.setHeaders(headers);
-		requestResponseAuditData.setUri(httpServletRequest.getRequestURI());
-		requestResponseAuditData.setMethod(httpServletRequest.getMethod());
+
+		if (response != null) {
+			responseAuditData.setResponse(response);
+		}
+
+		LOGGER.debug("Invoking asyncLogRequestResponseAspectAuditData");
+
+		if (asyncLogging != null) {
+			asyncLogging.asyncLogRequestResponseAspectAuditData(auditEventData, responseAuditData, ResponseAuditData.class,
+					messageSeverity);
+		}
+	}
+
+	private void getHttpResponseAuditData(final HttpServletResponse httpServletReponse, final ResponseAuditData responseAuditData) {
+		final Map<String, String> headers = new HashMap<>();
+		final Collection<String> headerNames = httpServletReponse.getHeaderNames();
+		populateHeadersMap(httpServletReponse, headers, headerNames);
+		responseAuditData.setHeaders(headers);
+	}
+
+	private void getHttpRequestAuditData(final HttpServletRequest httpServletRequest, final RequestAuditData requestAuditData) {
+		final Map<String, String> headers = new HashMap<>();
+		httpServletRequest.getHeaderNames();
+
+		ArrayList<String> listOfHeaderNames = Collections.list(httpServletRequest.getHeaderNames());
+		populateHeadersMap(httpServletRequest, headers, listOfHeaderNames);
+
+		requestAuditData.setHeaders(headers);
+		requestAuditData.setUri(httpServletRequest.getRequestURI());
+		requestAuditData.setMethod(httpServletRequest.getMethod());
 
 		final String contentType = httpServletRequest.getContentType();
 
 		LOGGER.debug("Content Type: {}", SanitizationUtil.stripXSS(contentType));
 
-		if (contentType != null
-				&& (contentType.toLowerCase(Locale.ENGLISH).startsWith(MediaType.MULTIPART_FORM_DATA_VALUE)
-						|| contentType.toLowerCase(Locale.ENGLISH).startsWith("multipart/mixed"))) {
+		if (contentType != null && (contentType.toLowerCase(Locale.ENGLISH).startsWith(MediaType.MULTIPART_FORM_DATA_VALUE)
+				|| contentType.toLowerCase(Locale.ENGLISH).startsWith("multipart/mixed"))) {
 			final List<String> attachmentTextList = new ArrayList<>();
 			InputStream inputstream = null;
+			// NOSONAR try (ByteArrayInputStream partTooBigMessage =
+			// NOSONAR new ByteArrayInputStream("This part of the request is too big to be displayed.".getBytes())) {
 			try {
 				for (final Part part : httpServletRequest.getParts()) {
+					final Map<String, String> partHeaders = new HashMap<>();
+					populateHeadersMap(part, partHeaders, part.getHeaderNames());
 					inputstream = part.getInputStream();
-					attachmentTextList.add(convertBytesToString(inputstream));
+					// NOSONAR if (inputstream.available() > gov.va.ascent.framework.log.AscentBaseLogger.MAX_MSG_LENGTH) {
+					// NOSONAR inputstream.close();
+					// NOSONAR inputstream = partTooBigMessage;
+					// NOSONAR }
+					attachmentTextList.add(partHeaders.toString() + ", " + convertBytesToString(inputstream));
 					IOUtils.closeQuietly(inputstream);
+					// NOSONAR IOUtils.closeQuietly(partTooBigMessage);
 				}
 			} catch (final Exception ex) {
 				LOGGER.error("Error occurred while reading the upload file. {}", ex);
 			} finally {
 				IOUtils.closeQuietly(inputstream);
 			}
-			requestResponseAuditData.setAttachmentTextList(attachmentTextList);
-			requestResponseAuditData.setRequest(null);
+			requestAuditData.setAttachmentTextList(attachmentTextList);
+			requestAuditData.setRequest(null);
 		}
+	}
 
+	private void populateHeadersMap(final HttpServletRequest httpServletRequest, final Map<String, String> headersToBePopulated,
+			final Collection<String> listOfHeaderNames) {
+		for (final String headerName : listOfHeaderNames) {
+			String value;
+			value = httpServletRequest.getHeader(headerName);
+			headersToBePopulated.put(headerName, value);
+		}
+	}
+
+	private void populateHeadersMap(final HttpServletResponse httpServletResponse, final Map<String, String> headersToBePopulated,
+			final Collection<String> listOfHeaderNames) {
+		for (final String headerName : listOfHeaderNames) {
+			String value;
+			value = httpServletResponse.getHeader(headerName);
+			headersToBePopulated.put(headerName, value);
+		}
+	}
+
+	private void populateHeadersMap(final Part part, final Map<String, String> headersToBePopulated,
+			final Collection<String> listOfHeaderNames) {
+		for (final String headerName : listOfHeaderNames) {
+			String value;
+			value = part.getHeader(headerName);
+			headersToBePopulated.put(headerName, value);
+		}
 	}
 
 	/**
