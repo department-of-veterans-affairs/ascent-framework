@@ -44,7 +44,7 @@ public class RequestResponseLogSerializer {
 	 */
 	@Async
 	public void asyncLogRequestResponseAspectAuditData(final AuditEventData auditEventData, final AuditableData auditData,
-			final Class auditDataClass, final MessageSeverity messageSeverity) {
+			final Class auditDataClass, final MessageSeverity messageSeverity, final Throwable t) {
 
 		String auditDetails;
 		try {
@@ -67,7 +67,7 @@ public class RequestResponseLogSerializer {
 		}
 
 		if (messageSeverity.equals(MessageSeverity.ERROR) || messageSeverity.equals(MessageSeverity.FATAL)) {
-			AuditLogger.error(auditEventData, auditDetails);
+			AuditLogger.error(auditEventData, auditDetails, t);
 		} else {
 			AuditLogger.info(auditEventData, auditDetails);
 		}
@@ -84,11 +84,11 @@ public class RequestResponseLogSerializer {
 	 * @param activityDetail the activity detail
 	 */
 	@Async
-	public void asyncLogMessageAspectAuditData(
-			AuditEventData auditEventData, String activityDetail, MessageSeverity messageSeverity) {
+	public void asyncLogMessageAspectAuditData(final AuditEventData auditEventData, final String activityDetail,
+			final MessageSeverity messageSeverity, final Throwable t) {
 
 		if (messageSeverity.equals(MessageSeverity.ERROR) || messageSeverity.equals(MessageSeverity.FATAL)) {
-			AuditLogger.error(auditEventData, activityDetail);
+			AuditLogger.error(auditEventData, activityDetail, t);
 		} else {
 			AuditLogger.info(auditEventData, activityDetail);
 		}

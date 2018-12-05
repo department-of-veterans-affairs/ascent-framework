@@ -93,9 +93,9 @@ public class RequestResponseLogSerializerTest {
 	@Test
 	public void testJson() throws Exception {
 		requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, requestAuditData, RequestAuditData.class,
-				MessageSeverity.INFO);
+				MessageSeverity.INFO, null);
 		requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, responseAuditData, ResponseAuditData.class,
-				MessageSeverity.INFO);
+				MessageSeverity.INFO, null);
 		verify(mockAppender, times(2)).doAppend(captorLoggingEvent.capture());
 		final List<ch.qos.logback.classic.spi.LoggingEvent> loggingEvents = captorLoggingEvent.getAllValues();
 		final String expectedRequest = String.valueOf(JsonStringEncoder.getInstance().quoteAsString(
@@ -112,7 +112,7 @@ public class RequestResponseLogSerializerTest {
 	public void testJsonException() throws Exception {
 		when(mapper.writeValueAsString(any())).thenThrow(JsonProcessingException.class);
 		requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, requestAuditData, RequestAuditData.class,
-				MessageSeverity.INFO);
+				MessageSeverity.INFO, null);
 		verify(mockAppender, times(2)).doAppend(captorLoggingEvent.capture());
 		final List<ch.qos.logback.classic.spi.LoggingEvent> loggingEvents = captorLoggingEvent.getAllValues();
 		assertTrue(loggingEvents.get(0).getMessage().startsWith("Error occurred on JSON processing, calling"));
@@ -128,7 +128,7 @@ public class RequestResponseLogSerializerTest {
 	public void testJsonExceptionError() throws Exception {
 		when(mapper.writeValueAsString(any())).thenThrow(JsonProcessingException.class);
 		requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, requestAuditData, RequestAuditData.class,
-				MessageSeverity.ERROR);
+				MessageSeverity.ERROR, new Exception());
 		verify(mockAppender, times(2)).doAppend(captorLoggingEvent.capture());
 		final List<ch.qos.logback.classic.spi.LoggingEvent> loggingEvents = captorLoggingEvent.getAllValues();
 		assertTrue(loggingEvents.get(0).getMessage().startsWith("Error occurred on JSON processing, calling"));
@@ -143,7 +143,7 @@ public class RequestResponseLogSerializerTest {
 	public void testJsonExceptionFatal() throws Exception {
 		when(mapper.writeValueAsString(any())).thenThrow(JsonProcessingException.class);
 		requestResponseLogSerializer.asyncLogRequestResponseAspectAuditData(auditEventData, requestAuditData, RequestAuditData.class,
-				MessageSeverity.FATAL);
+				MessageSeverity.FATAL, new Exception());
 		verify(mockAppender, times(2)).doAppend(captorLoggingEvent.capture());
 		final List<ch.qos.logback.classic.spi.LoggingEvent> loggingEvents = captorLoggingEvent.getAllValues();
 		assertTrue(loggingEvents.get(0).getMessage().startsWith("Error occurred on JSON processing, calling"));
@@ -156,7 +156,7 @@ public class RequestResponseLogSerializerTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testServiceMessage() throws Exception {
-		requestResponseLogSerializer.asyncLogMessageAspectAuditData(auditServiceEventData, "This is test", MessageSeverity.INFO);
+		requestResponseLogSerializer.asyncLogMessageAspectAuditData(auditServiceEventData, "This is test", MessageSeverity.INFO, null);
 
 		verify(mockAppender, times(1)).doAppend(captorLoggingEvent.capture());
 		final List<ch.qos.logback.classic.spi.LoggingEvent> loggingEvents = captorLoggingEvent.getAllValues();
@@ -167,7 +167,8 @@ public class RequestResponseLogSerializerTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testServiceMessageError() throws Exception {
-		requestResponseLogSerializer.asyncLogMessageAspectAuditData(auditServiceEventData, "Error test", MessageSeverity.ERROR);
+		requestResponseLogSerializer.asyncLogMessageAspectAuditData(auditServiceEventData, "Error test", MessageSeverity.ERROR,
+				new Exception());
 
 		verify(mockAppender, times(1)).doAppend(captorLoggingEvent.capture());
 		final List<ch.qos.logback.classic.spi.LoggingEvent> loggingEvents = captorLoggingEvent.getAllValues();

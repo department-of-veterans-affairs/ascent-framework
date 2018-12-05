@@ -70,9 +70,9 @@ public class AuditLogger {
 	 * @param auditable the auditable
 	 * @param activityDetail the activity detail
 	 */
-	public static void error(AuditEventData auditable, String activityDetail) {
+	public static void error(final AuditEventData auditable, final String activityDetail, final Throwable t) {
 		addMdcSecurityEntries(auditable);
-		LOGGER.error(SanitizationUtil.stripXSS(activityDetail));
+		LOGGER.error(SanitizationUtil.stripXSS(activityDetail), t);
 		MDC.clear();
 
 	}
