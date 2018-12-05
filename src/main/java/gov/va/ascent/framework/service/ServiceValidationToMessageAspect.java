@@ -134,9 +134,8 @@ public class ServiceValidationToMessageAspect extends BaseServiceAspect {
 		if (!messages.isEmpty()) {
 			serviceResponse = (ServiceResponse) methodSignature.getMethod().getReturnType().newInstance();
 			convertMapToMessages(serviceResponse, messages);
-			AuditLogger.error(
-					BaseRestProviderAspect.getDefaultAuditableInstance(methodSignature.getMethod()),
-					serviceResponse.getMessages().stream().map(Message::toString).reduce("", String::concat));
+			AuditLogger.error(BaseRestProviderAspect.getDefaultAuditableInstance(methodSignature.getMethod()),
+					serviceResponse.getMessages().stream().map(Message::toString).reduce("", String::concat), null);
 		}
 		return serviceResponse;
 	}

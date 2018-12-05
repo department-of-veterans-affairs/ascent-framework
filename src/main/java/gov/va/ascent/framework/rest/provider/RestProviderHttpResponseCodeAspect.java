@@ -119,7 +119,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 						new AuditEventData(auditableAnnotation.event(), auditableAnnotation.activity(),
 								auditableAnnotation.auditClass());
 
-				writeRequestAudit(request, auditEventData, MessageSeverity.INFO);
+				writeRequestInfoAudit(request, auditEventData);
 			}
 
 			response = joinPoint.proceed();
@@ -127,7 +127,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 			if (auditableAnnotation != null) {
 				auditEventData = new AuditEventData(auditableAnnotation.event(), auditableAnnotation.activity(),
 						auditableAnnotation.auditClass());
-				writeResponseAudit(response, auditEventData, MessageSeverity.INFO);
+				writeResponseAudit(response, auditEventData, MessageSeverity.INFO, null);
 			}
 		} catch (Throwable e) {
 			LOGGER.error("Error while executing logAnnotatedMethodRequestResponse around auditableExecution", e);
@@ -175,7 +175,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 				LOGGER.debug("Return Type as ResponseEntity: {}", returnTypeIsServiceResponse);
 				LOGGER.debug("AuditEventData Object: {}", auditEventData.toString());
 			}
-			writeRequestAudit(requestObject, auditEventData, MessageSeverity.INFO);
+			writeRequestInfoAudit(requestObject, auditEventData);
 
 			responseObject = joinPoint.proceed();
 
@@ -197,7 +197,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 			if (ruleStatus != null && (HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.SERVER_ERROR
 					|| HttpStatus.Series.valueOf(ruleStatus.value()) == HttpStatus.Series.CLIENT_ERROR)) {
 				LOGGER.debug("HttpStatus {}", ruleStatus.value());
-				writeResponseAudit(responseObject, auditEventData, MessageSeverity.ERROR);
+				writeResponseAudit(responseObject, auditEventData, MessageSeverity.ERROR, null);
 
 				if (returnTypeIsServiceResponse) {
 					response.setStatus(ruleStatus.value());
@@ -206,7 +206,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 					return new ResponseEntity<>(serviceResponse, ruleStatus);
 				}
 			} else {
-				writeResponseAudit(responseObject, auditEventData, MessageSeverity.INFO);
+				writeResponseAudit(responseObject, auditEventData, MessageSeverity.INFO, null);
 			}
 		} catch (final AscentRuntimeException ascentRuntimeException) {
 			Object returnObj = null;
@@ -272,7 +272,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 		serviceResponse.addMessage(MessageSeverity.FATAL, "UNEXPECTED_ERROR", ascentRuntimeException.getMessage());
 		final StringBuilder sb = new StringBuilder();
 		sb.append("Error Message: ").append(ascentRuntimeException);
-		AuditLogger.error(auditEventData, sb.toString());
+		AuditLogger.error(auditEventData, sb.toString(), ascentRuntimeException);
 		return new ResponseEntity<>(serviceResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
@@ -282,8 +282,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	 * @param request the request
 	 * @param auditEventData the auditable annotation
 	 */
-	private void writeRequestAudit(final List<Object> request, final AuditEventData auditEventData,
-			final MessageSeverity messageSeverity) {
+	private void writeRequestInfoAudit(final List<Object> request, final AuditEventData auditEventData) {
 
 		final HttpServletRequest httpServletRequest =
 				((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
@@ -302,7 +301,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 
 		if (asyncLogging != null) {
 			asyncLogging.asyncLogRequestResponseAspectAuditData(auditEventData, requestAuditData, RequestAuditData.class,
-					messageSeverity);
+					MessageSeverity.INFO, null);
 		}
 	}
 
@@ -312,8 +311,8 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 	 * @param response the response
 	 * @param auditEventData the auditable annotation
 	 */
-	private void writeResponseAudit(final Object response, final AuditEventData auditEventData,
-			final MessageSeverity messageSeverity) {
+	private void writeResponseAudit(final Object response, final AuditEventData auditEventData, final MessageSeverity messageSeverity,
+			final Throwable t) {
 
 		final HttpServletResponse httpServletReponse =
 				((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
@@ -332,7 +331,7 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 
 		if (asyncLogging != null) {
 			asyncLogging.asyncLogRequestResponseAspectAuditData(auditEventData, responseAuditData, ResponseAuditData.class,
-					messageSeverity);
+					messageSeverity, t);
 		}
 	}
 

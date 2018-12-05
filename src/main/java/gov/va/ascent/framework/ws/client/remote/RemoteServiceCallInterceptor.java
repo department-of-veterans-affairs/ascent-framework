@@ -60,7 +60,7 @@ public class RemoteServiceCallInterceptor implements MethodInterceptor {
 		AuditEventData auditEventData = new AuditEventData(AuditEvents.PARTNER_SOAP_REQUEST, methodInvocation.getMethod().getName(),
 				methodInvocation.getMethod().getDeclaringClass().getSimpleName());
 		asyncLogging.asyncLogRequestResponseAspectAuditData(auditEventData, requestAuditData, RequestAuditData.class,
-				MessageSeverity.INFO);
+				MessageSeverity.INFO, null);
 
 		Object retVal = "";
 		try {
@@ -73,7 +73,7 @@ public class RemoteServiceCallInterceptor implements MethodInterceptor {
 			LOGGER.error("Partner error: methodName {} " + methodInvocation.getMethod() + "; method args {} "
 					+ ReflectionToStringBuilder.toString(methodInvocation.getArguments()) + ".\n Message: " + errMsg, e);
 
-			asyncLogging.asyncLogMessageAspectAuditData(auditEventData, errMsg, MessageSeverity.ERROR);
+			asyncLogging.asyncLogMessageAspectAuditData(auditEventData, errMsg, MessageSeverity.ERROR, e);
 			throw e;
 		}
 
@@ -84,7 +84,7 @@ public class RemoteServiceCallInterceptor implements MethodInterceptor {
 		auditEventData = new AuditEventData(AuditEvents.PARTNER_SOAP_RESPONSE, methodInvocation.getMethod().getName(),
 				methodInvocation.getMethod().getDeclaringClass().getSimpleName());
 		asyncLogging.asyncLogRequestResponseAspectAuditData(auditEventData, resonseAuditData, ResponseAuditData.class,
-				MessageSeverity.INFO);
+				MessageSeverity.INFO, null);
 		return retVal;
 	}
 

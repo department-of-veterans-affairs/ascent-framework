@@ -224,7 +224,7 @@ public class AuditLoggerTest {
 		// given and when
 		Method method = AuditLoggerTest.class.getMethod("auditError", (Class<?>[]) null);
 		AuditLogger.error(new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
-				"Audit ERROR Activity Detail");
+				"Audit ERROR Activity Detail", new Exception());
 
 		// Now verify our logging interactions
 		verify(mockAppender).doAppend(captorLoggingEvent.capture());
@@ -247,9 +247,8 @@ public class AuditLoggerTest {
 				personTraits.getPassword(), personTraits.getAuthorities());
 		SecurityContextHolder.getContext().setAuthentication(auth);
 		Method method = AuditLoggerTest.class.getMethod("auditError", (Class<?>[]) null);
-		AuditLogger.error(
-				new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
-				"Audit ERROR Activity Detail");
+		AuditLogger.error(new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
+				"Audit ERROR Activity Detail", new Exception());
 
 		// Now verify our logging interactions
 		verify(mockAppender).doAppend(captorLoggingEvent.capture());

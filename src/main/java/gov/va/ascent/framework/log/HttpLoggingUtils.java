@@ -35,8 +35,8 @@ public class HttpLoggingUtils {
 
 			String httpMessage = new String(byteArrayTransportOutputStream.toByteArray(), "ISO-8859-1");
 			AuditEventData auditEventData = new AuditEventData(auditEvent, auditActivity, auditClassName);
-			asyncLogging.asyncLogMessageAspectAuditData(auditEventData, NEW_LINE + title +
-					" : " + NEW_LINE + httpMessage + NEW_LINE, MessageSeverity.INFO);
+			asyncLogging.asyncLogMessageAspectAuditData(auditEventData, NEW_LINE + title + " : " + NEW_LINE + httpMessage + NEW_LINE,
+					MessageSeverity.INFO, null);
 		} catch (Exception e) {
 			LOGGER.error(UNABLE_TO_LOG_HTTP_MESSAGE_TEXT, e);
 		}
