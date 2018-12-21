@@ -51,7 +51,7 @@ public class RemoteServiceCallInterceptor implements MethodInterceptor {
 				+ "(" + paramtypesToLog + ")");
 
 		Object[] args = methodInvocation.getArguments();
-		LOGGER.info("Number of Arguments : " + args.length + "; values: " + ReflectionToStringBuilder.toString(args));
+		LOGGER.info("Number of Arguments : " + args.length + "; values: " + ReflectionToStringBuilder.reflectionToString(args));
 
 		final RequestAuditData requestAuditData = new RequestAuditData();
 		requestAuditData.setRequest(Arrays.asList(args));
