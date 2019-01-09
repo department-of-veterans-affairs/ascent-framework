@@ -9,14 +9,19 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class TestRestAutoConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    public RestClientTemplate restClientTemplate(){
-        return new RestClientTemplate();
-    }    
-        
+	@Bean("restClientTemplate")
+	@ConditionalOnMissingBean
+	public RestClientTemplate restClientTemplate() {
+		return new RestClientTemplate();
+	}
+
+	@Bean("restClientTemplateWithParam")
+	public RestClientTemplate restClientTemplateWithParam() {
+		return new RestClientTemplate(new RestTemplate());
+	}
+
 	@Bean
-    RestTemplate restTemplate() {
-        return new RestTemplateBuilder().build();
+	RestTemplate restTemplate() {
+		return new RestTemplateBuilder().build();
 	}
 }
