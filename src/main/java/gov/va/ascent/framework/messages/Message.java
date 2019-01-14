@@ -9,9 +9,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import gov.va.ascent.framework.transfer.AbstractTransferObject;
 
 /**
- * Message is a generic abstraction of a "message" or "notification" which is layer agnostic and can be used to
- * communicate status or other sorts of information during method calls between components/layers. This is serializable
- * and can be used in SOAP or REST calls.
+ * Message is a generic abstraction of a "message" or "notification" which is layer agnostic and can be used to communicate status or
+ * other sorts of information during method calls between components/layers. This is serializable and can be used in SOAP or REST
+ * calls.
  *
  * @author jshrader
  */
@@ -21,8 +21,8 @@ public class Message extends AbstractTransferObject {
 	private static final long serialVersionUID = -1711431368372127555L;
 
 	/**
-	 * The text is excluded from equals and hash as the key+severity are to jointly indicate
-	 * a unique message. The text is supplemental information.
+	 * The text is excluded from equals and hash as the key+severity are to jointly indicate a unique message. The text is supplemental
+	 * information.
 	 */
 	private static final String[] EQUALS_HASH_EXCLUDE_FIELDS = new String[] { "text" };
 
@@ -33,6 +33,9 @@ public class Message extends AbstractTransferObject {
 
 	/** The message. */
 	private String text;
+
+	/** The Http status. */
+	private HttpStatusForMessage status;
 
 	/** The message severity. */
 	@XmlElement(required = true)
@@ -88,6 +91,24 @@ public class Message extends AbstractTransferObject {
 	 */
 	public final void setKey(final String key) {
 		this.key = key;
+	}
+
+	/**
+	 * Gets the HttpStatus.
+	 *
+	 * @return the HttpStatus
+	 */
+	public HttpStatusForMessage getStatus() {
+		return status;
+	}
+
+	/**
+	 * Sets the HttpStatus.
+	 *
+	 * @param key the new HttpStatus
+	 */
+	public void setStatus(final HttpStatusForMessage status) {
+		this.status = status;
 	}
 
 	/**
