@@ -50,14 +50,14 @@ public final class MessagesToHttpStatusRulesEngine {
 		}
 
 		HttpStatus returnResponse = null;
-		if (messagesInResponse != null && !messagesInResponse.isEmpty() && !rules.isEmpty()) {
+		if ((messagesInResponse != null) && !messagesInResponse.isEmpty() && !rules.isEmpty()) {
 			returnResponse = evalMessagesAgainstRules(messagesInResponse, rules);
 		}
 
 		if (LOGGER.isDebugEnabled()) {
 			final long elapsedTime = System.currentTimeMillis() - startTime;
-			LOGGER.info("Rules engine execution time: " + elapsedTime / NUMBER_OF_MILLIS_N_A_SECOND + DOT
-					+ elapsedTime % NUMBER_OF_MILLIS_N_A_SECOND + SECS);
+			LOGGER.info("Rules engine execution time: " + (elapsedTime / NUMBER_OF_MILLIS_N_A_SECOND) + DOT
+					+ (elapsedTime % NUMBER_OF_MILLIS_N_A_SECOND) + SECS);
 		}
 
 		return returnResponse;
@@ -73,11 +73,30 @@ public final class MessagesToHttpStatusRulesEngine {
 	private static HttpStatus evalMessagesAgainstRules(final List<Message> messagesInResponse,
 			final Set<MessagesToHttpStatusRule> rules) {
 		HttpStatus returnResponse = null;
-		// convert current messages into Set of Message objects for quicker matching
 		final Set<Message> messagesToEval = new HashSet<>();
+		boolean has5xxErrors = false;
+		boolean has4xxErrors = false;
 		for (final Message message : messagesInResponse) {
+			// check if any message has a 500 error status
+			has5xxErrors = has5xxErrors || (message.getStatus() == null) ? false : message.getStatus().is5xxServerError();
+			has4xxErrors = has4xxErrors || (message.getStatus() == null) ? false : message.getStatus().is4xxClientError();
+			// convert current messages into Set of Message objects for quicker matching
 			messagesToEval.add(new Message(message.getSeverity(), message.getKey()));
 		}
+		// if the resopnse messages have 4xx and 5xx, send 400 error
+		if (has5xxErrors && has4xxErrors) {
+			return HttpStatus.BAD_REQUEST;
+		} else if (has5xxErrors) {
+			return HttpStatus.INTERNAL_SERVER_ERROR;
+		} else if (has4xxErrors) {
+			return HttpStatus.BAD_REQUEST;
+		}
+		returnResponse = getStatusPerRules(rules, returnResponse, messagesToEval);
+		return returnResponse;
+	}
+
+	private static HttpStatus getStatusPerRules(final Set<MessagesToHttpStatusRule> rules, final HttpStatus returnResponse,
+			final Set<Message> messagesToEval) {
 		// iterate rules, search for matches in our current messages. 1st one found wins, so setup insert order critical
 		for (final MessagesToHttpStatusRule rule : rules) {
 			final HttpStatus ruleEvalResponse = rule.eval(messagesToEval);
@@ -85,8 +104,7 @@ public final class MessagesToHttpStatusRulesEngine {
 				if (LOGGER.isDebugEnabled()) {
 					LOGGER.debug("Rules engine matched rule: " + rule);
 				}
-				returnResponse = ruleEvalResponse;
-				break;
+				return ruleEvalResponse;
 			}
 		}
 		return returnResponse;
