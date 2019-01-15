@@ -70,8 +70,7 @@ public final class MessagesToHttpStatusRulesEngine {
 	 * @param rules the rules
 	 * @return the HttpStatus
 	 */
-	private static HttpStatus evalMessagesAgainstRules(final List<Message> messagesInResponse,
-			final Set<MessagesToHttpStatusRule> rules) {
+	static HttpStatus evalMessagesAgainstRules(final List<Message> messagesInResponse, final Set<MessagesToHttpStatusRule> rules) {
 		HttpStatus returnResponse = null;
 		final Set<Message> messagesToEval = new HashSet<>();
 		boolean has5xxErrors = false;
