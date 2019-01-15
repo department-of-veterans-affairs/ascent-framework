@@ -6,6 +6,9 @@ import javax.xml.bind.annotation.XmlElement;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import gov.va.ascent.framework.transfer.AbstractTransferObject;
 
 /**
@@ -98,7 +101,20 @@ public class Message extends AbstractTransferObject {
 	 *
 	 * @return the HttpStatus
 	 */
-	public HttpStatusForMessage getStatus() {
+	@JsonProperty("status")
+	public String getStatusString() {
+		// Since this method is used by introspection based serialisation, it would need to return the status code number instead of
+		// the default (enum name), which is why the toString() method is used
+		return status.toString();
+	}
+
+	/**
+	 * Gets the HttpStatus.
+	 *
+	 * @return the HttpStatus
+	 */
+	@JsonIgnore
+	public HttpStatusForMessage getStatusEnum() {
 		return status;
 	}
 
