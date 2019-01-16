@@ -56,7 +56,7 @@ public class MessageTest {
 	public void testSetStatus() throws Exception {
 		Message message1 = new Message(MessageSeverity.INFO, "UnitTestKey", "TextMsg");
 		message1.setStatus(HttpStatusForMessage.BAD_REQUEST);
-		assertTrue(message1.getStatus() == HttpStatusForMessage.BAD_REQUEST);
+		assertTrue(message1.getStatusEnum() == HttpStatusForMessage.BAD_REQUEST);
 	}
 
 	@Test

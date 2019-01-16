@@ -77,8 +77,8 @@ public final class MessagesToHttpStatusRulesEngine {
 		boolean has4xxErrors = false;
 		for (final Message message : messagesInResponse) {
 			// check if any message has a 500 error status
-			has5xxErrors = has5xxErrors || (message.getStatus() == null) ? false : message.getStatus().is5xxServerError();
-			has4xxErrors = has4xxErrors || (message.getStatus() == null) ? false : message.getStatus().is4xxClientError();
+			has5xxErrors = has5xxErrors || (message.getStatusEnum() == null) ? false : message.getStatusEnum().is5xxServerError();
+			has4xxErrors = has4xxErrors || (message.getStatusEnum() == null) ? false : message.getStatusEnum().is4xxClientError();
 			// convert current messages into Set of Message objects for quicker matching
 			messagesToEval.add(new Message(message.getSeverity(), message.getKey()));
 		}
