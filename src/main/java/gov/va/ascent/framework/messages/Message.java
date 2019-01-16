@@ -105,7 +105,7 @@ public class Message extends AbstractTransferObject {
 	public String getStatusString() {
 		// Since this method is used by introspection based serialisation, it would need to return the status code number instead of
 		// the default (enum name), which is why the toString() method is used
-		return status.toString();
+		return status == null ? null : status.toString();
 	}
 
 	/**
