@@ -14,6 +14,9 @@ import javax.validation.groups.Default;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
+import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
+import org.springframework.beans.factory.annotation.Value;
 
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
@@ -28,18 +31,36 @@ import gov.va.ascent.framework.util.Defense;
  */
 
 public class ModelValidator implements Serializable {
-
-	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -6019704406389010935L;
 
 	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(ModelValidator.class);
 
+	private static final String DEFAULT_RESOURCE_BUNDLE = "ValidationMessages";
+
+	@Value("${ascent.validation.messages.user-resource-bundle}")
+	private String jsr303Validator;
+
 	/** The factory. */
-	private transient ValidatorFactory factory = Validation
-			.buildDefaultValidatorFactory();
+	private transient ValidatorFactory factory;
 
 	/** The validator. */
-	private transient Validator validator = factory.getValidator();
+	private transient Validator validator;
+
+	public ModelValidator() {
+		if (StringUtils.isBlank(jsr303Validator)) {
+			LOGGER.info("No additional JSR303 resource bundles specified, using only the default ValidationMessages resource bundle.");
+			factory = Validation.buildDefaultValidatorFactory();
+		} else {
+			factory = Validation.byDefaultProvider()
+					.configure()
+					.messageInterpolator(
+							new ResourceBundleMessageInterpolator(
+									new PlatformResourceBundleLocator(jsr303Validator),
+									new PlatformResourceBundleLocator(DEFAULT_RESOURCE_BUNDLE)))
+					.buildValidatorFactory();
+		}
+		validator = factory.getValidator();
+	}
 
 	/**
 	 * Reset transient fields on deserialization.
