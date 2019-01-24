@@ -5,6 +5,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.event.Level;
+
+import gov.va.ascent.framework.constants.AnnotationConstants;
+import gov.va.ascent.framework.log.AscentBanner;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
 
@@ -125,11 +129,11 @@ public class ExceptionToExceptionTranslationHandler {
 			}
 
 		} catch (final InstantiationException e) {
-			LOGGER.error(
+			LOGGER.error(AscentBanner.newBanner(AnnotationConstants.INTERCEPTOR_EXCEPTION, Level.ERROR), 
 					"InstantiationException likely configuration error, review log/configuration to troubleshoot", e);
 
 		} catch (final IllegalAccessException e) {
-			LOGGER.error(
+			LOGGER.error(AscentBanner.newBanner(AnnotationConstants.INTERCEPTOR_EXCEPTION, Level.ERROR), 
 					"IllegalAccessException likely configuration error, review log/configuration to troubleshoot", e);
 		}
 	}

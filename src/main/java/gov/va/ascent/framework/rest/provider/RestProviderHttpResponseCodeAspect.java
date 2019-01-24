@@ -21,6 +21,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.event.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -36,7 +37,9 @@ import gov.va.ascent.framework.audit.Auditable;
 import gov.va.ascent.framework.audit.RequestAuditData;
 import gov.va.ascent.framework.audit.RequestResponseLogSerializer;
 import gov.va.ascent.framework.audit.ResponseAuditData;
+import gov.va.ascent.framework.constants.AnnotationConstants;
 import gov.va.ascent.framework.exception.AscentRuntimeException;
+import gov.va.ascent.framework.log.AscentBanner;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
 import gov.va.ascent.framework.messages.MessageSeverity;
@@ -130,7 +133,8 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 				writeResponseAudit(response, auditEventData, MessageSeverity.INFO, null);
 			}
 		} catch (Throwable e) {
-			LOGGER.error("Error while executing logAnnotatedMethodRequestResponse around auditableExecution", e);
+			LOGGER.error(AscentBanner.newBanner(AnnotationConstants.INTERCEPTOR_EXCEPTION, Level.ERROR), 
+					"Error while executing logAnnotatedMethodRequestResponse around auditableExecution", e);
 		}
 		return response;
 	}
@@ -210,7 +214,8 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 			}
 		} catch (final AscentRuntimeException ascentRuntimeException) {
 			Object returnObj = null;
-			LOGGER.error("Error while executing RestProviderHttpResponseCodeAspect.aroundAdvice around restController",
+			LOGGER.error(AscentBanner.newBanner(AnnotationConstants.INTERCEPTOR_EXCEPTION, Level.ERROR), 
+					"Error while executing RestProviderHttpResponseCodeAspect.aroundAdvice around restController",
 					ascentRuntimeException);
 			try {
 				responseObject = writeAuditError(ascentRuntimeException, auditEventData);
@@ -219,13 +224,16 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 				}
 				returnObj = getReturnResponse(returnTypeIsServiceResponse, responseObject);
 			} catch (Throwable e) { // NOSONAR intentionally catching throwable
-				LOGGER.error("Throwable occured while attempting to writeAuditError for AscentRuntimeException.", e);
+				LOGGER.error(AscentBanner.newBanner(AnnotationConstants.INTERCEPTOR_EXCEPTION, Level.ERROR), 
+						"Throwable occured while attempting to writeAuditError for AscentRuntimeException.", e);
+
 			}
 			return returnObj;
 		} catch (final Throwable throwable) { // NOSONAR intentionally catching throwable
 			Object returnObj = null;
-			LOGGER.error("Throwable while executing RestProviderHttpResponseCodeAspect.aroundAdvice around restController", throwable);
-			try {
+			LOGGER.error(AscentBanner.newBanner(AnnotationConstants.INTERCEPTOR_EXCEPTION, Level.ERROR), 
+					"Throwable while executing RestProviderHttpResponseCodeAspect.aroundAdvice around restController", throwable);
+				try {
 				final AscentRuntimeException ascentRuntimeException = new AscentRuntimeException(throwable);
 				responseObject = writeAuditError(ascentRuntimeException, auditEventData);
 				if (response != null) {
@@ -233,7 +241,8 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 				}
 				returnObj = getReturnResponse(returnTypeIsServiceResponse, responseObject);
 			} catch (Throwable e) { // NOSONAR intentionally catching throwable
-				LOGGER.error("Throwable occured while attempting to writeAuditError for Throwable.", e);
+				LOGGER.error(AscentBanner.newBanner(AnnotationConstants.INTERCEPTOR_EXCEPTION, Level.ERROR), 
+						"Throwable occured while attempting to writeAuditError for Throwable.", e);
 			}
 			return returnObj;
 		} finally {
@@ -377,7 +386,9 @@ public class RestProviderHttpResponseCodeAspect extends BaseRestProviderAspect {
 					// NOSONAR IOUtils.closeQuietly(partTooBigMessage);
 				}
 			} catch (final Exception ex) {
-				LOGGER.error("Error occurred while reading the upload file. {}", ex);
+				LOGGER.error(AscentBanner.newBanner(AnnotationConstants.INTERCEPTOR_EXCEPTION, Level.ERROR), 
+						"Error occurred while reading the upload file. {}", ex);
+
 			} finally {
 				IOUtils.closeQuietly(inputstream);
 			}

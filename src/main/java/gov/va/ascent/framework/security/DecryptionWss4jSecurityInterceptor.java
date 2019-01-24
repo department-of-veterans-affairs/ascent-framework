@@ -4,8 +4,11 @@ import org.apache.ws.security.handler.WSHandlerConstants;
 import org.apache.wss4j.common.crypto.Crypto;
 import org.apache.wss4j.common.crypto.CryptoFactory;
 import org.apache.wss4j.common.ext.WSSecurityException;
+import org.slf4j.event.Level;
 import org.springframework.ws.soap.security.wss4j2.callback.KeyStoreCallbackHandler;
 
+import gov.va.ascent.framework.constants.AnnotationConstants;
+import gov.va.ascent.framework.log.AscentBanner;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
 
@@ -42,7 +45,9 @@ public abstract class DecryptionWss4jSecurityInterceptor extends AbstractWss4jSe
 			setValidationDecryptionCrypto(crypto);
 			setValidationSignatureCrypto(crypto);
 		} catch (WSSecurityException e) {
-			LOGGER.error("Error: Decryption Validation Crypto Factory Bean" + e.getMessage(), e);
+			LOGGER.error(AscentBanner.newBanner(AnnotationConstants.INTERCEPTOR_EXCEPTION, Level.ERROR), 
+					"Error: Decryption Validation Crypto Factory Bean" + e.getMessage(), e);
+
 		}
 
 		this.setValidationActions(

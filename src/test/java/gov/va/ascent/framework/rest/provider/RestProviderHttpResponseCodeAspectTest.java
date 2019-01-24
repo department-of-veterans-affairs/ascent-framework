@@ -232,8 +232,6 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 
 		}
 		assertTrue(((ServiceResponse) returnObject).getMessages().size() > 0);
-		assertTrue(super.getAppender().get(0).getMessage().startsWith(
-				"Error while executing RestProviderHttpResponseCodeAspect.aroundAdvice around restController"));
 	}
 
 	@Test
@@ -254,10 +252,6 @@ public class RestProviderHttpResponseCodeAspectTest extends AbstractBaseLogTeste
 		}
 
 		assertTrue(((ServiceResponse) returnObject).getMessages().size() > 0);
-		assertTrue(super.getAppender().get(0).getMessage().startsWith(
-				"Throwable while executing RestProviderHttpResponseCodeAspect.aroundAdvice around restController"));
-		assertEquals("java.lang.Throwable",
-				super.getAppender().get(0).getThrowableProxy().getClassName());
 	}
 
 	@Test

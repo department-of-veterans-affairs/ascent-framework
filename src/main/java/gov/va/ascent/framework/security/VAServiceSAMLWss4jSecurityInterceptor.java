@@ -15,6 +15,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.message.WSSecHeader;
+import org.slf4j.event.Level;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.SoapMessage;
@@ -25,7 +26,9 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import gov.va.ascent.framework.constants.AnnotationConstants;
 import gov.va.ascent.framework.exception.AscentRuntimeException;
+import gov.va.ascent.framework.log.AscentBanner;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
 
@@ -102,7 +105,8 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 				: new ByteArrayInputStream(getSamlFile().getBytes())) {
 			clientAssertion = IOUtils.toString(input, "UTF-8");
 		} catch (final Exception e) {
-			LOGGER.error("Unable to read SAML assertion from file." + getSamlFile(), e);
+			LOGGER.error(AscentBanner.newBanner(AnnotationConstants.INTERCEPTOR_EXCEPTION, Level.ERROR), 
+					"Unable to read SAML assertion from file." + getSamlFile(), e);
 			return retVal;
 		}
 
@@ -122,7 +126,8 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 			retVal = doc.getDocumentElement();
 
 		} catch (final ParserConfigurationException | SAXException | IOException e) {
-			LOGGER.error(ERROR_SAML_ASSERTION, e);
+			LOGGER.error(AscentBanner.newBanner(AnnotationConstants.INTERCEPTOR_EXCEPTION, Level.ERROR), 
+					ERROR_SAML_ASSERTION, e);
 		}
 
 		return retVal;

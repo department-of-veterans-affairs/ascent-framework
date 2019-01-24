@@ -4,8 +4,11 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.event.Level;
 import org.springframework.aop.ThrowsAdvice;
 
+import gov.va.ascent.framework.constants.AnnotationConstants;
+import gov.va.ascent.framework.log.AscentBanner;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
 
@@ -78,10 +81,16 @@ public class InterceptingExceptionTranslator implements ThrowsAdvice {
 		} catch (final InstantiationException e) {
 			InterceptingExceptionTranslator.LOGGER.error(
 					"InstantiationException likely configuration error, review log/configuration to troubleshoot", e);
+			LOGGER.error(AscentBanner.newBanner(AnnotationConstants.INTERCEPTOR_EXCEPTION, Level.ERROR), 
+					"InstantiationException likely configuration error, review log/configuration to troubleshoot", e);
+
 
 		} catch (final IllegalAccessException e) {
 			InterceptingExceptionTranslator.LOGGER.error(
 					"IllegalAccessException likely configuration error, review log/configuration to troubleshoot", e);
+			LOGGER.error(AscentBanner.newBanner(AnnotationConstants.INTERCEPTOR_EXCEPTION, Level.ERROR), 
+					"InstantiationException likely configuration error, review log/configuration to troubleshoot", e);
+
 		}
 	}
 
