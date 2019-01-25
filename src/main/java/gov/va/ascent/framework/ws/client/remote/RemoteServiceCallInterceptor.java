@@ -72,7 +72,6 @@ public class RemoteServiceCallInterceptor implements MethodInterceptor {
 			String errMsg = e.getMessage() != null ? e.getMessage() : " null.";
 			LOGGER.error("Partner error: methodName {} " + methodInvocation.getMethod() + "; method args {} "
 					+ ReflectionToStringBuilder.toString(methodInvocation.getArguments()) + ".\n Message: " + errMsg, e);
-
 			asyncLogging.asyncLogMessageAspectAuditData(auditEventData, errMsg, MessageSeverity.ERROR, e);
 			throw e;
 		}

@@ -15,8 +15,11 @@ import javax.xml.transform.stream.StreamResult;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.event.Level;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
+import gov.va.ascent.framework.constants.AnnotationConstants;
+import gov.va.ascent.framework.log.AscentBanner;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
 import gov.va.ascent.framework.util.Defense;
@@ -216,6 +219,8 @@ public class WsClientSimulatorMarshallingInterceptor implements
 					objectToMarshal = createMethod.invoke(objectFactory, obj);
 				} catch (NoSuchMethodException | IllegalArgumentException | IllegalAccessException
 						| InvocationTargetException methodEx) {
+					LOGGER.error(AscentBanner.newBanner(AnnotationConstants.INTERCEPTOR_EXCEPTION, Level.ERROR), 
+							methodEx.getMessage(), methodEx);
 					LOGGER.info(methodEx.getMessage(), methodEx);
 					LOGGER.warn(obj.getClass().getName() + XML_ROOT_ERROR);
 				}
@@ -231,7 +236,8 @@ public class WsClientSimulatorMarshallingInterceptor implements
 				ret = outputStream.toString();
 			}
 		} catch (Exception ex) {
-			LOGGER.info(ex.getMessage(), ex);
+			LOGGER.error(AscentBanner.newBanner(AnnotationConstants.INTERCEPTOR_EXCEPTION, Level.ERROR), 
+					ex.getMessage(), ex);
 		} finally {
 			IOUtils.closeQuietly(outputStream);
 		}
