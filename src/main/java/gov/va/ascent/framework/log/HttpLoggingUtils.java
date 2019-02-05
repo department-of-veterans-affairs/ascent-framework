@@ -42,6 +42,18 @@ public class HttpLoggingUtils {
 		}
 	}
 
+	public static void logMessage(final String title, final WebServiceMessage webServiceMessage) {
+		try {
+			ByteArrayTransportOutputStream byteArrayTransportOutputStream = new ByteArrayTransportOutputStream();
+			webServiceMessage.writeTo(byteArrayTransportOutputStream);
+
+			String httpMessage = new String(byteArrayTransportOutputStream.toByteArray(), "ISO-8859-1");
+			LOGGER.info(NEW_LINE + title + " : " + NEW_LINE + httpMessage + NEW_LINE);
+		} catch (Exception e) {
+			LOGGER.error(UNABLE_TO_LOG_HTTP_MESSAGE_TEXT, e);
+		}
+	}
+
 	public static class ByteArrayTransportOutputStream extends TransportOutputStream {
 
 		private ByteArrayOutputStream byteArrayOutputStream;

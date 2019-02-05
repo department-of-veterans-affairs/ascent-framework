@@ -9,6 +9,8 @@ import org.springframework.ws.soap.security.wss4j2.Wss4jSecuritySecurementExcept
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import gov.va.ascent.framework.log.HttpLoggingUtils;
+
 /**
  * Extension of the Wss4jSecurityInterceptor to inject the VA application headers into the WSS security element
  * 
@@ -96,6 +98,9 @@ public class VAServiceWss4jSecurityInterceptor extends Wss4jSecurityInterceptor 
 			secHeader = WSSecurityUtil.findWsseSecurityHeaderBlock(soapDoc, soapDoc.getDocumentElement(), true);
 			secHeader.appendChild(vaHeader);
 			soapMessage.setDocument(soapDoc);
+
+			HttpLoggingUtils.logMessage("SOAP message in VAServiceWss4jSecurityInterceptor", soapMessage);
+
 		} catch (final WSSecurityException ex) {
 			throw new Wss4jSecuritySecurementException(ex.getMessage(), ex);
 		}

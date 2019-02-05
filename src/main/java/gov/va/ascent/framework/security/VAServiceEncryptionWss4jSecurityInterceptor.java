@@ -12,6 +12,7 @@ import org.w3c.dom.Document;
 import gov.va.ascent.framework.exception.AscentRuntimeException;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
+import gov.va.ascent.framework.log.HttpLoggingUtils;
 
 /**
  * A Wss4j2 Security Interceptor to encrypt secure message header and body.
@@ -70,6 +71,9 @@ public abstract class VAServiceEncryptionWss4jSecurityInterceptor extends Abstra
 			encrypt.build(doc, CryptoFactory.getInstance(props), secHeader);
 
 			soapMessage.setDocument(doc);
+
+			HttpLoggingUtils.logMessage("SOAP message in VAServiceEncryptionWss4jSecurityInterceptor", soapMessage);
+			
 		} catch (final WSSecurityException e) {
 			LOGGER.error("failed to encrypt ", e);
 			throw new AscentRuntimeException(e);

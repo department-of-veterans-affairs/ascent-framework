@@ -14,6 +14,7 @@ import org.w3c.dom.Element;
 import gov.va.ascent.framework.exception.AscentRuntimeException;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
+import gov.va.ascent.framework.log.HttpLoggingUtils;
 
 /**
  * A Wss4j2 Security Interceptor to remove "mustUnderstand" attributes from the envelope namespaces in the message header.
@@ -62,6 +63,8 @@ public class VAServiceMustUnderstandWss4jSecurityInterceptor extends Wss4jSecuri
 		}
 
 		soapMessage.setDocument(doc);
+
+		HttpLoggingUtils.logMessage("SOAP message in VAServiceMustUnderstandWss4jSecurityInterceptor", soapMessage);
 
 	}
 

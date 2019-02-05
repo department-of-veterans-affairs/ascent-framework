@@ -31,6 +31,7 @@ import gov.va.ascent.framework.exception.AscentRuntimeException;
 import gov.va.ascent.framework.log.AscentBanner;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
+import gov.va.ascent.framework.log.HttpLoggingUtils;
 
 /**
  * A Wss4j2 Security Interceptor to add a SAML assertion to the secure message header.
@@ -86,6 +87,8 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 					+ ReflectionToStringBuilder.toString(soapMessage == null ? "null" : soapMessage, ToStringStyle.SHORT_PREFIX_STYLE, // NOSONAR
 							true, true, null));
 
+			HttpLoggingUtils.logMessage("SOAP message in VAServiceSAMLWss4jSecurityInterceptor", soapMessage);
+
 		} catch (final WSSecurityException e) {
 			LOGGER.error("Error while attempting to insert SAML Assertion into message.", e);
 			throw new AscentRuntimeException(e);
@@ -104,6 +107,7 @@ public class VAServiceSAMLWss4jSecurityInterceptor extends Wss4jSecurityIntercep
 		try (InputStream input = getSamlFile().endsWith(".xml") ? new FileSystemResource(getSamlFile()).getInputStream()
 				: new ByteArrayInputStream(getSamlFile().getBytes())) {
 			clientAssertion = IOUtils.toString(input, "UTF-8");
+			LOGGER.info("SAML Assertion string : " + clientAssertion);
 		} catch (final Exception e) {
 			LOGGER.error(AscentBanner.newBanner(AnnotationConstants.INTERCEPTOR_EXCEPTION, Level.ERROR), 
 					"Unable to read SAML assertion from file." + getSamlFile(), e);

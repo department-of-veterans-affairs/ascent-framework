@@ -22,6 +22,7 @@ import org.w3c.dom.Element;
 import gov.va.ascent.framework.exception.AscentRuntimeException;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
+import gov.va.ascent.framework.log.HttpLoggingUtils;
 
 /**
  * A Wss4j2 Security Interceptor to digitally sign a soap message.
@@ -110,6 +111,8 @@ public abstract class VAServiceSignatureWss4jSecurityInterceptor extends Abstrac
 
 			LOGGER.info("Document set in the SOAP request {}" + ReflectionToStringBuilder.reflectionToString(doc) + " soapMessage {} "
 					+ ReflectionToStringBuilder.reflectionToString(soapMessage));
+
+			HttpLoggingUtils.logMessage("SOAP message in VAServiceSignatureWss4jSecurityInterceptor", soapMessage);
 
 		} catch (final WSSecurityException e) {
 			LOGGER.error("failed encryption ", e);
