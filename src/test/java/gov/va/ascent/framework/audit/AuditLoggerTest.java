@@ -40,8 +40,7 @@ import gov.va.ascent.framework.log.AscentLoggerFactory;
 import gov.va.ascent.framework.security.PersonTraits;
 
 /**
- * Audit Logger Test class that shows how to hook logback with mockito to see
- * the logging activity
+ * Audit Logger Test class that shows how to hook logback with mockito to see the logging activity
  */
 @RunWith(MockitoJUnitRunner.class)
 @ContextConfiguration
@@ -70,6 +69,8 @@ public class AuditLoggerTest {
 	@After
 	public void teardown() {
 		AscentLoggerFactory.getLogger(AscentLogger.ROOT_LOGGER_NAME).getLoggerBoundImpl().detachAppender(mockAppender);
+		SecurityContextHolder.clearContext();
+
 	}
 
 	@Test
@@ -241,10 +242,9 @@ public class AuditLoggerTest {
 	@WithMockUser
 	public void auditErrorPersonTraits() throws NoSuchMethodException, SecurityException {
 		// given and when
-		PersonTraits personTraits = new PersonTraits("user", "password",
-				AuthorityUtils.createAuthorityList("ROLE_TEST"));
-		Authentication auth = new UsernamePasswordAuthenticationToken(personTraits,
-				personTraits.getPassword(), personTraits.getAuthorities());
+		PersonTraits personTraits = new PersonTraits("user", "password", AuthorityUtils.createAuthorityList("ROLE_TEST"));
+		Authentication auth =
+				new UsernamePasswordAuthenticationToken(personTraits, personTraits.getPassword(), personTraits.getAuthorities());
 		SecurityContextHolder.getContext().setAuthentication(auth);
 		Method method = AuditLoggerTest.class.getMethod("auditError", (Class<?>[]) null);
 		AuditLogger.error(new AuditEventData(AuditEvents.REQUEST_RESPONSE, method.getName(), method.getDeclaringClass().getName()),
@@ -279,7 +279,7 @@ public class AuditLoggerTest {
 		int captureCount = 0;
 
 		AscentBaseLogger logger = AscentLoggerFactory.getLogger(AscentLogger.ROOT_LOGGER_NAME);
-		if (mdcReserveLength + messageLength + stackTraceLength > MAX_TOTAL_LOG_LEN) {
+		if ((mdcReserveLength + messageLength + stackTraceLength) > MAX_TOTAL_LOG_LEN) {
 			if (messageLength >= gov.va.ascent.framework.log.AscentBaseLogger.MAX_MSG_LENGTH) {
 				String[] splitMessages = ReflectionTestUtils.invokeMethod(logger, "splitMessages", message);
 				captureCount = splitMessages.length;
