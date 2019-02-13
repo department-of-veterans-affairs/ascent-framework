@@ -1,6 +1,7 @@
 package gov.va.ascent.framework.messages;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -30,6 +31,28 @@ public class MessageTest {
 		assertEquals("UnitTestKey", message.getKey());
 		assertEquals("TextMsg", message.getText());
 	}
+	
+	@Test
+	public void testParamsConstructor() throws Exception {
+		Message message = new Message(MessageSeverity.WARN, "UnitTestKey", "TextMsg", 
+				1, new String [] {"0"}, new String [] {"1"}) ;
+		assertEquals(new Integer(1) , message.getParamCount());
+		assertEquals(new String [] {"0"}, message.getParamNames());
+		assertEquals(new String [] {"1"}, message.getParamValues());
+		
+		message.setParamCount(2);
+		message.setParamNames(new String [] {"0"});
+		message.setParamValues(new String [] {"1"});
+	}
+	
+	@Test
+	public void testParamsOnlyConstructor() throws Exception {
+		Message message = new Message(1, new String [] {"0"}, new String [] {"1"}) ;
+		assertEquals(new Integer(1) , message.getParamCount());
+		assertEquals(new String [] {"0"}, message.getParamNames());
+		assertEquals(new String [] {"1"}, message.getParamValues());
+		assertNull(message.getStatusString());
+	}
 
 	@Test
 	public void testSetters() throws Exception {
@@ -57,6 +80,7 @@ public class MessageTest {
 		Message message1 = new Message(MessageSeverity.INFO, "UnitTestKey", "TextMsg");
 		message1.setStatus(HttpStatusForMessage.BAD_REQUEST);
 		assertTrue(message1.getStatusEnum() == HttpStatusForMessage.BAD_REQUEST);
+		assertNotNull(message1.getStatusString());
 	}
 
 	@Test

@@ -54,6 +54,28 @@ public class ServiceResponse extends AbstractTransferObject implements ServiceTr
 		message.setText(text);
 		messages.add(message);
 	}
+	
+	/**
+	 * Adds the message.
+	 *
+	 * @param severity the severity
+	 * @param key the key
+	 * @param text the text
+	 */
+	public final void addMessage(final MessageSeverity severity, final String key, final String text,
+			Integer paramCount, String[] paramNames, String[] paramValues) {
+		if (messages == null) {
+			messages = new LinkedList<>();
+		}
+		final Message message = new Message();
+		message.setSeverity(severity);
+		message.setKey(key);
+		message.setText(text);
+		message.setParamCount(paramCount);
+		message.setParamNames(paramNames);
+		message.setParamValues(paramValues);
+		messages.add(message);
+	}
 
 	/**
 	 * Adds all messages.
