@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -17,7 +18,8 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
 import org.springframework.beans.factory.annotation.Value;
-
+import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
+import org.springframework.core.io.ClassPathResource;
 import gov.va.ascent.framework.log.AscentLogger;
 import gov.va.ascent.framework.log.AscentLoggerFactory;
 import gov.va.ascent.framework.util.Defense;
@@ -36,9 +38,10 @@ public class ModelValidator implements Serializable {
 	private static final AscentLogger LOGGER = AscentLoggerFactory.getLogger(ModelValidator.class);
 
 	private static final String DEFAULT_RESOURCE_BUNDLE = "ValidationMessages";
-
-	@Value("${ascent.validation.messages.user-resource-bundle}")
-	private String jsr303Validator;
+	
+	private static final String BOOTSTRAP_YML = "bootstrap.yml";
+	
+	private static final String ASCENT_VALIDATION_RESOURCE_PROP= "ascent.validation.messages.user-resource-bundle";
 
 	/** The factory. */
 	private transient ValidatorFactory factory;
@@ -47,19 +50,38 @@ public class ModelValidator implements Serializable {
 	private transient Validator validator;
 
 	public ModelValidator() {
-		if (StringUtils.isBlank(jsr303Validator)) {
-			LOGGER.info("No additional JSR303 resource bundles specified, using only the default ValidationMessages resource bundle.");
+		String resourceBundle = readBootStrapYmlProperty();
+		if (StringUtils.isBlank(resourceBundle)) {
+			LOGGER.info("No additional JSR303 resource bundles specified, using only the default "
+					+ "ValidationMessages resource bundle.");
 			factory = Validation.buildDefaultValidatorFactory();
 		} else {
 			factory = Validation.byDefaultProvider()
 					.configure()
 					.messageInterpolator(
 							new ResourceBundleMessageInterpolator(
-									new PlatformResourceBundleLocator(jsr303Validator),
+									new PlatformResourceBundleLocator(resourceBundle),
 									new PlatformResourceBundleLocator(DEFAULT_RESOURCE_BUNDLE)))
 					.buildValidatorFactory();
 		}
 		validator = factory.getValidator();
+	}
+	
+	/**
+	 * Load bootstrap.yml from classpath.
+	 */
+	private String readBootStrapYmlProperty() {
+	    try {
+	        YamlPropertiesFactoryBean factoryLocal = new YamlPropertiesFactoryBean();
+	        factoryLocal.setResources(new ClassPathResource(BOOTSTRAP_YML));
+	        Properties props = factoryLocal.getObject();
+	        return props.getProperty(ASCENT_VALIDATION_RESOURCE_PROP);
+	         
+	    } catch (Exception e) {
+	        LOGGER.error("Failed to read bootstrap.yml to get "
+	        		+ "ascent.validation.messages.user-resource-bundle :" + e.getMessage());
+	        return null;
+	    }
 	}
 
 	/**

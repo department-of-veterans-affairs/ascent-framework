@@ -9,7 +9,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
 /**
  * Message is a generic abstraction of a "message" or "notification" which is layer agnostic and can be used to communicate status or
  * other sorts of information during method calls between components/layers. This is serializable and can be used in SOAP or REST
@@ -76,27 +75,36 @@ public class Message extends AbstractMessage {
 		this.key = key;
 		this.text = text;
 	}
-	
-	
 
 	/**
-	 * @param paramCount
-	 * @param paramNames
-	 * @param paramValues
+	 * Instantiates a new message providing only replaceable parameters.
+	 * 
+	 * @param paramCount the number of elements in the name and value arrays
+	 * @param paramNames the names, in same order as thier respective getParamValues
+	 * @param paramValues the values, in same order as their respective getParamNames
 	 */
 	public Message(Integer paramCount, String[] paramNames, String[] paramValues) {
 		super(paramCount, paramNames, paramValues);
 		// TODO Auto-generated constructor stub
 	}
-	
-	public Message(final MessageSeverity severity, final String key, final String text, 
+
+	/**
+	 * Instantiates a new message.
+	 *
+	 * @param severity
+	 * @param key
+	 * @param text
+	 * @param paramCount the number of elements in the name and value arrays
+	 * @param paramNames the names, in same order as thier respective getParamValues
+	 * @param paramValues the values, in same order as their respective getParamNames
+	 */
+	public Message(final MessageSeverity severity, final String key, final String text,
 			Integer paramCount, String[] paramNames, String[] paramValues) {
 		super(paramCount, paramNames, paramValues);
 		this.severity = severity;
 		this.key = key;
 		this.text = text;
 	}
-	
 
 	/**
 	 * Gets the key.
@@ -202,6 +210,5 @@ public class Message extends AbstractMessage {
 	public final int hashCode() {
 		return HashCodeBuilder.reflectionHashCode(this, EQUALS_HASH_EXCLUDE_FIELDS);
 	}
-	
-	
+
 }
