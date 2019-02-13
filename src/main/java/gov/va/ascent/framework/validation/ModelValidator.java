@@ -43,9 +43,6 @@ public class ModelValidator implements Serializable {
 	
 	private static final String ASCENT_VALIDATION_RESOURCE_PROP= "ascent.validation.messages.user-resource-bundle";
 
-	@Value("${ascent.validation.messages.user-resource-bundle}")
-	private String jsr303Validator;
-
 	/** The factory. */
 	private transient ValidatorFactory factory;
 
