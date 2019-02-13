@@ -9,7 +9,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import gov.va.ascent.framework.transfer.AbstractTransferObject;
 
 /**
  * Message is a generic abstraction of a "message" or "notification" which is layer agnostic and can be used to communicate status or
@@ -18,7 +17,7 @@ import gov.va.ascent.framework.transfer.AbstractTransferObject;
  *
  * @author jshrader
  */
-public class Message extends AbstractTransferObject {
+public class Message extends AbstractMessage {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -1711431368372127555L;
@@ -77,6 +76,27 @@ public class Message extends AbstractTransferObject {
 		this.key = key;
 		this.text = text;
 	}
+	
+	
+
+	/**
+	 * @param paramCount
+	 * @param paramNames
+	 * @param paramValues
+	 */
+	public Message(Integer paramCount, String[] paramNames, String[] paramValues) {
+		super(paramCount, paramNames, paramValues);
+		// TODO Auto-generated constructor stub
+	}
+	
+	public Message(final MessageSeverity severity, final String key, final String text, 
+			Integer paramCount, String[] paramNames, String[] paramValues) {
+		super(paramCount, paramNames, paramValues);
+		this.severity = severity;
+		this.key = key;
+		this.text = text;
+	}
+	
 
 	/**
 	 * Gets the key.
@@ -182,4 +202,6 @@ public class Message extends AbstractTransferObject {
 	public final int hashCode() {
 		return HashCodeBuilder.reflectionHashCode(this, EQUALS_HASH_EXCLUDE_FIELDS);
 	}
+	
+	
 }

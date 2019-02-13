@@ -70,6 +70,8 @@ public class AuditLoggerTest {
 	@After
 	public void teardown() {
 		AscentLoggerFactory.getLogger(AscentLogger.ROOT_LOGGER_NAME).getLoggerBoundImpl().detachAppender(mockAppender);
+		SecurityContextHolder.clearContext();
+
 	}
 
 	@Test

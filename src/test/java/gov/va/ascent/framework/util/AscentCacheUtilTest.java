@@ -3,6 +3,7 @@ package gov.va.ascent.framework.util;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.After;
 import org.junit.Test;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,7 +14,12 @@ import gov.va.ascent.framework.security.PersonTraits;
 import gov.va.ascent.framework.service.ServiceResponse;
 
 public class AscentCacheUtilTest {
-	
+
+	@After
+	public void tearDown() {
+		SecurityContextHolder.clearContext();
+	}
+
 	@Test
 	public void testCheckResultConditions() {
 		ServiceResponse serviceResponse = new ServiceResponse();
