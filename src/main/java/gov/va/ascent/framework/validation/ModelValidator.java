@@ -75,9 +75,9 @@ public class ModelValidator implements Serializable {
 	 */
 	private String readBootStrapYmlProperty() {
 	    try {
-	        YamlPropertiesFactoryBean factory = new YamlPropertiesFactoryBean();
-	        factory.setResources(new ClassPathResource(BOOTSTRAP_YML));
-	        Properties props = factory.getObject();
+	        YamlPropertiesFactoryBean factoryLocal = new YamlPropertiesFactoryBean();
+	        factoryLocal.setResources(new ClassPathResource(BOOTSTRAP_YML));
+	        Properties props = factoryLocal.getObject();
 	        return props.getProperty(ASCENT_VALIDATION_RESOURCE_PROP);
 	         
 	    } catch (Exception e) {
