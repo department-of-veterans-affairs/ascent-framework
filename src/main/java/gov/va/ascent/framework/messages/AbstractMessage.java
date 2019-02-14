@@ -54,8 +54,7 @@ public abstract class AbstractMessage extends AbstractTransferObject {
 	 * 
 	 * @return String[] the names, in same order as thier respective getParamValues()
 	 */
-	// NOSONAR not duplicate
-	public String[] getParamNames() {
+	public String[] getParamNames() {  	// NOSONAR not duplicate
 		return paramNames;
 	}
 
@@ -65,8 +64,7 @@ public abstract class AbstractMessage extends AbstractTransferObject {
 	 * 
 	 * @param paramNames the names, in same order as thier respective getParamValues()
 	 */
-	// NOSONAR not duplicate
-	public void setParamNames(String[] paramNames) {
+	public void setParamNames(String[] paramNames) {  	// NOSONAR not duplicate
 		this.paramNames = paramNames;
 	}
 
@@ -76,8 +74,7 @@ public abstract class AbstractMessage extends AbstractTransferObject {
 	 * 
 	 * @return String[] the values, in same order as their respective getParamNames()
 	 */
-	// NOSONAR not duplicate
-	public String[] getParamValues() {
+	public String[] getParamValues() {  	// NOSONAR not duplicate
 		return paramValues;
 	}
 
@@ -87,8 +84,7 @@ public abstract class AbstractMessage extends AbstractTransferObject {
 	 * 
 	 * @param paramValues the values, in same order as their respective getParamNames()
 	 */
-	// NOSONAR not duplicate
-	public void setParamValues(String[] paramValues) {
+	public void setParamValues(String[] paramValues) { 	// NOSONAR not duplicate
 		this.paramValues = paramValues;
 	}
 
@@ -97,8 +93,7 @@ public abstract class AbstractMessage extends AbstractTransferObject {
 	 * 
 	 * @return Integer the number of elements in the arrays
 	 */
-	// NOSONAR not duplicate
-	public Integer getParamCount() {
+	public Integer getParamCount() {  	// NOSONAR not duplicate
 		return paramCount;
 	}
 
@@ -107,8 +102,7 @@ public abstract class AbstractMessage extends AbstractTransferObject {
 	 * 
 	 * @param paramCount the number of elements in the arrays
 	 */
-	// NOSONAR not duplicates
-	public void setParamCount(Integer paramCount) {
+	public void setParamCount(Integer paramCount) {  	// NOSONAR not duplicate
 		this.paramCount = paramCount;
 	}
 }
