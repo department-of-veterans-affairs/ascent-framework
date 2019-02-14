@@ -48,6 +48,17 @@ public class ServiceResponseTest {
 	public void tearDown() throws Exception {
 		testMessages.clear();
 	}
+	
+	@Test
+	public void testAddMessageWithParams() {
+		mockServiceResponse.addMessage(MessageSeverity.INFO, "InfoKey", "Dummy info text", 
+				1, new String[] {"pName"},new String[] {"pValue"});
+		assertNotNull(mockServiceResponse.validate(null));
+
+		assertNotNull(mockServiceResponse.getMessages());
+		assertEquals(1,mockServiceResponse.getMessages().size());
+		
+	}
 
 	@Test
 	public void testAddMessage() {

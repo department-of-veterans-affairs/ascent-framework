@@ -12,19 +12,40 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.constraints.NotNull;
 import javax.validation.groups.Default;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
+import org.springframework.core.io.ClassPathResource;
 
 import gov.va.ascent.framework.service.ServiceRequest;
 import gov.va.ascent.framework.validation.ModelValidator.Modes;
 
 public class ModelValidatorTest {
+	
+	@Mock
+	YamlPropertiesFactoryBean factoryYaml;
+	
+	
+	@Before
+	public void setUp() throws Exception {
+		
+		MockitoAnnotations.initMocks(this);
+		Properties props = new Properties();
+		factoryYaml.setResources(new ClassPathResource("bootstrap.yml"));
+		props.setProperty("ascent.validation.messages.user-resource-bundle", "LibFileManagerMessages");
+		when(factoryYaml.getObject()).thenReturn(props);
+
+	}
 
 	@Test
 	public void testreadResolve() {
