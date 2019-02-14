@@ -19,11 +19,11 @@ public abstract class AbstractMessage extends AbstractTransferObject {
 	/** The Constant serialVersisonUID. */
 	private static final long serialVersionUID = -1711431368372127556L;
 
-	private Integer paramCount = 0;
+	private Integer paramCount = 0; // NOSONAR cannot be final
 
-	private String[] paramNames;
+	private String[] paramNames; // NOSONAR cannot be final
 
-	private String[] paramValues;
+	private String[] paramValues; // NOSONAR cannot be final
 
 	/**
 	 * Construct a message providing only replaceable parameters.
@@ -32,6 +32,7 @@ public abstract class AbstractMessage extends AbstractTransferObject {
 	 * @param paramNames
 	 * @param paramValues
 	 */
+	// NOSONAR not duplicate
 	public AbstractMessage(Integer paramCount, String[] paramNames, String[] paramValues) {
 		super();
 		this.paramCount = paramCount;
@@ -42,6 +43,7 @@ public abstract class AbstractMessage extends AbstractTransferObject {
 	/**
 	 * Construct default (empty) message object.
 	 */
+	// NOSONAR not duplicate
 	public AbstractMessage() {
 		super();
 	}
@@ -52,6 +54,7 @@ public abstract class AbstractMessage extends AbstractTransferObject {
 	 * 
 	 * @return String[] the names, in same order as thier respective getParamValues()
 	 */
+	// NOSONAR not duplicate
 	public String[] getParamNames() {
 		return paramNames;
 	}
@@ -62,6 +65,7 @@ public abstract class AbstractMessage extends AbstractTransferObject {
 	 * 
 	 * @param paramNames the names, in same order as thier respective getParamValues()
 	 */
+	// NOSONAR not duplicate
 	public void setParamNames(String[] paramNames) {
 		this.paramNames = paramNames;
 	}
@@ -72,6 +76,7 @@ public abstract class AbstractMessage extends AbstractTransferObject {
 	 * 
 	 * @return String[] the values, in same order as their respective getParamNames()
 	 */
+	// NOSONAR not duplicate
 	public String[] getParamValues() {
 		return paramValues;
 	}
@@ -82,6 +87,7 @@ public abstract class AbstractMessage extends AbstractTransferObject {
 	 * 
 	 * @param paramValues the values, in same order as their respective getParamNames()
 	 */
+	// NOSONAR not duplicate
 	public void setParamValues(String[] paramValues) {
 		this.paramValues = paramValues;
 	}
@@ -91,6 +97,7 @@ public abstract class AbstractMessage extends AbstractTransferObject {
 	 * 
 	 * @return Integer the number of elements in the arrays
 	 */
+	// NOSONAR not duplicate
 	public Integer getParamCount() {
 		return paramCount;
 	}
@@ -100,6 +107,7 @@ public abstract class AbstractMessage extends AbstractTransferObject {
 	 * 
 	 * @param paramCount the number of elements in the arrays
 	 */
+	// NOSONAR not duplicates
 	public void setParamCount(Integer paramCount) {
 		this.paramCount = paramCount;
 	}

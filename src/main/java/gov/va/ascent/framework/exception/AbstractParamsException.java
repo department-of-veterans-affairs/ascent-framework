@@ -17,11 +17,11 @@ public class AbstractParamsException extends RuntimeException {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 2598842813684506349L;
 
-	private Integer paramCount;
+	private Integer paramCount;  // NOSONAR cannot be final
 
-	private String[] paramNames;
+	private String[] paramNames;  // NOSONAR cannot be final
 
-	private String[] paramValues;
+	private String[] paramValues; // NOSONAR cannot be final
 
 	/**
 	 * Instantiates a new service exception. Param Names and Values must be set separately.
@@ -29,6 +29,7 @@ public class AbstractParamsException extends RuntimeException {
 	 * @param message the message
 	 * @param cause the cause
 	 */
+	// NOSONAR not duplicate
 	public AbstractParamsException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
@@ -39,6 +40,7 @@ public class AbstractParamsException extends RuntimeException {
 	 *
 	 * @return String[] the names, in same order as thier respective getParamValues()
 	 */
+	// NOSONAR not duplicate
 	public String[] getParamNames() {
 		return paramNames;
 	}
@@ -49,6 +51,7 @@ public class AbstractParamsException extends RuntimeException {
 	 *
 	 * @param paramNames the names, in same order as thier respective getParamValues()
 	 */
+	// NOSONAR not duplicate
 	public void setParamNames(String[] paramNames) {
 		this.paramNames = paramNames;
 	}
@@ -59,6 +62,7 @@ public class AbstractParamsException extends RuntimeException {
 	 *
 	 * @return String[] the values, in same order as their respective getParamNames()
 	 */
+	// NOSONAR not duplicate
 	public String[] getParamValues() {
 		return paramValues;
 	}
@@ -69,6 +73,7 @@ public class AbstractParamsException extends RuntimeException {
 	 *
 	 * @param paramValues the values, in same order as their respective getParamNames()
 	 */
+	// NOSONAR not duplicate
 	public void setParamValues(String[] paramValues) {
 		this.paramValues = paramValues;
 	}
@@ -78,6 +83,7 @@ public class AbstractParamsException extends RuntimeException {
 	 *
 	 * @return Integer the number of elements in the name and value arrays
 	 */
+	// NOSONAR not duplicate
 	public Integer getParamCount() {
 		return paramCount;
 	}
@@ -87,6 +93,7 @@ public class AbstractParamsException extends RuntimeException {
 	 *
 	 * @param paramCount the number of elements in the name and value arrays
 	 */
+	// NOSONAR not duplicate
 	public void setParamCount(Integer paramCount) {
 		this.paramCount = paramCount;
 	}
